@@ -1,5 +1,5 @@
 # BitWits
 
-
 Azeez Moiz Dandawala
-Tanish Milind Sawant
+
+### Tanish Sawant <Badge text="beta" type="warning"/> <Badge text="default theme"/>
