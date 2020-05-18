@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "631492877402",
+    "firebase_url": "https://bitwits-f0997.firebaseio.com",
+    "project_id": "bitwits-f0997",
+    "storage_bucket": "bitwits-f0997.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631492877402:android:6ccc18bd81c8c10b028c63",
+        "android_client_info": {
+          "package_name": "com.bitwits.bitwitsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "631492877402-3qg79ksv1k7u2s0plkpdv7g8b2de1dkv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAARTh7vHsA4jNuZvkDbc1U4DYWBOQfbXA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "631492877402-3qg79ksv1k7u2s0plkpdv7g8b2de1dkv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
