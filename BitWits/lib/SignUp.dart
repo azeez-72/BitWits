@@ -90,7 +90,7 @@ class _SignUpState extends State<SignUp> {
                     padding: EdgeInsets.only(top: 65,left: 20,right: 20),
                     child: Column(
                       children: <Widget>[
-                        TextFields("Roll number",false,TextInputType.number,Icon(Icons.account_box),(value){
+                        TextFields("Name",false,TextInputType.number,Icon(Icons.person),(value){
                           rollno = value;
                         }),
                         SizedBox(height: 16,),
