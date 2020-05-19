@@ -1,7 +1,7 @@
-import 'package:bitwitsapp/Assignments.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'Assignments.dart';
 import 'SignIn.dart';
 import 'textFields.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,6 +19,7 @@ class _SignUpState extends State<SignUp> {
   int rollno;
   String email;
   String password;
+  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -89,15 +90,28 @@ class _SignUpState extends State<SignUp> {
                     padding: EdgeInsets.only(top: 65,left: 20,right: 20),
                     child: Column(
                       children: <Widget>[
-                        TextFields("Roll number",rollno,false,TextInputType.number),
+                        TextFields("Roll number",false,TextInputType.number,Icon(Icons.account_box),(value){
+                          rollno = value;
+                        }),
                         SizedBox(height: 16,),
-                        TextFields("Email",email,false,TextInputType.emailAddress),
+                        TextFields("Email",false,TextInputType.emailAddress,Icon(Icons.email),(value){
+                          email = value;
+                        }),
                         SizedBox(height: 16,),
-                        TextFields("Password",password,true,TextInputType.text),
+                        TextFields("Password",true,TextInputType.text,Icon(Icons.lock_outline),(value){
+                          password = value;
+                        }),
                         SizedBox(height: 20,),
                         button(
                             'Register',
-                                (){
+                                () async{
+                              try {
+                                final newUser = await _auth
+                                    .createUserWithEmailAndPassword(
+                                    email: email, password: password);
+                              } catch(e){
+                                print(e);
+                              }
                               Navigator.pushNamed(context, Assignments.id);
                             }
                         ),

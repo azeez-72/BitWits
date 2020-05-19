@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'textFields.dart';
 import 'package:bitwitsapp/SignUp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignIn extends StatefulWidget {
 
@@ -14,6 +15,7 @@ class _SignInState extends State<SignIn> {
 
   String email;
   String password;
+  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +76,13 @@ class _SignInState extends State<SignIn> {
                     padding: EdgeInsets.only(top: 80,left: 20,right: 20),
                     child: Column(
                       children: <Widget>[
-                        TextFields("Email",email,false,TextInputType.emailAddress),
+                        TextFields("Email",false,TextInputType.emailAddress,Icon(Icons.email),(value){
+                          email = value;
+                        }),
                         SizedBox(height: 16,),
-                        TextFields("Password",password,true,TextInputType.text),
+                        TextFields("Password",true,TextInputType.text,Icon(Icons.lock_outline),(value){
+                          password = value;
+                        }),
                         SizedBox(height: 16,),
                         Padding(
                           padding: EdgeInsets.only(left: 190,),
@@ -92,7 +98,8 @@ class _SignInState extends State<SignIn> {
                         SizedBox(height: 16,),
                         button(
                             'Login',
-                            (){
+                            () async{
+                              final loginUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
                               Navigator.pushNamed(context, SignUp.id);
                             }
                         ),
@@ -128,6 +135,15 @@ class _SignInState extends State<SignIn> {
                                     decoration: TextDecoration.underline,
                                     fontSize: 17,
                                   ),
+                                ),
+                              ),
+                              SizedBox(height: 24,),
+                              Text(
+                                "Clarsi",
+                                style: TextStyle(
+                                  fontFamily: 'Pacifico',
+                                  fontSize: 18,
+                                  color: Colors.grey[500],
                                 ),
                               ),
                             ],

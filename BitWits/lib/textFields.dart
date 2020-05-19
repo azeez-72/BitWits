@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 class TextFields extends StatelessWidget {
 
   final String labelTag;
-  var data;
+  final Function onChange;
   final bool hide;
   final TextInputType textInputType;
+  final Icon icon;
 
-  TextFields(this.labelTag,this.data,this.hide, this.textInputType);
+  TextFields(this.labelTag,this.hide, this.textInputType,this.icon,this.onChange);
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +19,9 @@ class TextFields extends StatelessWidget {
         child: TextField(
           obscureText: hide,
           keyboardType: textInputType,
-          onChanged: (value){
-            data = value;
-            return data;
-          },
+          onChanged: onChange,
           decoration: InputDecoration(
+            prefixIcon: icon,
             labelText: labelTag,
             hintStyle: TextStyle(
               color: Colors.grey,
