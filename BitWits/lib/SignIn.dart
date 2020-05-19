@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Assignments.dart';
 import 'textFields.dart';
 import 'package:bitwitsapp/SignUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -99,8 +100,16 @@ class _SignInState extends State<SignIn> {
                         button(
                             'Login',
                             () async{
-                              final loginUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
-                              Navigator.pushNamed(context, SignUp.id);
+                              try {
+                                final loginUser = await _auth
+                                    .signInWithEmailAndPassword(
+                                    email: email, password: password);
+                                if(loginUser != null){
+                                  Navigator.pushNamed(context, Assignments.id);
+                                }
+                              } catch(e){
+                                print(e);
+                              }
                             }
                         ),
                         SizedBox(height: 10,),

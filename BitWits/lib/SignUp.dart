@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'Assignments.dart';
+import 'Assignments.dart';
 import 'SignIn.dart';
 import 'textFields.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +17,7 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
 
-  int rollno;
+  String name;
   String email;
   String password;
   final _auth = FirebaseAuth.instance;
@@ -90,8 +91,8 @@ class _SignUpState extends State<SignUp> {
                     padding: EdgeInsets.only(top: 65,left: 20,right: 20),
                     child: Column(
                       children: <Widget>[
-                        TextFields("Name",false,TextInputType.number,Icon(Icons.person),(value){
-                          rollno = value;
+                        TextFields("Name",false,TextInputType.text,Icon(Icons.person),(value){
+                          name = value;
                         }),
                         SizedBox(height: 16,),
                         TextFields("Email",false,TextInputType.emailAddress,Icon(Icons.email),(value){
@@ -109,6 +110,9 @@ class _SignUpState extends State<SignUp> {
                                 final newUser = await _auth
                                     .createUserWithEmailAndPassword(
                                     email: email, password: password);
+                                if(newUser != null){
+                                  Navigator.pushNamed(context, Assignments.id);
+                                }
                               } catch(e){
                                 print(e);
                               }
