@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class TextFields extends StatelessWidget {
 
   final String labelTag;
+  final Function onChange;
+  final bool hide;
+  final TextInputType textInputType;
+  final Icon icon;
 
-  TextFields(this.labelTag);
+  TextFields(this.labelTag,this.hide, this.textInputType,this.icon,this.onChange);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +17,11 @@ class TextFields extends StatelessWidget {
         width: double.infinity,
         alignment: Alignment.center,
         child: TextField(
+          obscureText: hide,
+          keyboardType: textInputType,
+          onChanged: onChange,
           decoration: InputDecoration(
+            prefixIcon: icon,
             labelText: labelTag,
             hintStyle: TextStyle(
               color: Colors.grey,
