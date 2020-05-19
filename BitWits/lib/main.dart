@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Assignments.dart';
 import 'package:flutter/material.dart';
 import 'SignUp.dart';
 import 'SignIn.dart';
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
       routes: {
         SignUp.id: (context) => SignUp(),
         SignIn.id: (context) => SignIn(),
+        Assignments.id: (context) => Assignments(),
       },
     );
   }

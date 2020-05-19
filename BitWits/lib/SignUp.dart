@@ -1,7 +1,10 @@
-import 'package:bitwitsapp/SignIn.dart';
+import 'package:bitwitsapp/Assignments.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'SignIn.dart';
 import 'textFields.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUp extends StatefulWidget {
 
@@ -12,6 +15,11 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+
+  int rollno;
+  String email;
+  String password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,17 +89,53 @@ class _SignUpState extends State<SignUp> {
                     padding: EdgeInsets.only(top: 65,left: 20,right: 20),
                     child: Column(
                       children: <Widget>[
-                        TextFields("Roll number"),
+                        TextFields("Roll number",rollno,false,TextInputType.number),
                         SizedBox(height: 16,),
-                        TextFields("Email"),
+                        TextFields("Email",email,false,TextInputType.emailAddress),
                         SizedBox(height: 16,),
-                        TextFields("Password"),
-                        SizedBox(height: 24,),
+                        TextFields("Password",password,true,TextInputType.text),
+                        SizedBox(height: 20,),
                         button(
                             'Register',
                                 (){
-                              Navigator.pushNamed(context, SignIn.id);
+                              Navigator.pushNamed(context, Assignments.id);
                             }
+                        ),
+                        SizedBox(height: 10,),
+                        Divider(
+                          color: Colors.grey[400],
+                          thickness: 1,
+                          height: 30,
+                          indent: 20,
+                          endIndent: 20,
+                        ),
+                        Container(
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                'Already a user?',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              SizedBox(height: 10,),
+                              GestureDetector(
+                                onTap: (){
+                                  Navigator.pushNamed(context, SignIn.id);
+                                },
+                                child: Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
