@@ -19,3 +19,22 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// ignore: camel_case_types
+class appName extends StatelessWidget {
+  final double fontSize;
+  final Color color;
+
+  appName({this.fontSize,this.color});
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'Clarsi',
+      style: TextStyle(
+        fontFamily: 'Pacifico',
+        fontSize: fontSize,
+        color: color,
+      ),
+    );
+  }
+}

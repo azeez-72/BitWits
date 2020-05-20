@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const Color mainColor = Color(0xFF0B3A70);
+
 // ignore: must_be_immutable
 class TextFields extends StatelessWidget {
 
@@ -44,6 +46,7 @@ class button extends StatelessWidget {
 
   final String buttonText;
   final Function onPress;
+//  final bool disableButton;
 
   button(this.buttonText,this.onPress);
 
@@ -53,10 +56,12 @@ class button extends StatelessWidget {
       width: double.infinity,
       height: 50,
       child: FlatButton(
+        disabledColor: Colors.grey,
+        disabledTextColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
-        color: Color(0xFF0B3A70),
+        color: mainColor,
         padding: EdgeInsets.only(top: 5,bottom: 5),
         onPressed: onPress,
         child: Text(
