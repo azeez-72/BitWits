@@ -2,6 +2,7 @@ import 'package:bitwitsapp/Assignments.dart';
 import 'package:flutter/material.dart';
 import 'SignUp.dart';
 import 'SignIn.dart';
+import 'Details.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
       initialRoute: SignUp.id,
       routes: {
         SignUp.id: (context) => SignUp(),
+        Details.id: (context) => Details(),
         SignIn.id: (context) => SignIn(),
         Assignments.id: (context) => Assignments(),
       },
@@ -38,3 +40,5 @@ class appName extends StatelessWidget {
     );
   }
 }
+
+//TODO: add ic_launcher for hdpi

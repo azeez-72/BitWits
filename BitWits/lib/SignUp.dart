@@ -1,8 +1,8 @@
+import 'package:bitwitsapp/Details.dart';
 import 'package:bitwitsapp/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'Assignments.dart';
 import 'SignIn.dart';
 import 'textFields.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -92,79 +92,37 @@ class _SignUpState extends State<SignUp> {
                       padding: EdgeInsets.only(top: 50, left: 20, right: 20),
                       child: Column(
                         children: <Widget>[
-                          TextFields("Name", false, TextInputType.text,
+                          TextFields("Name",TextInputType.text,
                               Icon(Icons.person), (value) {
                               name = value;
                           }),
                           SizedBox(
                             height: 14,
                           ),
-                          TextFields("Email", false, TextInputType.emailAddress,
+                          TextFields("Email",TextInputType.emailAddress,
                               Icon(Icons.email), (value) {
                             email = value;
                           }),
                           SizedBox(
                             height: 14,
                           ),
-                          TextFields("Password", true, TextInputType.text,
+                          TextFields("Password",TextInputType.text,
                               Icon(Icons.lock_outline), (value) {
                             password = value;
                           }),
                           SizedBox(
-                            height: 10,
+                            height: 20,
                           ),
-                         /* Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(left: 110),
-                                child: Text(
-                                  'Are you a CR?',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.black),
-                                ),
-                              ),
-                               SizedBox(
-                                width: 10,
-                              ),
-                              ToggleSwitch(
-                              minWidth: 50.0,
-                              cornerRadius: 5,
-                              initialLabelIndex: 1,
-                              activeBgColor: mainColor,
-                              activeTextColor: Colors.white,
-                              inactiveBgColor: Colors.grey,
-                              inactiveTextColor: Colors.white,
-                              labels: ['YES', 'NO'],
-                              onToggle: (index) {
-                                //TODO: implement student or cr registration
-                              }),
-                        ],
-                      ), */
-                      SizedBox(
-                        height: 10,
-                      ),
-                          button('Register', () async {
+                          button('Register',18, () async {
                             setState(() {
                               showSpinner = true;
                             });
-//                                    if(name == null && email == null && password.length < 6) {
-//                                      setState(() {
-//                                        showSpinner = false;
-//                                        Text(
-//                                          'Failed',
-//                                          style: TextStyle(
-//                                            color: Colors.red,
-//                                            fontSize: 10,
-//                                          ),
-//                                        );
-//                                      });
-//                                    }
                             try {
                               final newUser =
                                   await _auth.createUserWithEmailAndPassword(
                                       email: email, password: password);
                               if (newUser != null) {
-                                Navigator.pushNamed(context, Assignments.id);
+                                Navigator.pushNamed(context, Details.id);
                               }
                               setState(() {
                                 showSpinner = false;

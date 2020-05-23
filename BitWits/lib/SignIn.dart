@@ -82,11 +82,11 @@ class _SignInState extends State<SignIn> {
                       padding: EdgeInsets.only(top: 70,left: 20,right: 20),
                       child: Column(
                         children: <Widget>[
-                          TextFields("Email",false,TextInputType.emailAddress,Icon(Icons.email),(value){
+                          TextFields("Email",TextInputType.emailAddress,Icon(Icons.email),(value){
                             email = value;
                           }),
                           SizedBox(height: 16,),
-                          TextFields("Password",true,TextInputType.text,Icon(Icons.lock_outline),(value){
+                          TextFields("Password",TextInputType.text,Icon(Icons.lock_outline),(value){
                             password = value;
                           }),
                           SizedBox(height: 16,),
@@ -103,7 +103,7 @@ class _SignInState extends State<SignIn> {
                           ),
                           SizedBox(height: 16,),
                           button(
-                              'Login',
+                              'Login',18,
                               () async{
                                 setState(() {
                                   showSpinner = true;
