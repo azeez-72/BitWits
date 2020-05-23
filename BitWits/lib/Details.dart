@@ -1,16 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'textFields.dart';
-<<<<<<< HEAD
 import 'package:toggle_switch/toggle_switch.dart';
-=======
->>>>>>> 2fe39b3e16c7f78263a053891ac46899aca9c529
 
 class Details extends StatefulWidget {
   static final String id = 'details';
 
   @override
-<<<<<<< HEAD
   DetailsState createState() => DetailsState();
 }
 
@@ -22,12 +18,6 @@ class DetailsState extends State<Details> {
   int batch;
   static int toggleIndex = 1;
 
-=======
-  _DetailsState createState() => _DetailsState();
-}
-
-class _DetailsState extends State<Details> {
->>>>>>> 2fe39b3e16c7f78263a053891ac46899aca9c529
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +41,6 @@ class _DetailsState extends State<Details> {
               ),
               Padding(
                 padding: EdgeInsets.all(20),
-<<<<<<< HEAD
                 child: Text(
                         "Enter College Details",
                         style: TextStyle(
@@ -60,23 +49,6 @@ class _DetailsState extends State<Details> {
                         letterSpacing: 1,
                       ),
                     ),
-=======
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      "Enter Details",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 35,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ),
->>>>>>> 2fe39b3e16c7f78263a053891ac46899aca9c529
               ),
               SizedBox(
                 height: 7,
@@ -90,7 +62,6 @@ class _DetailsState extends State<Details> {
                         bottomRight: Radius.circular(100)),
                   ),
                   child: Padding(
-<<<<<<< HEAD
                     padding: EdgeInsets.only(top: 60, left: 20, right: 20),
                     child: Column(
                       children: <Widget>[
@@ -105,18 +76,6 @@ class _DetailsState extends State<Details> {
                             null, (value) {
                               branch = value;
                             }),
-=======
-                    padding: EdgeInsets.only(top: 80, left: 20, right: 20),
-                    child: Column(
-                      children: <Widget>[
-                        TextFields("Roll Number", false, TextInputType.number,
-                            Icon(Icons.add), (value) {}),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        TextFields("Branch", false, TextInputType.text,
-                            Icon(Icons.add), (value) {}),
->>>>>>> 2fe39b3e16c7f78263a053891ac46899aca9c529
                         SizedBox(
                           height: 16,
                         ),
@@ -124,7 +83,6 @@ class _DetailsState extends State<Details> {
                           children: <Widget>[
                             Expanded(
                               child: TextFields(
-<<<<<<< HEAD
                                   "Year",
                                   TextInputType.number,
                                   null,
@@ -166,59 +124,21 @@ class _DetailsState extends State<Details> {
                                     SizedBox(height: 10,),
                                   ]
                               ),
-=======
-                                  "year",
-                                  false,
-                                  TextInputType.text,
-                                  Icon(Icons.add),
-                                  (value) {}),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: TextFields(
-                                  "Batch",
-                                  false,
-                                  TextInputType.text,
-                                  Icon(Icons.add),
-                                  (value) {}),
->>>>>>> 2fe39b3e16c7f78263a053891ac46899aca9c529
                             ),
                           ],
                         ),
                         SizedBox(
-<<<<<<< HEAD
                           height: 24,
-=======
-                          height: 16,
-                        ),
-                        button('CR', () {}),
-                        SizedBox(
-                          height: 20,
->>>>>>> 2fe39b3e16c7f78263a053891ac46899aca9c529
                         ),
                         Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-<<<<<<< HEAD
                               Expanded(child: button('Join classroom',16, () {})),
                               SizedBox(
                                 width: 10,
                               ),
                               Expanded(child: button('Create classroom',16, () {})),
                             ]),
-=======
-                              Expanded(child: button('Join', () {})),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(child: button('Create', () {})),
-                            ]),
-                        SizedBox(
-                          height: 24,
-                        ),
->>>>>>> 2fe39b3e16c7f78263a053891ac46899aca9c529
                       ],
                     ),
                   ),
@@ -231,7 +151,3 @@ class _DetailsState extends State<Details> {
     );
   }
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> 2fe39b3e16c7f78263a053891ac46899aca9c529
