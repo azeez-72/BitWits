@@ -1,4 +1,3 @@
-import 'package:bitwitsapp/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'Details.dart';
@@ -112,7 +111,7 @@ class _buttonState extends State<button> {
         ),
         color: mainColor,
         padding: EdgeInsets.only(top: 5,bottom: 5),
-        onPressed: buttonText == "Create classroom" ? DetailsState.toggleIndex == 1 ? null : onPress : onPress,
+        onPressed: buttonText == "Create classroom" ? DetailsState.toggleIndex==1  ? null : onPress : onPress,
         child: Text(
           buttonText,
           style: TextStyle(

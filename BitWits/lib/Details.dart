@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/New_Class.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'textFields.dart';
@@ -11,12 +12,25 @@ class Details extends StatefulWidget {
 }
 
 class DetailsState extends State<Details> {
-
   int rollnumber;
   String branch;
   int year;
   int batch;
   static int toggleIndex = 1;
+
+  var _currencies = [
+    "Computer",
+    "IT",
+    "EXTC",
+    "Electronics",
+    "Electrical",
+    "Mechanical",
+    "Civil",
+    "Production"
+    "Textile"
+  ];
+
+  static var currentSelectedValue;
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +56,13 @@ class DetailsState extends State<Details> {
               Padding(
                 padding: EdgeInsets.all(20),
                 child: Text(
-                        "Enter College Details",
-                        style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                        letterSpacing: 1,
-                      ),
-                    ),
+                  "Enter College Details",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    letterSpacing: 1,
+                  ),
+                ),
               ),
               SizedBox(
                 height: 7,
@@ -65,17 +79,46 @@ class DetailsState extends State<Details> {
                     padding: EdgeInsets.only(top: 60, left: 20, right: 20),
                     child: Column(
                       children: <Widget>[
-                        TextFields("Roll Number", TextInputType.number,
-                            null, (value) {
-                              rollnumber = value;
-                            }),
+                        TextFields("Roll Number", TextInputType.number, null,
+                            (value) {
+                          rollnumber = value;
+                        }),
                         SizedBox(
                           height: 16,
                         ),
-                        TextFields("Branch", TextInputType.text,
-                            null, (value) {
-                              branch = value;
-                            }),
+                        FormField<String>(
+                          builder: (FormFieldState<String> state) {
+                            return InputDecorator(
+                              decoration: InputDecoration(
+                                  labelText: 'Branch',
+                                  errorStyle: TextStyle(
+                                      color: Colors.redAccent, fontSize: 16.0),
+                                  hintText: 'Select Branch',
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(5.0))),
+                              isEmpty: currentSelectedValue == '',
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: currentSelectedValue,
+                                  isDense: true,
+                                  onChanged: (String newValue) {
+                                    setState(() {
+                                      currentSelectedValue = newValue;
+                                      state.didChange(newValue);
+                                    });
+                                  },
+                                  items: _currencies.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                         SizedBox(
                           height: 16,
                         ),
@@ -83,47 +126,44 @@ class DetailsState extends State<Details> {
                           children: <Widget>[
                             Expanded(
                               child: TextFields(
-                                  "Year",
-                                  TextInputType.number,
-                                  null,
-                                  (value) {
-                                    year = value;
-                                  }),
+                                  "Year", TextInputType.number, null, (value) {
+                                year = value;
+                              }),
                             ),
                             SizedBox(
                               width: 20,
                             ),
                             Expanded(
-                              child: Column(
-                                  children:<Widget> [
-                                    Text(
-                                    'Are you a CR?',
-                                    style: TextStyle(
+                              child: Column(children: <Widget>[
+                                Text(
+                                  'Are you a CR?',
+                                  style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.black,
                                     fontStyle: FontStyle.italic,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 15,bottom: 0),
-                                      child: ToggleSwitch(
-                                        minWidth: 50.0,
-                                        cornerRadius: 5,
-                                        initialLabelIndex: toggleIndex,
-                                        activeBgColor: mainColor,
-                                        activeTextColor: Colors.white,
-                                        inactiveBgColor: Colors.grey,
-                                        inactiveTextColor: Colors.white,
-                                        labels: ['YES', 'NO'],
-                                        onToggle: (index) {
-                                          setState(() {
-                                            toggleIndex = index;
-                                          });
-                                        }),
-                                    ),
-                                    SizedBox(height: 10,),
-                                  ]
-                              ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 15, bottom: 0),
+                                  child: ToggleSwitch(
+                                      minWidth: 50.0,
+                                      cornerRadius: 5,
+                                      initialLabelIndex: toggleIndex,
+                                      activeBgColor: mainColor,
+                                      activeTextColor: Colors.white,
+                                      inactiveBgColor: Colors.grey,
+                                      inactiveTextColor: Colors.white,
+                                      labels: ['YES', 'NO'],
+                                      onToggle: (index) {
+                                        setState(() {
+                                          toggleIndex = index;
+                                        });
+                                      }),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                              ]),
                             ),
                           ],
                         ),
@@ -133,11 +173,16 @@ class DetailsState extends State<Details> {
                         Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Expanded(child: button('Join classroom',16, () {})),
+                              Expanded(
+                                  child: button('Join classroom', 16, () {})),
                               SizedBox(
                                 width: 10,
                               ),
-                              Expanded(child: button('Create classroom',16, () {})),
+                              Expanded(
+                                  child: button('Create classroom', 16, () {
+                                if (currentSelectedValue != null && year > 1)
+                                  Navigator.pushNamed(context, New_Class.id);
+                              })),
                             ]),
                       ],
                     ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'SignUp.dart';
 import 'SignIn.dart';
 import 'Details.dart';
+import 'New_Class.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,11 +12,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: SignUp.id,
+      initialRoute: Details.id,
       routes: {
         SignUp.id: (context) => SignUp(),
         Details.id: (context) => Details(),
         SignIn.id: (context) => SignIn(),
+        New_Class.id: (context) => New_Class(),
         Assignments.id: (context) => Assignments(),
       },
     );
