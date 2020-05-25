@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Details.dart';
 import 'package:bitwitsapp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -18,6 +19,10 @@ class _SignInState extends State<SignIn> {
 
   String email;
   String password;
+  String femail;
+  String fpassword;
+  TextEditingController emailCon;
+  TextEditingController passCon;
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   String error = " ";
@@ -82,11 +87,11 @@ class _SignInState extends State<SignIn> {
                       padding: EdgeInsets.only(top: 70,left: 20,right: 20),
                       child: Column(
                         children: <Widget>[
-                          TextFields("Email",TextInputType.emailAddress,Icon(Icons.email),(value){
+                          TextFields("Email",TextInputType.emailAddress,Icon(Icons.email),emailCon,(value){
                             email = value;
                           }),
                           SizedBox(height: 16,),
-                          TextFields("Password",TextInputType.text,Icon(Icons.lock_outline),(value){
+                          TextFields("Password",TextInputType.text,Icon(Icons.lock_outline),passCon,(value){
                             password = value;
                           }),
                           SizedBox(height: 16,),
@@ -102,31 +107,42 @@ class _SignInState extends State<SignIn> {
                             ),
                           ),
                           SizedBox(height: 16,),
-                          button(
-                              'Login',18,
-                              () async{
-                                setState(() {
-                                  showSpinner = true;
-                                });
-                                try {
-                                  final loginUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
-                                  if(loginUser != null){
-                                    Navigator.pushNamed(context, Assignments.id);
+                          Builder(
+                            builder: (context) =>
+                            button(
+                                'Login',18,
+                                () async{
+                                  if(email == null || password == null)
+                                  Scaffold.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: errorMessage('Please fill in the details'),
+                                      backgroundColor: Colors.red,
+                                      duration: Duration(seconds: 2,),
+                                      ),
+                                    );
+                                  setState(() {
+                                    showSpinner = true;
+                                  });
+                                  try {
+                                    final loginUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
+                                    if(loginUser != null){
+                                      Navigator.pushNamed(context, Assignments.id);
+                                    }
+                                    setState(() {
+                                      showSpinner = false;
+                                    });
+                                  } catch (e) {
+                                    setState(() {
+                                      showSpinner = false;
+                                    });
+                                    String exception = e.toString();
+                                    int i1 = exception.indexOf(',');
+                                    int i2 = exception.indexOf(', null');
+                                    error = exception.substring(i1+2,i2);
+                                    print(error);
                                   }
-                                  setState(() {
-                                    showSpinner = false;
-                                  });
-                                } catch (e) {
-                                  setState(() {
-                                    showSpinner = false;
-                                  });
-                                  String exception = e.toString();
-                                  int i1 = exception.indexOf(',');
-                                  int i2 = exception.indexOf(', null');
-                                  error = exception.substring(i1+2,i2);
-                                  print(error);
                                 }
-                              }
+                            ),
                           ),
                           Padding(
                             padding: EdgeInsets.all(10),

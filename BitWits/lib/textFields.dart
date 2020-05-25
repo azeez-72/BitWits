@@ -11,12 +11,13 @@ class TextFields extends StatefulWidget {
   final Function onChange;
   final TextInputType textInputType;
   final Icon icon;
+  final TextEditingController textEditingController;
   final bool hidden = true;
 
-  TextFields(this.labelTag,this.textInputType,this.icon,this.onChange);
+  TextFields(this.labelTag,this.textInputType,this.icon,this.textEditingController,this.onChange);
 
   @override
-  _TextFieldsState createState() => _TextFieldsState(this.labelTag,this.textInputType,this.icon,this.onChange);
+  _TextFieldsState createState() => _TextFieldsState(this.labelTag,this.textInputType,this.icon,this.textEditingController,this.onChange);
 }
 
 class _TextFieldsState extends State<TextFields> {
@@ -25,9 +26,10 @@ class _TextFieldsState extends State<TextFields> {
   final Function onChange;
   final TextInputType textInputType;
   final Icon icon;
+  final TextEditingController textEditingController;
   bool hidden = true;
 
-  _TextFieldsState(this.labelTag,this.textInputType,this.icon,this.onChange);
+  _TextFieldsState(this.labelTag,this.textInputType,this.icon,this.textEditingController,this.onChange);
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,7 @@ class _TextFieldsState extends State<TextFields> {
         width: double.infinity,
         alignment: Alignment.center,
         child: TextField(
+          controller: textEditingController,
           obscureText: labelTag == "Password" ? hidden : false,
           keyboardType: textInputType,
           inputFormatters: [
@@ -77,6 +80,7 @@ class _TextFieldsState extends State<TextFields> {
   }
 }
 
+// ignore: camel_case_types
 class button extends StatefulWidget {
 
   final String buttonText;
@@ -89,6 +93,7 @@ class button extends StatefulWidget {
   _buttonState createState() => _buttonState(this.buttonText,this.tsize, this.onPress);
 }
 
+// ignore: camel_case_types
 class _buttonState extends State<button> {
 
   final String buttonText;

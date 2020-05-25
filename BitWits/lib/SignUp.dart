@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'SignIn.dart';
 import 'textFields.dart';
+import 'Details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
@@ -20,6 +21,12 @@ class _SignUpState extends State<SignUp> {
   String name;
   String email;
   String password;
+  String fname;
+  String femail;
+  String fpassword;
+  TextEditingController nameCon;
+  TextEditingController emailCon;
+  TextEditingController passCon;
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   String error = " ";
@@ -94,63 +101,84 @@ class _SignUpState extends State<SignUp> {
                       child: Column(
                         children: <Widget>[
                           TextFields("Name",TextInputType.text,
-                              Icon(Icons.person), (value) {
-                              name = value;
+                              Icon(Icons.person),nameCon, (value) {
+                                name = value;
+                                fname = nameCon.text;
                           }),
                           SizedBox(
                             height: 14,
                           ),
                           TextFields("Email",TextInputType.emailAddress,
-                              Icon(Icons.email), (value) {
-                            email = value;
+                              Icon(Icons.email),emailCon, (value) {
+                              email = value;
                           }),
                           SizedBox(
                             height: 14,
                           ),
                           TextFields("Password",TextInputType.text,
-                              Icon(Icons.lock_outline), (value) {
-                            password = value;
+                              Icon(Icons.lock_outline),passCon, (value) {
+                              password = value;
+                              fpassword = passCon.text;
                           }),
                           SizedBox(
                             height: 20,
                           ),
-                          button('Register',18, () async {
-                            setState(() {
-                              showSpinner = true;
-                            });
-                            try {
-                              final newUser =
-                                  await _auth.createUserWithEmailAndPassword(
-                                      email: email, password: password);
-                              if (newUser != null) {
-                                Navigator.pushNamed(context, Details.id);
+                          Builder(
+                            builder: (context) =>
+                            button('Register',18, () async {
+                               if(name == null || email == null || password == null)
+                                Scaffold.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: errorMessage('Please fill in the details'),
+                                    backgroundColor: Colors.red,
+                                    duration: Duration(seconds: 2,),
+                                    ),
+                                  );
+                              setState(() {
+                                showSpinner = true;
+                              });
+                              try {
+                                final newUser =
+                                    await _auth.createUserWithEmailAndPassword(
+                                        email: email, password: password);
+                                if (newUser != null) {
+                                  Navigator.pushNamed(context, Details.id);
+                                }
+                                setState(() {
+                                  showSpinner = false;
+                                });
+                              } catch (e) {
+                                  setState(() {
+                                    showSpinner = false;
+                                  });
+                                  String exception = e.toString();
+                                  int i1 = exception.indexOf(',');
+                                  int i2 = exception.indexOf(', null');
+                                  error = exception.substring(i1+2,i2);
+                                  print(error);
+                                  //emphasis
+                                  Scaffold.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: errorMessage(error),
+                                      backgroundColor: Colors.red,
+                                      duration: Duration(seconds: 2,),
+                                      ),
+                                    );
                               }
-                              setState(() {
-                                showSpinner = false;
-                              });
-                            } catch (e) {
-                              setState(() {
-                                showSpinner = false;
-                              });
-                              String exception = e.toString();
-                              int i1 = exception.indexOf(',');
-                              int i2 = exception.indexOf(', null');
-                              error = exception.substring(i1+2,i2);
-                              print(error);
-                            }
-                          }),
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Container(
-                              child: Text(
-                                error,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
+                            }),
                           ),
+                          // Padding(
+                          //   padding: EdgeInsets.all(10),
+                          //   child: Container(
+                          //     child: Text(
+                          //       error,
+                          //       style: TextStyle(
+                          //         fontSize: 12,
+                          //         color: Colors.red,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           Divider(
                             color: Colors.grey[400],
                             thickness: 1,
@@ -203,3 +231,4 @@ class _SignUpState extends State<SignUp> {
 }
 
 //0B3A70
+//||

@@ -43,4 +43,27 @@ class appName extends StatelessWidget {
   }
 }
 
+class errorMessage extends StatelessWidget {
+
+  final String errorText;
+  
+  errorMessage(this.errorText);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+       children: [
+         Icon(Icons.error),
+         SizedBox(width: 10,),
+         Text(
+         errorText,
+         style: TextStyle(
+           fontSize: 16,
+           color: Colors.white,
+           ),
+         ),
+       ]
+    );
+  }
+}
 //TODO: add ic_launcher for hdpi
