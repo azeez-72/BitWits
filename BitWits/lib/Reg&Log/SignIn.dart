@@ -1,10 +1,9 @@
-import 'package:bitwitsapp/Details.dart';
 import 'package:bitwitsapp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'Assignments.dart';
-import 'textFields.dart';
-import 'package:bitwitsapp/SignUp.dart';
+import 'package:bitwitsapp/Home_Screen/Assignments.dart';
+import 'package:bitwitsapp/textFields.dart';
+import 'SignUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SignIn extends StatefulWidget {
@@ -21,8 +20,7 @@ class _SignInState extends State<SignIn> {
   String password;
   String femail;
   String fpassword;
-  TextEditingController emailCon;
-  TextEditingController passCon;
+  final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   String error = " ";
@@ -84,16 +82,33 @@ class _SignInState extends State<SignIn> {
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(70),bottomRight: Radius.circular(100)),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.only(top: 70,left: 20,right: 20),
+                      padding: EdgeInsets.only(top: 50,left: 20,right: 20),
                       child: Column(
                         children: <Widget>[
-                          TextFields("Email",TextInputType.emailAddress,Icon(Icons.email),emailCon,(value){
-                            email = value;
-                          }),
-                          SizedBox(height: 16,),
-                          TextFields("Password",TextInputType.text,Icon(Icons.lock_outline),passCon,(value){
-                            password = value;
-                          }),
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              children: <Widget>[
+                                TextFields("Email",TextInputType.emailAddress,Icon(Icons.email),(String value){
+                              if(value.isEmpty){
+                                return "Enter your email";
+                              }
+                              return null;
+                            },(String value){
+                              email = value;
+                            }),
+                            SizedBox(height: 16,),
+                            TextFields("Password",TextInputType.text,Icon(Icons.lock_outline),(String value){
+                              if(value.isEmpty){
+                                return "Enter your password";
+                              }
+                              return null;
+                            },(String value){
+                              password = value;
+                            }),
+                              ]
+                            ),
+                          ),
                           SizedBox(height: 16,),
                           Padding(
                             padding: EdgeInsets.only(left: 190,),
@@ -112,14 +127,9 @@ class _SignInState extends State<SignIn> {
                             button(
                                 'Login',18,
                                 () async{
-                                  if(email == null || password == null)
-                                  Scaffold.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: errorMessage('Please fill in the details'),
-                                      backgroundColor: Colors.red,
-                                      duration: Duration(seconds: 2,),
-                                      ),
-                                    );
+                                  if(_formKey.currentState.validate()) {
+                                    _formKey.currentState.save();
+                                  }
                                   setState(() {
                                     showSpinner = true;
                                   });
@@ -140,26 +150,22 @@ class _SignInState extends State<SignIn> {
                                     int i2 = exception.indexOf(', null');
                                     error = exception.substring(i1+2,i2);
                                     print(error);
+                                    Scaffold.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: errorMessage(error),
+                                      backgroundColor: Colors.red,
+                                      duration: Duration(seconds: 3,),
+                                      ),
+                                    );
                                   }
                                 }
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Container(
-                              child: Text(
-                                error,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                          ),
+                          SizedBox(height: 40),
                           Divider(
                             color: Colors.grey[400],
                             thickness: 1,
-                            height: 20,
+                            height: 30,
                             indent: 20,
                             endIndent: 20,
                           ),
@@ -167,12 +173,17 @@ class _SignInState extends State<SignIn> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text(
-                                  'Create a new account?',
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
+                                GestureDetector(
+                                  onTap: (){
+                                    Navigator.pushNamed(context, SignUp.id);
+                                  },
+                                  child: Text(
+                                    'Create a new account?',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(height: 7,),
@@ -189,7 +200,7 @@ class _SignInState extends State<SignIn> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 24,),
+                                SizedBox(height: 16,),
                                 appName(
                                   fontSize: 18,
                                   color: Colors.grey[500],

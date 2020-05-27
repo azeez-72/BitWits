@@ -1,7 +1,10 @@
+import 'SignUp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'textFields.dart';
-import 'main.dart';
+import 'package:bitwitsapp/textFields.dart';
+import 'package:bitwitsapp/main.dart';
+import 'package:bitwitsapp/Details_Class/user_college_details.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class Details extends StatefulWidget {
@@ -12,13 +15,36 @@ class Details extends StatefulWidget {
 }
 
 class DetailsState extends State<Details> {
+  final _auth = FirebaseAuth.instance;
+  FirebaseUser registeredUser;
+  final _formKey = GlobalKey<FormState>();
+  College_Details college_details = College_Details();
+
+ /* @override
+  void initState() {
+    super.initState();
+    
+    registeredCurrentUser();
+  }
+
+  void registeredCurrentUser() async{
+    try {
+      final regUser = await _auth.currentUser();
+      if(regUser != null) {
+        registeredUser = regUser;
+        print(registeredUser.email);
+      } else Navigator.pushNamed(context, SignUp.id);
+    } catch(e){
+      print(e);
+    }
+  }*/
+
   String rollnumber;
   String froll;
   String branch;
   int year;
   int batch;
   static int toggleIndex = 1;
-  static int batchMax = 6;
 
   var _branches = [
     "Computer",
@@ -65,7 +91,6 @@ class DetailsState extends State<Details> {
                   labelText: 'Batch',
                   errorStyle: TextStyle(
                       color: Colors.redAccent, fontSize: 16.0),
-                  hintText: 'Select Batch',
                   border: OutlineInputBorder(
                       borderRadius:
                       BorderRadius.circular(5.0))),
@@ -92,18 +117,29 @@ class DetailsState extends State<Details> {
           },
         ),
         actions: <Widget>[
+           FlatButton(
+            onPressed: (){
+              Navigator.pop(context);
+            }, child: Text(
+              'CANCEL',
+              style: TextStyle(color: Colors.grey),
+              ),
+          ),
           FlatButton(
             onPressed: (){
 
-            }, child: Text('OK'),
+              }, child: Text(
+              'OK',
+              style: TextStyle(color: Colors.blue),
+            ),
           )
         ],
       );
     }) : null;
   }
 
-  static var branchSelectedValue;
-  static var batchSelectedValue;
+  static String branchSelectedValue;
+  static String batchSelectedValue;
   static String yearSelectedValue;
   TextEditingController rollCon;
 
@@ -157,10 +193,18 @@ class DetailsState extends State<Details> {
                       padding: EdgeInsets.only(top: 60, left: 20, right: 20),
                       child: Column(
                         children: <Widget>[
-                          TextFields("Roll Number", TextInputType.number, null,rollCon,
-                              (value) {
-                            rollnumber = value;
-                          }),
+                          Form(
+                            key: _formKey,
+                            child: TextFields("Roll Number", TextInputType.number, null,(String value){
+                              if(value.isEmpty){
+                                return "Enter roll number";
+                              }
+                              return null;
+                            },
+                            (String value) {
+                              college_details.roll = value;
+                            }),
+                          ),
                           SizedBox(
                             height: 16,
                           ),
@@ -168,14 +212,13 @@ class DetailsState extends State<Details> {
                             builder: (FormFieldState<String> state) {
                               return InputDecorator(
                                 decoration: InputDecoration(
-                                    labelText: 'Branch',
+                                    labelText: 'Branch', //
                                     errorStyle: TextStyle(
                                         color: Colors.redAccent, fontSize: 16.0),
-                                    hintText: 'Select Branch',
                                     border: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(5.0))),
-                                isEmpty: branchSelectedValue == '',
+                                isEmpty: branchSelectedValue == '', //
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
                                     value: branchSelectedValue,
@@ -186,7 +229,7 @@ class DetailsState extends State<Details> {
                                         state.didChange(newValue);
                                       });
                                     },
-                                    items: _branches.map((String value) {
+                                    items: _branches.map((String value) { //
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: Text(value),
@@ -210,7 +253,6 @@ class DetailsState extends State<Details> {
                                           labelText: 'Year',
                                           errorStyle: TextStyle(
                                               color: Colors.redAccent, fontSize: 16.0),
-                                          hintText: 'Select Year',
                                           border: OutlineInputBorder(
                                               borderRadius:
                                               BorderRadius.circular(5.0))),
@@ -286,11 +328,24 @@ class DetailsState extends State<Details> {
                                     child: Builder(
                                       builder: (context) =>
                                         button('Join classroom', 16, () {
-                                        //Emphasis
-                                          if(rollnumber == null || branchSelectedValue == null || yearSelectedValue == null)
+                                          if(_formKey.currentState.validate()){
+                                            _formKey.currentState.save();
+                                            college_details.year = yearSelectedValue;
+                                            college_details.branch = branchSelectedValue;
+                                          }
+                                          //Emphasis
+                                          if(branchSelectedValue == null)
                                           Scaffold.of(context).showSnackBar(
                                              SnackBar(
-                                               content: errorMessage('Please fill in the details'),
+                                              content: errorMessage('Please select branch'),
+                                              duration: Duration(milliseconds: 2000),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          if(yearSelectedValue == null)
+                                          Scaffold.of(context).showSnackBar(
+                                             SnackBar(
+                                              content: errorMessage('Please select year'),
                                               duration: Duration(milliseconds: 2000),
                                               backgroundColor: Colors.red,
                                             ),
@@ -306,18 +361,29 @@ class DetailsState extends State<Details> {
                                     child: Builder(
                                       builder: (context) =>
                                         button('Create classroom', 16, () {
+                                          if(_formKey.currentState.validate()){
+                                            _formKey.currentState.save();
+                                            college_details.year = yearSelectedValue;
+                                            college_details.branch = branchSelectedValue;
+                                          }
                                         //Emphasis
-                                        setState(() {
-                                          if(rollnumber == null || branchSelectedValue == null || yearSelectedValue == null)
+                                        if(branchSelectedValue == null)
                                           Scaffold.of(context).showSnackBar(
                                              SnackBar(
-                                               content: errorMessage('Please fill in the details'),
+                                              content: errorMessage('Please select branch'),
                                               duration: Duration(milliseconds: 2000),
                                               backgroundColor: Colors.red,
                                             ),
                                           );
-                                          createAlertDialog(context);
-                                        });                                          
+                                          if(yearSelectedValue == null)
+                                          Scaffold.of(context).showSnackBar(
+                                             SnackBar(
+                                              content: errorMessage('Please select year'),
+                                              duration: Duration(milliseconds: 2000),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        createAlertDialog(context);                                          
                                       }),
                                     ),
                                 ),

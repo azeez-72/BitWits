@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:bitwitsapp/Details.dart';
+import 'Details.dart';
 import 'package:bitwitsapp/textFields.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'Details.dart';
+import 'package:bitwitsapp/Reg&Log/Details.dart';
 
 const Color mainColor = Color(0xFF0B3A70);
 
@@ -8,43 +8,39 @@ const Color mainColor = Color(0xFF0B3A70);
 class TextFields extends StatefulWidget {
 
   final String labelTag;
-  final Function onChange;
+  final Function validator;
+  final Function onSaved;
   final TextInputType textInputType;
   final Icon icon;
-  final TextEditingController textEditingController;
   final bool hidden = true;
 
-  TextFields(this.labelTag,this.textInputType,this.icon,this.textEditingController,this.onChange);
+  TextFields(this.labelTag,this.textInputType,this.icon,this.validator,this.onSaved);
 
   @override
-  _TextFieldsState createState() => _TextFieldsState(this.labelTag,this.textInputType,this.icon,this.textEditingController,this.onChange);
+  _TextFieldsState createState() => _TextFieldsState(this.labelTag,this.textInputType,this.icon,this.validator,this.onSaved);
 }
 
 class _TextFieldsState extends State<TextFields> {
 
   final String labelTag;
-  final Function onChange;
+  final Function validator;
+  final Function onSaved;
   final TextInputType textInputType;
   final Icon icon;
-  final TextEditingController textEditingController;
   bool hidden = true;
 
-  _TextFieldsState(this.labelTag,this.textInputType,this.icon,this.textEditingController,this.onChange);
+  _TextFieldsState(this.labelTag,this.textInputType,this.icon,this.validator,this.onSaved);
 
   @override
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
         alignment: Alignment.center,
-        child: TextField(
-          controller: textEditingController,
+        child: TextFormField(
+          validator: validator,
+          onSaved: onSaved,
           obscureText: labelTag == "Password" ? hidden : false,
           keyboardType: textInputType,
-          inputFormatters: [
-            LengthLimitingTextInputFormatter(labelTag == "Batch" ? 1 : null),
-            LengthLimitingTextInputFormatter(labelTag == "Year" ? 1 : null),
-          ],
-          onChanged: onChange,
           decoration: InputDecoration(
             prefixIcon: icon,
             suffixIcon: labelTag == "Password" ? IconButton(

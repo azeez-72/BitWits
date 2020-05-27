@@ -1,7 +1,8 @@
-import 'package:bitwitsapp/SignIn.dart';
+import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/textFields.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Assignments extends StatefulWidget {
 
@@ -13,6 +14,8 @@ class Assignments extends StatefulWidget {
 
 // ignore: camel_case_types
 class _assignmentsState extends State<Assignments> {
+  final _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +34,7 @@ class _assignmentsState extends State<Assignments> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: (){
+            _auth.signOut();
             Navigator.pushNamed(context, SignIn.id);
           },
         ),

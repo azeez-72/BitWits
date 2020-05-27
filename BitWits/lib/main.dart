@@ -1,18 +1,19 @@
-import 'package:bitwitsapp/Assignments.dart';
+import 'package:bitwitsapp/Home_Screen/Assignments.dart';
 import 'package:flutter/material.dart';
-import 'SignUp.dart';
-import 'SignIn.dart';
-import 'Details.dart';
-import 'New_Class.dart';
+import 'package:bitwitsapp/Reg&Log/SignIn.dart';
+import 'package:bitwitsapp/Reg&Log/SignUp.dart';
+import 'package:bitwitsapp/Reg&Log/Details.dart';
+import 'package:bitwitsapp/Reg&Log/New_Class.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: Details.id,
+      initialRoute: SignUp.id,
       routes: {
         SignUp.id: (context) => SignUp(),
         Details.id: (context) => Details(),
@@ -53,13 +54,15 @@ class errorMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
        children: [
-         Icon(Icons.error),
+         Icon(Icons.error,),
          SizedBox(width: 10,),
-         Text(
-         errorText,
-         style: TextStyle(
-           fontSize: 16,
-           color: Colors.white,
+         Expanded(
+          child: Text(
+           errorText,
+           style: TextStyle(
+             fontSize: 14,
+             color: Colors.white,
+             ),
            ),
          ),
        ]

@@ -1,13 +1,14 @@
-import 'package:bitwitsapp/Details.dart';
+import 'package:bitwitsapp/Home_Screen/Assignments.dart';
+import 'Details.dart';
 import 'package:bitwitsapp/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'SignIn.dart';
-import 'textFields.dart';
-import 'Details.dart';
+import 'package:bitwitsapp/textFields.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:bitwitsapp/Details_Class/user_details.dart';
 
 class SignUp extends StatefulWidget {
   static int rollno; //added static modifier
@@ -18,18 +19,30 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   //shifted rollno from private class to let New_Class access it
-  String name;
-  String email;
-  String password;
-  String fname;
-  String femail;
-  String fpassword;
-  TextEditingController nameCon;
-  TextEditingController emailCon;
-  TextEditingController passCon;
+  String _email;
+  String _password;
   final _auth = FirebaseAuth.instance;
+  final _formKey = GlobalKey<FormState>();
+  User_Details user_details = User_Details();
+  FirebaseUser loggedInUser;
   bool showSpinner = false;
   String error = " ";
+
+    @override
+    void initState() {
+      super.initState();
+      getLoggedInUser();
+    }
+
+    void getLoggedInUser() async{
+    try{
+      final user = await _auth.currentUser();
+      loggedInUser = user;
+      if(loggedInUser != null) Navigator.pushNamed(context, Assignments.id);
+    }catch(e){
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,54 +113,73 @@ class _SignUpState extends State<SignUp> {
                       padding: EdgeInsets.only(top: 50, left: 20, right: 20),
                       child: Column(
                         children: <Widget>[
-                          TextFields("Name",TextInputType.text,
-                              Icon(Icons.person),nameCon, (value) {
-                                name = value;
-                                fname = nameCon.text;
-                          }),
-                          SizedBox(
-                            height: 14,
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              children: <Widget>[
+                                TextFields("Name",TextInputType.text,
+                                Icon(Icons.person),(String value){
+                                  //validate
+                                  if(value.isEmpty) {
+                                    return 'Enter your name';
+                                  }
+                                  return null;
+                                }, (String value) {
+                                  user_details.name = value;
+                                }),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                TextFields("Email",TextInputType.emailAddress,
+                                  Icon(Icons.email),(String value){
+                                    //validate
+                                    if(value.isEmpty) {
+                                    return 'Enter your email';
+                                  }
+                                  return null;
+                                  }, (String value) {
+                                    user_details.email = value;
+                                    _email = value;
+                                }),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                TextFields("Password",TextInputType.text,
+                                  Icon(Icons.lock_outline),(String value){
+                                    //validate
+                                    if(value.isEmpty) {
+                                    return 'Enter your password';
+                                  }
+                                  return null;
+                                  }, (String value) {
+                                    _password = value;
+                                }),
+                              ],
+                            ),
                           ),
-                          TextFields("Email",TextInputType.emailAddress,
-                              Icon(Icons.email),emailCon, (value) {
-                              email = value;
-                          }),
                           SizedBox(
-                            height: 14,
-                          ),
-                          TextFields("Password",TextInputType.text,
-                              Icon(Icons.lock_outline),passCon, (value) {
-                              password = value;
-                              fpassword = passCon.text;
-                          }),
-                          SizedBox(
-                            height: 20,
+                            height: 16,
                           ),
                           Builder(
                             builder: (context) =>
                             button('Register',18, () async {
-                               if(name == null || email == null || password == null)
-                                Scaffold.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: errorMessage('Please fill in the details'),
-                                    backgroundColor: Colors.red,
-                                    duration: Duration(seconds: 2,),
-                                    ),
-                                  );
+                              if(_formKey.currentState.validate()) {
+                                _formKey.currentState.save();
+                              } 
                               setState(() {
                                 showSpinner = true;
                               });
                               try {
                                 final newUser =
                                     await _auth.createUserWithEmailAndPassword(
-                                        email: email, password: password);
+                                        email: _email, password: _password);
                                 if (newUser != null) {
                                   Navigator.pushNamed(context, Details.id);
                                 }
                                 setState(() {
                                   showSpinner = false;
                                 });
-                              } catch (e) {
+                                } catch (e) {
                                   setState(() {
                                     showSpinner = false;
                                   });
@@ -161,44 +193,38 @@ class _SignUpState extends State<SignUp> {
                                     SnackBar(
                                       content: errorMessage(error),
                                       backgroundColor: Colors.red,
-                                      duration: Duration(seconds: 2,),
+                                      duration: Duration(seconds: 3,),
                                       ),
                                     );
                               }
                             }),
                           ),
-                          // Padding(
-                          //   padding: EdgeInsets.all(10),
-                          //   child: Container(
-                          //     child: Text(
-                          //       error,
-                          //       style: TextStyle(
-                          //         fontSize: 12,
-                          //         color: Colors.red,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
+                          SizedBox(height: 24,),
                           Divider(
                             color: Colors.grey[400],
                             thickness: 1,
-                            height: 30,
+                            height: 20,
                             indent: 20,
                             endIndent: 20,
                           ),
                           Container(
                             child: Column(
                               children: <Widget>[
-                                Text(
-                                  'Already a user?',
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
+                                GestureDetector(
+                                  onTap: (){
+                                    Navigator.pushNamed(context, SignIn.id);
+                                  },
+                                  child: Text(
+                                    'Already a user?',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 10,
+                                  height: 8,
                                 ),
                                 GestureDetector(
                                   onTap: () {
