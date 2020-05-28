@@ -10,17 +10,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:bitwitsapp/Details_Class/user_details.dart';
 
-class SignUp extends StatefulWidget {
-  static int rollno; //added static modifier
+class SignUp extends StatefulWidget { 
   static final String id = 'sign_up';
   @override
-  _SignUpState createState() => _SignUpState();
+  SignUpState createState() => SignUpState();
 }
 
-class _SignUpState extends State<SignUp> {
+class SignUpState extends State<SignUp> {
   //shifted rollno from private class to let New_Class access it
   String _email;
   String _password;
+  static String fname;
+  static String femail;
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   User_Details user_details = User_Details();
@@ -125,7 +126,7 @@ class _SignUpState extends State<SignUp> {
                                   }
                                   return null;
                                 }, (String value) {
-                                  user_details.name = value;
+                                  fname = value;
                                 }),
                                 SizedBox(
                                   height: 10,
@@ -140,6 +141,7 @@ class _SignUpState extends State<SignUp> {
                                   }, (String value) {
                                     user_details.email = value;
                                     _email = value;
+                                    femail = _email;
                                 }),
                                 SizedBox(
                                   height: 10,

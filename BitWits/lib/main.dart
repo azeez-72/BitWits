@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Reg&Log/SignUp.dart';
 import 'package:bitwitsapp/Reg&Log/Details.dart';
-import 'package:bitwitsapp/Reg&Log/New_Class.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,7 +17,6 @@ class MyApp extends StatelessWidget {
         SignUp.id: (context) => SignUp(),
         Details.id: (context) => Details(),
         SignIn.id: (context) => SignIn(),
-        New_Class.id: (context) => New_Class(),
         Assignments.id: (context) => Assignments(),
       },
     );

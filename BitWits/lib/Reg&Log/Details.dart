@@ -1,4 +1,10 @@
-import 'SignUp.dart';
+import 'dart:collection';
+import 'dart:math';
+import 'package:bitwitsapp/Details_Class/user_details.dart';
+import 'package:bitwitsapp/Home_Screen/Assignments.dart';
+import 'package:bitwitsapp/Reg&Log/New_Class.dart';
+import 'package:bitwitsapp/Reg&Log/SignUp.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bitwitsapp/textFields.dart';
@@ -19,6 +25,8 @@ class DetailsState extends State<Details> {
   FirebaseUser registeredUser;
   final _formKey = GlobalKey<FormState>();
   College_Details college_details = College_Details();
+  User_Details user_details;
+  final DBRef = FirebaseDatabase.instance.reference();
 
  /* @override
   void initState() {
@@ -42,13 +50,11 @@ class DetailsState extends State<Details> {
   String rollnumber;
   String froll;
   String branch;
-  int year;
-  int batch;
   static int toggleIndex = 1;
 
   var _branches = [
     "Computer",
-    "IT",
+    "Information Tecnology",
     "EXTC",
     "Electronics",
     "Electrical",
@@ -57,6 +63,21 @@ class DetailsState extends State<Details> {
     "Production",
     "Textile",
   ];
+
+  Map<String,String> sform = HashMap();
+  
+  void assign(){
+
+    sform[_branches[0]] = "cs";
+    sform[_branches[1]] = "it";
+    sform[_branches[2]] = "tc";
+    sform[_branches[3]] = "es";
+    sform[_branches[4]] = "el";
+    sform[_branches[5]] = "me";
+    sform[_branches[6]] = "cv";
+    sform[_branches[7]] = "pr";
+    sform[_branches[8]] = "tx";
+ }
 
   var _batches = [
     "1",
@@ -73,6 +94,24 @@ class DetailsState extends State<Details> {
     "3",
     "4",
   ];
+
+  bool codeValidate(String enteredCode){
+    bool codeValid;
+    //retrieve code from DB
+    //if entered code is equal to retrieved code then codeValid is true else false
+    return codeValid;
+  }
+
+  String getCode(String b,String r){
+    assign();
+    String i;
+    if(yearSelectedValue == "1") i = "b$b";
+    else i = sform[branchSelectedValue];
+    String m = Random().nextInt(9999).toString();
+    String l = r.substring(r.length - 2);
+
+    return "$i$m$l";
+  }
 
   createAlertDialog(BuildContext context){
     return (yearSelectedValue == "1" && (rollnumber != null || branchSelectedValue != null)) ? showDialog(context: context,builder: (context){
@@ -127,7 +166,23 @@ class DetailsState extends State<Details> {
           ),
           FlatButton(
             onPressed: (){
-
+                college_details.batch = batchSelectedValue;
+                try {
+                  DBRef.child("Students").child("Year $yearSelectedValue").child(college_details.roll).set({
+                    "name": SignUpState.fname,
+                    "email": SignUpState.femail,
+                    "branch": college_details.branch,
+                    "batch": college_details.batch
+                  });
+                  String batch = college_details.batch;
+                  DBRef.child("Classroom").child("Year $yearSelectedValue").child("Batch $batch").set({
+                    "CR Roll number": college_details.roll,
+                    "Class code": getCode(college_details.batch, college_details.roll)
+                  });
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => New_Class(college_details)));
+                } catch(e){
+                    print(e);
+                }
               }, child: Text(
               'OK',
               style: TextStyle(color: Colors.blue),
@@ -141,7 +196,6 @@ class DetailsState extends State<Details> {
   static String branchSelectedValue;
   static String batchSelectedValue;
   static String yearSelectedValue;
-  TextEditingController rollCon;
 
   @override
   Widget build(BuildContext context) {
@@ -383,7 +437,19 @@ class DetailsState extends State<Details> {
                                               backgroundColor: Colors.red,
                                             ),
                                           );
-                                        createAlertDialog(context);                                          
+                                          if(yearSelectedValue == "1") 
+                                            createAlertDialog(context);
+                                          else {
+                                            DBRef.child("Students").child("Year $yearSelectedValue").child(college_details.roll).set({
+                                              "name": SignUpState.fname,
+                                              "email": SignUpState.femail,
+                                              "branch": college_details.branch,
+                                            });
+                                            DBRef.child("Classroom").child("Year $yearSelectedValue").child(branchSelectedValue).set({
+                                              "CR Roll number": college_details.roll,
+                                              "Class code": getCode(null, college_details.roll)
+                                          });
+                                          }
                                       }),
                                     ),
                                 ),
