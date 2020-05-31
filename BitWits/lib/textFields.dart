@@ -40,6 +40,7 @@ class _TextFieldsState extends State<TextFields> {
           validator: validator,
           onSaved: onSaved,
           obscureText: labelTag == "Password" ? hidden : false,
+          autofocus: labelTag == "Code" ? true : false,
           keyboardType: textInputType,
           decoration: InputDecoration(
             prefixIcon: icon,
@@ -75,6 +76,64 @@ class _TextFieldsState extends State<TextFields> {
     );
   }
 }
+
+
+
+class CodeFields extends StatefulWidget {
+
+  final String labelTag;
+  final TextEditingController ctr;
+  final TextInputType textInputType;
+
+  CodeFields(this.labelTag,this.textInputType,this.ctr);
+
+  @override
+  _CodeFieldsState createState() => _CodeFieldsState(this.labelTag,this.textInputType,this.ctr);
+}
+
+class _CodeFieldsState extends State<CodeFields> {
+
+  final String labelTag;
+  final TextEditingController ctr;
+  final TextInputType textInputType;
+
+  _CodeFieldsState(this.labelTag,this.textInputType,this.ctr);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: double.infinity,
+        alignment: Alignment.center,
+        child: TextField(
+          autofocus: true,
+          controller: ctr,
+          keyboardType: textInputType,
+          decoration: InputDecoration(
+            errorBorder: OutlineInputBorder(borderSide: BorderSide(
+              color: Colors.red,
+              width: 2,
+            ),
+            ),
+            labelText: labelTag,
+            hintStyle: TextStyle(
+              color: Colors.grey,
+            ),
+            disabledBorder: OutlineInputBorder(borderSide: BorderSide(
+                color: Colors.grey[200],
+                width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(borderSide: BorderSide(
+                color: Colors.blue[400],
+                width: 1.5),
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(3),),
+            ),
+          ),
+        )
+    );
+  }
+}
+
 
 // ignore: camel_case_types
 class button extends StatefulWidget {

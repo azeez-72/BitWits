@@ -1,33 +1,12 @@
+import 'package:bitwitsapp/Home_Screen/Assignments.dart';
+import 'package:bitwitsapp/Reg&Log/Details.dart';
 import 'package:bitwitsapp/textFields.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:bitwitsapp/Details_Class/user_college_details.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class New_Class extends StatelessWidget {
   static String id = "new_class";
-
-  College_Details college_details;
-
-  New_Class(this.college_details);
-
-  final DBRef = FirebaseDatabase.instance.reference();
-
-  String code(){
-    String fcode;
-    String year = college_details.year;
-    String batch = college_details.batch;
-    try{
-      DBRef.child("Classroom").child("Year $year").child("Batch $batch").orderByKey().equalTo("Class code").once().then((value){
-      fcode = value.toString();
-    });
-    return fcode;
-    } catch(e){
-      print(e);
-      return "Error";
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +18,7 @@ class New_Class extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.only(left: 20,right: 20,bottom: 20,top: 40),
                 child: Text(
                         "Classroom created!",
                         style: TextStyle(
@@ -50,11 +29,12 @@ class New_Class extends StatelessWidget {
                     ),
               ),
               SizedBox(
+                //TODO: fix slow loading
                 height: 149.526,
                 width: 233.635,
                 child: SvgPicture.asset('svgs/class.svg'),
               ),
-              SizedBox(height: 20,),
+              SizedBox(height: 10,),
               Padding(
                 padding: EdgeInsets.only(left: 20,right: 20,top: 20),
                 child: Column(
@@ -63,7 +43,7 @@ class New_Class extends StatelessWidget {
                     Text('Your classroom code is:',style: TextStyle(fontWeight: FontWeight.w500,fontSize: 18)),
                     SizedBox(height: 15),
                     Text(
-                      code() == null ? "Not available" : code(),
+                      DetailsState.code == null ? "NA" : DetailsState.code,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
@@ -74,12 +54,12 @@ class New_Class extends StatelessWidget {
                       'You can view the code later',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey,
+                        color: Colors.grey[700],
                       ),
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(height: 15,),
                     button('Proceed to classroom', 18 , (){
-                      
+                      Navigator.pushNamed(context, Assignments.id);
                     }),
                   ],
                 ),
