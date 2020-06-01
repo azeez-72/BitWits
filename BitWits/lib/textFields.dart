@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bitwitsapp/Reg&Log/Details.dart';
-
-const Color mainColor = Color(0xFF0B3A70);
-
+import 'info.dart';
+import 'constants.dart';
 
 class TextFields extends StatefulWidget {
 
@@ -171,7 +170,7 @@ class _buttonState extends State<button> {
         ),
         color: mainColor,
         padding: EdgeInsets.only(top: 5,bottom: 5),
-        onPressed: buttonText == "Create classroom" ? DetailsState.toggleIndex==1  ? null : onPress : onPress,
+        onPressed: buttonText == "Create class" ? DetailsState.toggleIndex==1  ? null : onPress : onPress,
         child: Text(
           buttonText,
           style: TextStyle(
@@ -181,6 +180,29 @@ class _buttonState extends State<button> {
             fontSize: tsize,
           ),
         ),
+      ),
+    );
+  }
+}
+
+
+class DropDown extends StatelessWidget {
+  
+
+  final String value;
+  final Function onChanged;
+  final List list;
+
+  DropDown({this.value,this.list,this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton<String>(
+        value: value,
+        isDense: true,
+        onChanged: onChanged,
+        items: list,
       ),
     );
   }

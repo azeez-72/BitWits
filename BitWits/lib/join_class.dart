@@ -1,5 +1,6 @@
 import 'package:bitwitsapp/textFields.dart';
 import 'package:flutter/material.dart';
+import 'constants.dart';
 
 class JoinClass extends StatefulWidget {
   static String id = "join_class";

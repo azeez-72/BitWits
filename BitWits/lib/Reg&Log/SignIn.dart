@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/constants.dart';
 import 'package:bitwitsapp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -35,16 +36,7 @@ class _SignInState extends State<SignIn> {
         inAsyncCall: showSpinner,
         child: Container(
           width: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                colors: [
-                  Color(0xFF0B3A70),
-                  Color(0xFF00498D),
-                  Color(0xFF0052A2),
-                ]
-            ),
-          ),
+          decoration: BGDecoration,
           child: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,10 +45,7 @@ class _SignInState extends State<SignIn> {
                 LoginHeading(),
                 Expanded(
                   child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(70),bottomRight: Radius.circular(100)),
-                    ),
+                    decoration: textCardDecoration,
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: EdgeInsets.only(top: 50,left: 20,right: 20),
@@ -122,10 +111,7 @@ class _SignInState extends State<SignIn> {
                                       setState(() {
                                         showSpinner = false;
                                       });
-                                      String exception = e.toString();
-                                      int i1 = exception.indexOf(',');
-                                      int i2 = exception.indexOf(', null');
-                                      error = exception.substring(i1+2,i2);
+                                      error = getError(e);
                                       print(error);
                                       Scaffold.of(context).showSnackBar(
                                       SnackBar(

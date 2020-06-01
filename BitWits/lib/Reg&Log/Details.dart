@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:bitwitsapp/Home_Screen/Assignments.dart';
 import 'package:bitwitsapp/Reg&Log/New_Class.dart';
+import 'package:bitwitsapp/join_class.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,9 @@ import 'package:bitwitsapp/textFields.dart';
 import 'package:bitwitsapp/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 import 'package:bitwitsapp/StudentData.dart';
 import 'package:bitwitsapp/info.dart';
+import 'package:bitwitsapp/constants.dart';
 
 class Details extends StatefulWidget {
   static final String id = 'details';
@@ -33,7 +34,7 @@ class DetailsState extends State<Details> {
   @override
   void initState() {
     super.initState();
-    
+
     registeredCurrentUser();
   }
 
@@ -64,32 +65,6 @@ class DetailsState extends State<Details> {
   String data = "Hello!";
   int a;
 
-  Future<void> writeQuery() async {
-    //write your  queries
-    await ClassRef.child("Year 1/Batch $a/Class code").once().then((DataSnapshot snapshot){
-      print(snapshot.value);
-      setState(() {
-        data = snapshot.value;
-        });
-      }).catchError((error){
-      print(error);
-    }); 
-  }
-
-  bool codeValidate(String value){
-    writeQuery();
-    bool check;
-    if(value.isEmpty || value == null) check = false;
-    if(value.isNotEmpty && value != null){
-      if(a>=1 && a<=6 && value.substring(0,1) == 'b') {
-        if(value == data) check = true;
-        else check = false;
-      }
-      else check = false;
-    }
-    return check;
-  }
-
   String getCode(String b,String r){
     Info.assign();
     String i;
@@ -100,20 +75,6 @@ class DetailsState extends State<Details> {
 
     return "$i$m$l";
   }
-  /*
-  final ClassRef = FirebaseDatabase.instance.reference().child("Classroom");
-  static String data;
-  
-  Future<void> writeQuery() async {
-    //write your  queries
-    await ClassRef.child("Year ${college_details.year}/Batch ${studentsData.data[currentUser.email]["Batch"]}/Class code").once().then((DataSnapshot snapshot){
-      print(snapshot.value);
-      data = snapshot.value;
-      print(data);
-      }).catchError((error){
-      print(error);
-    }); 
-  } */
 
   static String code;
 
@@ -121,63 +82,9 @@ class DetailsState extends State<Details> {
   String error = ' ';
   TextEditingController code_controller;
 
- validateAlertDialog(BuildContext context){
-    return showDialog(context: context,builder: (context) {
-      return Consumer<StudentData>(
-        builder: (context,studentsData,child){
-          return AlertDialog(
-          title: Text(
-            'Enter class code',
-            style: TextStyle(
-              color: mainColor,
-              fontSize: 22,
-            ),
-          ),
-          content: Container(
-            child: Form(
-              child: CodeFields('Code',TextInputType.text,code_controller)
-            ),
-          ),
-          actions: <Widget>[
-            Text(error,style: TextStyle(color: Colors.red,fontSize: 14),),
-            FlatButton(
-              onPressed: (){
-                Navigator.pop(context);
-              }, child: Text(
-                'CANCEL',
-                style: TextStyle(color: Colors.grey),
-                ),
-            ),
-            FlatButton(
-              onPressed: () {
-                a = int.parse(code_controller.text.substring(1,2));
-                print(a);
-                if(codeValidate(code_controller.text)) {
-                  //feed entry to DB
-                  DBRef.child("Students").child("Year 1").child(studentsData.data[currentUser.email]["Batch"]).set({
-                      "name": studentsData.data[currentUser.email]["Name"],
-                      "email": currentUser.email,
-                      "branch": studentsData.data[currentUser.email]["Branch"],
-                      "batch": studentsData.data[currentUser.email]["Batch"],
-                    });
-                    Navigator.pushNamed(context, Assignments.id);               
-                }
-                else error = "Invalid code!";
-              },child: Text(
-                'JOIN',
-                style: TextStyle(color: Colors.blue),
-              ),
-            )
-          ],
-        );
-        }
-      );
-    });
-  } 
-
   createAlertDialog(BuildContext context){
     return (yearSelectedValue == "1" && branchSelectedValue != null) ? showDialog(context: context,builder: (context){
-      return Consumer(
+      return Consumer<StudentData>(
         builder: (context , studentsData , child){
           return AlertDialog(
           title: Text(
@@ -190,32 +97,21 @@ class DetailsState extends State<Details> {
           content: FormField<String>(
             builder: (FormFieldState<String> state) {
               return InputDecorator(
-                decoration: InputDecoration(
-                    labelText: 'Batch',
-                    errorStyle: TextStyle(
-                        color: Colors.redAccent, fontSize: 16.0),
-                    border: OutlineInputBorder(
-                        borderRadius:
-                        BorderRadius.circular(5.0))),
+                decoration: textInputDecoration("Batch"),
                 isEmpty: batchSelectedValue == '',
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: batchSelectedValue,
-                    isDense: true,
-                    onChanged: (String newValue) {
-                      setState(() {
-                        batchSelectedValue = newValue;
-                        state.didChange(newValue);
-                      });
-                    },
-                    items: Info.batches.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
-                ),
+                child: DropDown(value: batchSelectedValue,
+                list: Info.batches.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                    );
+                  }).toList(),
+                onChanged: (String newValue) {
+                  setState(() {
+                  batchSelectedValue = newValue;
+                  state.didChange(newValue);
+                  });
+                },),
               );
             },
           ),
@@ -233,13 +129,13 @@ class DetailsState extends State<Details> {
                   //save data to DB of CR FY's
                   studentsData.addData(currentUser.email,"Batch",batchSelectedValue); //save batch
                   try {
-                    DBRef.child("Students").child("Year ${studentsData[currentUser.email]["Year"]}").child(studentsData.data[currentUser.email]["Batch"]).set({
+                    DBRef.child("Students").child("Year ${studentsData.data[currentUser.email]["Year"]}").child(studentsData.data[currentUser.email]["Roll Number"]).set({
                       "name": studentsData.data[currentUser.email]["Name"],
                       "email": currentUser.email,
                       "branch": studentsData.data[currentUser.email]["Branch"],
                       "batch": studentsData.data[currentUser.email]["Batch"]
                     });
-                    DBRef.child("Classroom").child("Year ${studentsData[currentUser.email]["Year"]}").child("Batch ${studentsData[currentUser.email]["Batch"]}").set({
+                    DBRef.child("Classroom").child("Year ${studentsData.data[currentUser.email]["Year"]}").child("Batch ${studentsData.data[currentUser.email]["Batch"]}").set({
                       "CR Roll number": studentsData.data[currentUser.email]["Batch"],
                       "Class code": getCode(studentsData.data[currentUser.email]["Batch"], studentsData.data[currentUser.email]["Batch"])
                     });
@@ -272,13 +168,7 @@ class DetailsState extends State<Details> {
           builder: (context) =>
            Container(
             width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(begin: Alignment.topCenter, colors: [
-                Color(0xFF0B3A70),
-                Color(0xFF00498D),
-                Color(0xFF0052A2),
-              ]),
-            ),
+            decoration: BGDecoration,
             child: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,19 +192,15 @@ class DetailsState extends State<Details> {
                   ),
                   Expanded(
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(70),
-                            bottomRight: Radius.circular(100)),
-                      ),
+                      decoration: textCardDecoration,
                       child: Padding(
                         padding: EdgeInsets.only(top: 60, left: 20, right: 20),
                         child: Column(
                           children: <Widget>[
                             Form(
                               key: _formKey,
-                              child: TextFields("Roll Number", TextInputType.number, null,(String value){
+                              child: TextFields("Roll Number", TextInputType.number, null,
+                              (String value){
                                 if(value.isEmpty){
                                   return "Enter roll number";
                                 }
@@ -330,31 +216,21 @@ class DetailsState extends State<Details> {
                             FormField<String>(
                               builder: (FormFieldState<String> state) {
                                 return InputDecorator(
-                                  decoration: InputDecoration(
-                                      labelText: 'Branch', //
-                                      errorStyle: TextStyle(
-                                          color: Colors.redAccent, fontSize: 16.0),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0))),
+                                  decoration: textInputDecoration("Branch"),
                                   isEmpty: branchSelectedValue == '', //
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      value: branchSelectedValue,
-                                      isDense: true,
-                                      onChanged: (String newValue) {
-                                        setState(() {
-                                          branchSelectedValue = newValue;
-                                          state.didChange(newValue);
-                                        });
-                                      },
-                                      items: Info.branches.map((String value) { //
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
-                                    ),
+                                  child: DropDown(value: branchSelectedValue,
+                                  list: Info.branches.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                      );
+                                    }).toList(),
+                                  onChanged: (String newValue) {
+                                      setState(() {
+                                        branchSelectedValue = newValue;
+                                        state.didChange(newValue);
+                                      });
+                                    },
                                   ),
                                 );
                               },
@@ -368,31 +244,21 @@ class DetailsState extends State<Details> {
                                   child: FormField<String>(
                                     builder: (FormFieldState<String> state) {
                                       return InputDecorator(
-                                        decoration: InputDecoration(
-                                            labelText: 'Year',
-                                            errorStyle: TextStyle(
-                                                color: Colors.redAccent, fontSize: 16.0),
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                BorderRadius.circular(5.0))),
+                                        decoration: textInputDecoration("Year"),
                                         isEmpty: yearSelectedValue == '',
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton<String>(
-                                            value: yearSelectedValue,
-                                            isDense: true,
-                                            onChanged: (String newValue) {
-                                              setState(() {
-                                                yearSelectedValue = newValue;
-                                                state.didChange(newValue);
-                                              });
-                                            },
-                                            items: Info.years.map((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
+                                        child: DropDown(value: yearSelectedValue,
+                                          list: Info.years.map((String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
                                               );
                                             }).toList(),
-                                          ),
+                                          onChanged: (String newValue) {
+                                            setState(() {
+                                              yearSelectedValue = newValue;
+                                              state.didChange(newValue);
+                                            });
+                                          },
                                         ),
                                       );
                                     },
@@ -401,38 +267,12 @@ class DetailsState extends State<Details> {
                                 SizedBox(
                                   width: 20,
                                 ),
-                                Expanded(
-                                  child: Column(children: <Widget>[
-                                    Text(
-                                      'Are you a CR?',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 15, bottom: 0),
-                                      child: ToggleSwitch(
-                                          minWidth: 50.0,
-                                          cornerRadius: 5,
-                                          initialLabelIndex: toggleIndex,
-                                          activeBgColor: mainColor,
-                                          activeTextColor: Colors.white,
-                                          inactiveBgColor: Colors.grey,
-                                          inactiveTextColor: Colors.white,
-                                          labels: ['YES', 'NO'],
-                                          onToggle: (index) {
-                                            setState(() {
-                                              toggleIndex = index;
-                                            });
-                                          }),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                  ]),
-                                ),
+                                ToggleCR(toggleIndex: toggleIndex,
+                                onToggle: (index) {
+                                  setState(() {
+                                    toggleIndex = index;
+                                  });
+                                },),
                               ],
                             ),
                             SizedBox(
@@ -469,7 +309,7 @@ class DetailsState extends State<Details> {
                                                 backgroundColor: Colors.red,
                                               ),
                                             );
-                                          validateAlertDialog(context);
+                                          Navigator.pushNamed(context, JoinClass.id);
                                         }),
                                       ),
                                   ),
@@ -505,6 +345,7 @@ class DetailsState extends State<Details> {
                                             if(yearSelectedValue == "1") 
                                               createAlertDialog(context);
                                             else {
+                                              //save seniors data
                                               DBRef.child("Students").child("Year $yearSelectedValue").child(studentsData.data[currentUser.email]["Batch"]).set({
                                                 "name": studentsData.data[currentUser.email]["Name"],
                                                 "email": currentUser.email,
@@ -536,34 +377,3 @@ class DetailsState extends State<Details> {
     );
   }
 }
-
-
-
-
-
-
-//validation
-/*(String value) async {
-            //validation
-            if(value.isEmpty){  
-              return "Enter code";
-            }
-            if(value.isNotEmpty){
-              //FY
-              int a = int.parse(value.substring(1,2));
-              if(a>=1 && a<=6 && value.substring(0,1) == 'b') {
-                if(value == await DBRef.child("Classroom").child("Year 1").child("Batch $a/Class code").once().then((DataSnapshot snapshot) => snapshot.value)){
-                  //success
-                  //navigate
-                  Navigator.push(context,MaterialPageRoute(builder: (context) => New_Class(college_details)));
-                }
-                else return "Invalid code";
-              }
-              //SY,TY,final
-              else if(value.isNotEmpty){
-                //TODO: complex code for seniors
-              }
-              else return "Invalid code!";
-            }
-            return null;
-            }*/
