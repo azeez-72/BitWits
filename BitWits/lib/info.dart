@@ -18,7 +18,7 @@ class Info {
       "6",
     ];
 
-    static var branches = [
+  static var branches = [
     "Computer",
     "IT",
     "EXTC",
@@ -29,20 +29,22 @@ class Info {
     "Production",
     "Textile",
   ];
-
-  static Map<String,String> sform = HashMap();
   
-  static void assign(){
+  static Map getBranch(){
 
-    sform[branches[0]] = "cs";
-    sform[branches[1]] = "it";
-    sform[branches[2]] = "tc";
-    sform[branches[3]] = "es";
-    sform[branches[4]] = "el";
-    sform[branches[5]] = "me";
-    sform[branches[6]] = "cv";
-    sform[branches[7]] = "pr";
-    sform[branches[8]] = "tx";
+    Map<String,String> sform = HashMap();
+
+    sform["Computer"] = "cs";
+    sform["IT"] = "it";
+    sform["EXTC"] = "tc";
+    sform["Electronics"] = "es";
+    sform["Electrical"] = "el";
+    sform["Mechanical"] = "me";
+    sform["Civil"] = "cv";
+    sform["Production"] = "pr";
+    sform["Textile"] = "tx";
+
+    return sform;
   }
 
 }

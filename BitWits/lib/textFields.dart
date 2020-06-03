@@ -101,12 +101,13 @@ class _CodeFieldsState extends State<CodeFields> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: double.infinity,
-        alignment: Alignment.center,
         child: TextField(
+          style: TextStyle(fontSize: 17),
           autofocus: true,
           controller: ctr,
           keyboardType: textInputType,
+          textInputAction: labelTag == "Roll number" ? TextInputAction.next : TextInputAction.done,
+          onEditingComplete: labelTag == "Roll number" ? () => FocusScope.of(context).nextFocus() : () => FocusScope.of(context).unfocus(),
           decoration: InputDecoration(
             errorBorder: OutlineInputBorder(borderSide: BorderSide(
               color: Colors.red,
@@ -114,16 +115,13 @@ class _CodeFieldsState extends State<CodeFields> {
             ),
             ),
             labelText: labelTag,
-            hintStyle: TextStyle(
-              color: Colors.grey,
+            focusedBorder: OutlineInputBorder(borderSide: BorderSide(
+                color: Colors.blue[400],
+                width: 1.5),
             ),
             disabledBorder: OutlineInputBorder(borderSide: BorderSide(
                 color: Colors.grey[200],
                 width: 1),
-            ),
-            focusedBorder: OutlineInputBorder(borderSide: BorderSide(
-                color: Colors.blue[400],
-                width: 1.5),
             ),
             border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(3),),
             ),
@@ -203,6 +201,31 @@ class DropDown extends StatelessWidget {
         isDense: true,
         onChanged: onChanged,
         items: list,
+      ),
+    );
+  }
+}
+
+
+
+class buttonExp extends StatelessWidget {
+  final String label;
+  final Function onPressed;
+
+  buttonExp({this.label,this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: mainColor
+        ),
+        child: FlatButton(
+          onPressed: onPressed,
+          child: Text(label,style: TextStyle(color: Colors.white,fontSize: 18),),
+        ),
       ),
     );
   }

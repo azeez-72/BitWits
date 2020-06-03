@@ -1,6 +1,5 @@
 import 'dart:math';
-import 'package:bitwitsapp/Home_Screen/Assignments.dart';
-import 'package:bitwitsapp/Reg&Log/New_Class.dart';
+import 'package:bitwitsapp/Reg&Log/CodeDisplay.dart';
 import 'package:bitwitsapp/join_class.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -66,14 +65,14 @@ class DetailsState extends State<Details> {
   int a;
 
   String getCode(String b,String r){
-    Info.assign();
+    
     String i;
     if(yearSelectedValue == "1") i = "b$b";
-    else i = Info.sform[branchSelectedValue];
-    String m = Random().nextInt(9999).toString();
+    else i = Info.getBranch()[branchSelectedValue];
+    String m = Random().nextInt(999).toString();
     String l = r.substring(r.length - 2);
 
-    return "$i$m$l";
+    return "$i$m$yearSelectedValue$l";
   }
 
   static String code;
@@ -83,77 +82,13 @@ class DetailsState extends State<Details> {
   TextEditingController code_controller;
 
   createAlertDialog(BuildContext context){
-    return (yearSelectedValue == "1" && branchSelectedValue != null) ? showDialog(context: context,builder: (context){
+    return showDialog(context: context,builder: (context){
       return Consumer<StudentData>(
         builder: (context , studentsData , child){
-          return AlertDialog(
-          title: Text(
-            'Select your batch',
-            style: TextStyle(
-              color: mainColor,
-              fontSize: 16,
-            ),
-          ),
-          content: FormField<String>(
-            builder: (FormFieldState<String> state) {
-              return InputDecorator(
-                decoration: textInputDecoration("Batch"),
-                isEmpty: batchSelectedValue == '',
-                child: DropDown(value: batchSelectedValue,
-                list: Info.batches.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                    );
-                  }).toList(),
-                onChanged: (String newValue) {
-                  setState(() {
-                  batchSelectedValue = newValue;
-                  state.didChange(newValue);
-                  });
-                },),
-              );
-            },
-          ),
-          actions: <Widget>[
-             FlatButton(
-              onPressed: (){
-                Navigator.pop(context);
-              }, child: Text(
-                'CANCEL',
-                style: TextStyle(color: Colors.grey),
-                ),
-            ),
-            FlatButton(
-              onPressed: (){
-                  //save data to DB of CR FY's
-                  studentsData.addData(currentUser.email,"Batch",batchSelectedValue); //save batch
-                  try {
-                    DBRef.child("Students").child("Year ${studentsData.data[currentUser.email]["Year"]}").child(studentsData.data[currentUser.email]["Roll Number"]).set({
-                      "name": studentsData.data[currentUser.email]["Name"],
-                      "email": currentUser.email,
-                      "branch": studentsData.data[currentUser.email]["Branch"],
-                      "batch": studentsData.data[currentUser.email]["Batch"]
-                    });
-                    DBRef.child("Classroom").child("Year ${studentsData.data[currentUser.email]["Year"]}").child("Batch ${studentsData.data[currentUser.email]["Batch"]}").set({
-                      "CR Roll number": studentsData.data[currentUser.email]["Batch"],
-                      "Class code": getCode(studentsData.data[currentUser.email]["Batch"], studentsData.data[currentUser.email]["Batch"])
-                    });
-                    code = getCode(studentsData.data[currentUser.email]["Batch"], studentsData.data[currentUser.email]["Batch"]);
-                    Navigator.pushNamed(context,New_Class.id);
-                  } catch(e){
-                      print(e);
-                  }
-                }, child: Text(
-                'OK',
-                style: TextStyle(color: Colors.blue),
-              ),
-            )
-          ],
-        );
+          return null;
         }
       );
-    }) : null;
+    });
   }
 
   @override
@@ -247,10 +182,10 @@ class DetailsState extends State<Details> {
                                         decoration: textInputDecoration("Year"),
                                         isEmpty: yearSelectedValue == '',
                                         child: DropDown(value: yearSelectedValue,
-                                          list: Info.years.map((String value) {
+                                          list: Info.years.map((value) {
                                             return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
+                                              value: value.toString(),
+                                              child: Text(value.toString()),
                                               );
                                             }).toList(),
                                           onChanged: (String newValue) {
@@ -356,7 +291,7 @@ class DetailsState extends State<Details> {
                                                 "Class code": getCode(null, studentsData.data[currentUser.email]["Batch"])
                                               });
                                               code =  getCode(null, studentsData.data[currentUser.email]["Batch"]);
-                                              Navigator.pushNamed(context, New_Class.id);
+                                              Navigator.pushNamed(context, CodeDisplay.id);
                                             }
                                         }),
                                       ),
@@ -374,6 +309,86 @@ class DetailsState extends State<Details> {
         ),
       );
       }
+    );
+  }
+}
+
+// class Alertdialogbranch extends StatefulWidget {
+
+//   final String branch;
+//   final FirebaseUser currentUser;
+//   final DatabaseReference DBRef;
+
+//   @override
+//   _AlertdialogbranchState createState() => _AlertdialogbranchState();
+// }
+
+// class _AlertdialogbranchState extends State<Alertdialogbranch> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return AlertDialog(
+//     title: BranchText(),
+//     content: FormField<String>(
+//       builder: (FormFieldState<String> state) {
+//         return InputDecorator(
+//           decoration: textInputDecoration("Branch"),
+//           isEmpty: branch == '', //
+//           child: DropDown(value: branch,
+//                   list: Info.branches.map((String value) {
+//                   return DropdownMenuItem<String>(value: value,child: Text(value),);}).toList(),
+//                           onChanged: (String newValue) {
+//                             setState(() {
+//                                 branch = newValue;
+//                                 state.didChange(newValue);
+//                                 });
+//                               },
+//                             ),
+//                           );
+//                         },
+//                       ),
+//     actions: <Widget>[
+//       Cancel(),
+//       OK()
+//     ],
+//         );
+//   }
+// }
+
+class OK extends StatelessWidget {
+  
+  final Function onPressed;
+
+  OK({this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      onPressed: onPressed,
+      
+        // (){
+          //save data to DB of CR FY's
+          // studentsData.addData(widget.currentUser.email,"Batch",widget.batchSelectedValue); //save batch
+          // try {
+          //   widget.DBRef.child("Students").child("Year ${studentsData.data[widget.currentUser.email]["Year"]}").child(studentsData.data[widget.currentUser.email]["Roll Number"]).set({
+          //     "name": studentsData.data[widget.currentUser.email]["Name"],
+          //     "email": widget.currentUser.email,
+          //     "branch": studentsData.data[widget.currentUser.email]["Branch"],
+          //     "batch": studentsData.data[widget.currentUser.email]["Batch"]
+          //   });
+          //   widget.DBRef.child("Classroom").child("Year ${studentsData.data[widget.currentUser.email]["Year"]}").child("Batch ${studentsData.data[widget.currentUser.email]["Batch"]}").set({
+          //     "CR Roll number": studentsData.data[widget.currentUser.email]["Batch"],
+          //     "Class code": getCode(studentsData.data[widget.currentUser.email]["Batch"], studentsData.data[widget.currentUser.email]["Batch"])
+          //   });
+          //   code = getCode(studentsData.data[widget.currentUser.email]["Batch"], studentsData.data[widget.currentUser.email]["Batch"]);
+          //   Navigator.pushNamed(context,New_Class.id);
+          // } catch(e){
+          //     print(e);
+          // }
+      // }
+        child: Text(
+        'OK',
+        style: TextStyle(color: Colors.blue),
+      ),
     );
   }
 }

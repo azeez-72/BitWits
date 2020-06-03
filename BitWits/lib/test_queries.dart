@@ -1,4 +1,3 @@
-import 'package:bitwitsapp/main.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -10,8 +9,9 @@ class Test extends StatefulWidget {
 }
 
 class _TestState extends State<Test> {
-  final ClassRef = FirebaseDatabase.instance.reference().child("Classroom");
+  final ClassRef = FirebaseDatabase.instance.reference();
   String data = "hello";
+  List<String> names;
 
   @override
   void initState(){
@@ -22,41 +22,23 @@ class _TestState extends State<Test> {
 
   Future<void> writeQuery() async {
     //write your  queries
-    await ClassRef.child("Year 1").once().then((DataSnapshot snapshot){
+    await ClassRef.child("Students").child("Year 2").once().then((DataSnapshot snapshot){
       print(snapshot.value);
       setState(() {
         data = snapshot.value;
+        var re = RegExp('(?<=name:)(.*?)(?=,)');
+        var match = re.allMatches(data);
+        List<String> names = new List<String>();
+        match.forEach((match) {
+          names.add(data.substring(match.start,match.end).trim());
         });
-      }).catchError((error){
-      print(error);
+        print(names);
+      });
     }); 
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          color: Colors.white,
-          child: Padding(
-            padding: EdgeInsets.all(60),
-            child: Column(children: <Widget>[
-              // RaisedButton(
-              //   onPressed: () {
-              //     writeQuery();
-              //   },
-              //   child: Text('Get Data'),
-              // ),
-              SizedBox(height: 32,),
-              Text(data == null ? "Error!" : data,
-                style: TextStyle(fontSize: 32,fontWeight: FontWeight.bold)
-              ),
-            ],
-          ),
-        ),
-      ),
-        ),
-    );
+    return Container();
   }
 }

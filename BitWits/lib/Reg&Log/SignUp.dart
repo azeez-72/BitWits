@@ -1,5 +1,8 @@
 import 'package:bitwitsapp/Home_Screen/Assignments.dart';
+import 'package:bitwitsapp/Navigate.dart';
 import 'package:bitwitsapp/constants.dart';
+import 'package:bitwitsapp/create_class.dart';
+import 'package:bitwitsapp/join_class.dart';
 import 'Details.dart';
 import 'package:bitwitsapp/main.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,21 +33,21 @@ class SignUpState extends State<SignUp> {
   bool showSpinner = false;
   String error = " ";
 
-    @override
-    void initState() {
-      super.initState();
-      getLoggedInUser();
-    }
+  //   @override
+  //   void initState() {
+  //     super.initState();
+  //     getLoggedInUser();
+  //   }
 
-    void getLoggedInUser() async{
-    try{
-      final user = await _auth.currentUser();
-      loggedInUser = user;
-      if(loggedInUser != null) Navigator.pushNamed(context, Assignments.id);
-    }catch(e){
-      print(e);
-    }
-  }
+  //   void getLoggedInUser() async{
+  //   try{
+  //     final user = await _auth.currentUser();
+  //     loggedInUser = user;
+  //     if(loggedInUser != null) Navigator.pushNamed(context, Assignments.id);
+  //   }catch(e){
+  //     print(e);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +144,7 @@ class SignUpState extends State<SignUp> {
                                     if (newUser != null) {
                                       studentsData.addData(_email, "Name", name); //save name
                                       print(studentsData.data[_email]["Name"]);
-                                      Navigator.pushNamed(context, Details.id);
+                                      Navigator.pushNamed(context, Navigate.id);
                                     }
                                     setState(() {
                                       showSpinner = false;

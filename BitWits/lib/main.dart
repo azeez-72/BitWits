@@ -1,5 +1,7 @@
 import 'package:bitwitsapp/Home_Screen/Assignments.dart';
-import 'package:bitwitsapp/Reg&Log/New_Class.dart';
+import 'package:bitwitsapp/Navigate.dart';
+import 'package:bitwitsapp/Reg&Log/CodeDisplay.dart';
+import 'package:bitwitsapp/create_class.dart';
 import 'package:bitwitsapp/join_class.dart';
 import 'package:bitwitsapp/test_field.dart';
 import 'package:flutter/material.dart';
@@ -25,13 +27,15 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: SignUp.id,
         routes: {
+          Navigate.id: (context) => Navigate(),
+          CreateClass.id: (context) => CreateClass(),
           JoinClass.id: (context) => JoinClass(),
           test_field.id: (context) => test_field(),
           Test.id: (context) => Test(),
           SignUp.id: (context) => SignUp(),
           Details.id: (context) => Details(),
           SignIn.id: (context) => SignIn(),
-          New_Class.id: (context) => New_Class(),
+          CodeDisplay.id: (context) => CodeDisplay(),
           Assignments.id: (context) => Assignments(),
         },
       ),

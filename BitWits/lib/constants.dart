@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-const Color mainColor = Color(0xFF0B3A70);
+const Color mainColor = Color(0xFF2265B3);
 String label;
+
+const errorIcon = Icon(
+    Icons.error,
+    size: 28.0,
+    color: Colors.white,
+  );
 
 InputDecoration textInputDecoration(String label){
   return InputDecoration(
@@ -25,8 +31,8 @@ const textCardDecoration = BoxDecoration(
 
 const BGDecoration = BoxDecoration(
     gradient: LinearGradient(
-      begin: Alignment.topCenter, colors: [
-        Color(0xFF0B3A70),
+      begin: Alignment.centerRight, colors: [
+        Color(0xFF2265B3),
         Color(0xFF00498D),
         Color(0xFF0052A2),
       ]),
@@ -82,6 +88,43 @@ class ToggleCR extends StatelessWidget {
   }
 }
 
+
+class BranchText extends StatelessWidget {
+  final String title;
+
+  BranchText({this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'Select your $title',
+      style: TextStyle(
+        fontWeight: FontWeight.w500,
+        color: mainColor,
+        fontSize: 16,
+      ),
+    );
+  }
+}
+
+
+class Cancel extends StatelessWidget {
+  const Cancel({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+     onPressed: (){
+       Navigator.pop(context);
+     }, child: Text(
+       'CANCEL',
+       style: TextStyle(color: Colors.grey),
+       ),
+      );
+  }
+}
 //validation
 /*(String value) async {
             //validation
