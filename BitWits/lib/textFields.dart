@@ -40,6 +40,8 @@ class _TextFieldsState extends State<TextFields> {
           onSaved: onSaved,
           obscureText: labelTag == "Password" ? hidden : false,
           autofocus: labelTag == "Code" ? true : false,
+          textInputAction: labelTag == "Password" ? TextInputAction.done : TextInputAction.next,
+          onEditingComplete: labelTag == "Password" ? () => FocusScope.of(context).unfocus() : () => FocusScope.of(context).nextFocus(),
           keyboardType: textInputType,
           decoration: InputDecoration(
             prefixIcon: icon,

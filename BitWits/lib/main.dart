@@ -3,7 +3,7 @@ import 'package:bitwitsapp/Navigate.dart';
 import 'package:bitwitsapp/Reg&Log/CodeDisplay.dart';
 import 'package:bitwitsapp/create_class.dart';
 import 'package:bitwitsapp/join_class.dart';
-import 'package:bitwitsapp/test_field.dart';
+import 'package:bitwitsapp/resetpass.dart';
 import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Reg&Log/SignUp.dart';
@@ -27,10 +27,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: SignUp.id,
         routes: {
+          ResetPassword.id: (context) => ResetPassword(),
           Navigate.id: (context) => Navigate(),
           CreateClass.id: (context) => CreateClass(),
           JoinClass.id: (context) => JoinClass(),
-          test_field.id: (context) => test_field(),
           Test.id: (context) => Test(),
           SignUp.id: (context) => SignUp(),
           Details.id: (context) => Details(),

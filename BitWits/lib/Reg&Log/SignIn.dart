@@ -1,5 +1,6 @@
 import 'package:bitwitsapp/constants.dart';
 import 'package:bitwitsapp/main.dart';
+import 'package:bitwitsapp/resetpass.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:bitwitsapp/Home_Screen/Assignments.dart';
@@ -26,6 +27,8 @@ class _SignInState extends State<SignIn> {
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   String error = " ";
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -78,12 +81,17 @@ class _SignInState extends State<SignIn> {
                             SizedBox(height: 16,),
                             Padding(
                               padding: EdgeInsets.only(left: 190,),
-                              child: Text(
-                                'Forgot password?',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
+                              child: GestureDetector(
+                                onTap: (){
+                                  Navigator.pushNamed(context, ResetPassword.id);
+                                },
+                                child: Text(
+                                  'Forgot password?',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ),
                             ),

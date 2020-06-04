@@ -39,7 +39,7 @@ class _CreateClassState extends State<CreateClass> {
 
   Future<bool> saveCode(String putCode) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString(currentUser.email, putCode);
+    return await prefs.setString(currentUser.email, putCode);
   }
 
   void registeredCurrentUser() async {
@@ -188,10 +188,11 @@ class _CreateClassState extends State<CreateClass> {
                           code = "${Info.getBranch()[branch]}${Random().nextInt(999).toString()}${rollcon.text.substring(rollcon.text.length - 2)}";
                           await saveCode(code);
                           studentsData.addData(currentUser.email, "Created class code", code);
+                          name = studentsData.data[currentUser.email]["Name"];
+                          await saveToDB();
 
                           Navigator.pushNamed(context, CodeDisplay.id);
                         }
-
                       }
                     }),
                     SizedBox(height: 10),
