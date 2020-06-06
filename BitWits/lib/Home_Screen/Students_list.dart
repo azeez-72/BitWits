@@ -23,16 +23,17 @@ class _Students_listState extends State<Students_list> {
   final _auth = FirebaseAuth.instance;
   FirebaseUser currentUser;
 
-  void registeredCurrentUser() async {
+  Future<void> registeredCurrentUser() async {
     final regUser = await _auth.currentUser();
+    setState(() {
     currentUser = regUser;
+    });
   }
 
   @override
   void initState(){
     super.initState();
 
-    registeredCurrentUser();
     getClassList();
   }
 
@@ -53,6 +54,7 @@ class _Students_listState extends State<Students_list> {
 
   //get students list from DB
   Future<void> getClassList() async{
+    await registeredCurrentUser();
     await getDetails();
     var re =  RegExp('(?<=name:)(.*?)(?=,)');
     try{
@@ -91,7 +93,7 @@ class _Students_listState extends State<Students_list> {
        body: Container(
          padding: EdgeInsets.symmetric(horizontal: 8),
          color: Colors.white,
-         child: listStudent.isEmpty? Center(child:Text("No students :(",style: TextStyle(fontSize: 32),),) : ListView.builder(itemBuilder: (context,index) => ListTile(
+         child: listStudent.isEmpty? Center(child:Text("Loading...",style: TextStyle(fontSize: 32),),) : ListView.builder(itemBuilder: (context,index) => ListTile(
            onTap: (){},
            title: Text(listStudent[index],style: TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.grey[800]),),
            leading: Icon(Icons.person_outline,color: mainColor,), 
