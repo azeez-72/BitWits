@@ -1,4 +1,4 @@
-import 'package:bitwitsapp/Home_Screen/Assignments.dart';
+import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bitwitsapp/textFields.dart';
@@ -24,20 +24,21 @@ class _CodeDisplayState extends State<CodeDisplay> {
   void initState(){
     super.initState();
 
-    registeredCurrentUser();
     getCode();
   }
 
+  
+  Future<void> registeredCurrentUser() async {
+    final regUser = await _auth.currentUser();
+    currentUser = regUser;
+  }
+
   Future<void> getCode() async {
+    await registeredCurrentUser();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       code = prefs.getString(currentUser.email);
     });
-  }
-
-  void registeredCurrentUser() async {
-    final regUser = await _auth.currentUser();
-    currentUser = regUser;
   }
 
   @override
@@ -88,7 +89,7 @@ class _CodeDisplayState extends State<CodeDisplay> {
                       ),
                       SizedBox(height: 100,),
                         button('Proceed to classroom', 18 , (){
-                        Navigator.pushNamed(context, Assignments.id);
+                          Navigator.pushNamed(context, Students_list.id);
                         }),
                       ],
                     ),

@@ -60,7 +60,7 @@ class _Students_listState extends State<Students_list> {
     try{
       if(year == "1")
       data = await DBRef.child("Year $year/Batch $batch").once().then((DataSnapshot snapshot) => snapshot.value.toString());
-      else data = await DBRef.child("Year $year/Batch $branch").once().then((DataSnapshot snapshot) => snapshot.value.toString());
+      else data = await DBRef.child("Year $year/$branch").once().then((DataSnapshot snapshot) => snapshot.value.toString());   
     } catch(e){
       print(e);
     }
@@ -93,7 +93,7 @@ class _Students_listState extends State<Students_list> {
        body: Container(
          padding: EdgeInsets.symmetric(horizontal: 8),
          color: Colors.white,
-         child: listStudent.isEmpty? Center(child:Text("Loading...",style: TextStyle(fontSize: 32),),) : ListView.builder(itemBuilder: (context,index) => ListTile(
+         child: listStudent.isEmpty? Center(child: CircularProgressIndicator()) : ListView.builder(itemBuilder: (context,index) => ListTile(
            onTap: (){},
            title: Text(listStudent[index],style: TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.grey[800]),),
            leading: Icon(Icons.person_outline,color: mainColor,), 
@@ -104,8 +104,6 @@ class _Students_listState extends State<Students_list> {
     ); 
   }
 }
-
-
 
 //Adding search functionality(optional)
 class SearchNames extends SearchDelegate<String>{
@@ -132,7 +130,7 @@ class SearchNames extends SearchDelegate<String>{
     String a;
     @override
     Widget buildSuggestions(BuildContext context) {
-      final list = query.isEmpty ? listStudent : listStudent.where((element) => element.startsWith(query.substring(0,1).toUpperCase()+query.substring(1,query.length).toLowerCase())).toList();
+      final list = query.isEmpty ? listStudent : listStudent.where((element) => element.startsWith(query.substring(0,1).toUpperCase()+query.substring(1,query.length))).toList();
 
       return ListView.builder(itemBuilder: (context,index) => ListTile(
         onTap: (){},

@@ -32,7 +32,7 @@ class _assignmentsState extends State<Assignments> {
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: Icon(Icons.arrow_back),
           onPressed: (){
             _auth.signOut();
             Navigator.pushNamed(context, SignIn.id);

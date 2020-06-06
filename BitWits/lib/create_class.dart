@@ -100,7 +100,7 @@ class _CreateClassState extends State<CreateClass> {
               Cancel(),
               OK(onPressed: () async {
                 //process
-                code = "b$batch${Random().nextInt(999).toString()}${rollcon.text.substring(rollcon.text.length - 2)}";
+                code = "b$batch${Random().nextInt(999).toString()}$year${rollcon.text.substring(rollcon.text.length - 2)}";
                 await saveCode(code);
                 studentsData.addData(currentUser.email, "Created class code", code);
                 name = studentsData.data[currentUser.email]["Name"];
@@ -185,11 +185,17 @@ class _CreateClassState extends State<CreateClass> {
                       else{
                         if(year == "1") createBatchDialog(context);
                         if(year != "1"){
-                          code = "${Info.getBranch()[branch]}${Random().nextInt(999).toString()}${rollcon.text.substring(rollcon.text.length - 2)}";
+                          code = "${Info.getBranch()[branch]}${Random().nextInt(999).toString()}$year${rollcon.text.substring(rollcon.text.length - 2)}";
+                          setState(() {
+                            showSpinner = true;
+                          });
                           await saveCode(code);
                           studentsData.addData(currentUser.email, "Created class code", code);
                           name = studentsData.data[currentUser.email]["Name"];
                           await saveToDB();
+                            setState(() {
+                            showSpinner = false;
+                          });
 
                           Navigator.pushNamed(context, CodeDisplay.id);
                         }
