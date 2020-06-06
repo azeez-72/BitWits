@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 import 'package:bitwitsapp/constants.dart';
 import 'package:bitwitsapp/main.dart';
 import 'package:bitwitsapp/resetpass.dart';
@@ -90,7 +91,7 @@ class _SignInState extends State<SignIn> {
                                   style: TextStyle(
                                     color: Colors.grey[600],
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 14,
+                                    fontSize: 15,
                                   ),
                                 ),
                               ),
@@ -110,7 +111,7 @@ class _SignInState extends State<SignIn> {
                                     try {
                                       final loginUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
                                       if(loginUser != null){
-                                        Navigator.pushNamed(context, Assignments.id);
+                                        Navigator.pushNamed(context, Students_list.id);
                                       }
                                       setState(() {
                                         showSpinner = false;

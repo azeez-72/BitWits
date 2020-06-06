@@ -29,7 +29,6 @@ class _assignmentsState extends State<Assignments> {
             color: Colors.white,
             fontSize: 20,
             letterSpacing: 1,
-            fontFamily: 'Pacifico',
           ),
         ),
         leading: IconButton(

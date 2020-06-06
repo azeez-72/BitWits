@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 import 'package:bitwitsapp/Reg&Log/Details.dart';
 import 'package:bitwitsapp/StudentData.dart';
 import 'package:bitwitsapp/textFields.dart';
@@ -9,7 +10,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 class JoinClass extends StatefulWidget {
   static String id = "join_class";
 
@@ -23,8 +24,7 @@ class _JoinClassState extends State<JoinClass> {
   final _auth = FirebaseAuth.instance;
   FirebaseUser currentUser;
   int n,y;
-  String name;
-  String b,enteredCode,error = '',branch;
+  String b,enteredCode,error = '',branch,name;
   bool showSpinner = false;
   final DBRef = FirebaseDatabase.instance.reference();
 
@@ -39,6 +39,12 @@ class _JoinClassState extends State<JoinClass> {
     final regUser = await _auth.currentUser();
     currentUser = regUser;
   }
+
+  Future<bool> saveCode(String putCode) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await prefs.setString(currentUser.email, putCode);
+  }
+
 
   createBranchDialog(BuildContext context){
     return showDialog(context: context , builder: (context){
@@ -66,9 +72,11 @@ class _JoinClassState extends State<JoinClass> {
             ),
             actions: <Widget>[
               Cancel(),
-              OK(onPressed: (){
+              OK(onPressed: () async {
                 //process
-                print(branch);
+                await saveCode(enteredCode);
+                await saveToDB();
+                Navigator.pushNamed(context, Students_list.id);
               })
             ],
           );
@@ -171,7 +179,11 @@ class _JoinClassState extends State<JoinClass> {
                           if(y == 1) studentsData.addData(currentUser.email, "Batch", n.toString());
                           print(studentsData.data);
 
-                          await saveToDB();
+                          if(y != 1) {
+                            await saveToDB();
+                            await saveCode(enteredCode);
+                            Navigator.pushNamed(context, Students_list.id);
+                          }
                         }                        
                       } 
                     }),

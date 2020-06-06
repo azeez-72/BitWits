@@ -1,4 +1,5 @@
 import 'package:bitwitsapp/Home_Screen/Assignments.dart';
+import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 import 'package:bitwitsapp/Navigate.dart';
 import 'package:bitwitsapp/Reg&Log/CodeDisplay.dart';
 import 'package:bitwitsapp/create_class.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: SignUp.id,
         routes: {
+          Students_list.id: (context) => Students_list(),
           ResetPassword.id: (context) => ResetPassword(),
           Navigate.id: (context) => Navigate(),
           CreateClass.id: (context) => CreateClass(),
