@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/BottomNavigation.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/constants.dart';
 import 'package:flutter/material.dart';
@@ -90,6 +91,7 @@ class _Students_listState extends State<Students_list> {
            },),
          ],
        ),
+       bottomNavigationBar: BottomNavigation(),
        body: Container(
          padding: EdgeInsets.symmetric(horizontal: 8),
          color: Colors.white,

@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/BottomNavigation.dart';
 import 'package:flutter/material.dart';
 
 class Announcements extends StatefulWidget {
@@ -9,8 +10,8 @@ class Announcements extends StatefulWidget {
 class _AnnouncementsState extends State<Announcements> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
+    return Scaffold(
+      bottomNavigationBar: BottomNavigation(),
     );
   }
 }

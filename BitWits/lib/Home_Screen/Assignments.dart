@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/BottomNavigation.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/textFields.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,6 +41,7 @@ class _assignmentsState extends State<Assignments> {
         ),
         backgroundColor: mainColor,
       ),
+      bottomNavigationBar: BottomNavigation(),
     );
   }
 }

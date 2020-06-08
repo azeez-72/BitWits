@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/BottomNavigation.dart';
 import 'package:bitwitsapp/Home_Screen/Assignments.dart';
 import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 import 'package:bitwitsapp/Navigate.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: SignUp.id,
+        initialRoute: Students_list.id,
         routes: {
           Students_list.id: (context) => Students_list(),
           ResetPassword.id: (context) => ResetPassword(),
