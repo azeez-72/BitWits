@@ -10,6 +10,7 @@ import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Reg&Log/SignUp.dart';
 import 'package:bitwitsapp/Reg&Log/Details.dart';
 import 'package:provider/provider.dart';
+import 'Home_Screen/Announcements.dart';
 import 'test_queries.dart';
 import 'package:bitwitsapp/StudentData.dart';
 
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
           SignIn.id: (context) => SignIn(),
           CodeDisplay.id: (context) => CodeDisplay(),
           Assignments.id: (context) => Assignments(),
+          Announcements.id: (context) => Announcements(),
         },
       ),
     );

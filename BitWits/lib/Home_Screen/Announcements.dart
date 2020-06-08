@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Announcements extends StatefulWidget {
+  static final String id  = 'Announcements';
   @override
   _AnnouncementsState createState() => _AnnouncementsState();
 }
