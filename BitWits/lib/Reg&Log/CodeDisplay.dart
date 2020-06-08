@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/BottomNavigation.dart';
 import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -89,7 +90,7 @@ class _CodeDisplayState extends State<CodeDisplay> {
                       ),
                       SizedBox(height: 100,),
                         button('Proceed to classroom', 18 , (){
-                          Navigator.pushNamed(context, Students_list.id);
+                          Navigator.pushNamed(context, BottomNavigation.id);
                         }),
                       ],
                     ),

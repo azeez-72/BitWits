@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/BottomNavigation.dart';
 import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 import 'package:bitwitsapp/Reg&Log/Details.dart';
 import 'package:bitwitsapp/StudentData.dart';
@@ -76,7 +77,7 @@ class _JoinClassState extends State<JoinClass> {
                 //process
                 await saveCode(enteredCode);
                 await saveToDB();
-                Navigator.pushNamed(context, Students_list.id);
+                Navigator.pushNamed(context, BottomNavigation.id);
               })
             ],
           );
@@ -182,7 +183,7 @@ class _JoinClassState extends State<JoinClass> {
                           if(y != 1) {
                             await saveToDB();
                             await saveCode(enteredCode);
-                            Navigator.pushNamed(context, Students_list.id);
+                            Navigator.pushNamed(context, BottomNavigation.id);
                           }
                         }                        
                       } 

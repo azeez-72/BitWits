@@ -41,7 +41,6 @@ class _assignmentsState extends State<Assignments> {
         ),
         backgroundColor: mainColor,
       ),
-      bottomNavigationBar: BottomNavigation(),
     );
   }
 }

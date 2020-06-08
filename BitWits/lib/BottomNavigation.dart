@@ -7,6 +7,7 @@ import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 int _selectedIndex = 0;
 
 class BottomNavigation extends StatefulWidget {
+  static String id = "stack";
 
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
@@ -17,25 +18,32 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
 
+    return Scaffold(
+      bottomNavigationBar: bottomnavbar(onTap: 
+        (int index) => setState(() => _selectedIndex = index)),
+      body: IndexedStack(
+        children: <Widget>[
+          Announcements(),
+          Assignments(),
+          Students_list(),
+        ],
+        index: _selectedIndex,
+      ),
+    );
+  }
+}
+
+class bottomnavbar extends StatelessWidget {
+  final Function onTap;
+
+  bottomnavbar({this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
     return BottomNavigationBar(
       selectedItemColor: mainColor,
       currentIndex: _selectedIndex,
-      onTap: (int index){
-        setState(() {
-          _selectedIndex = index;
-          switch(_selectedIndex){
-            case 0:
-              Navigator.pushNamed(context, Announcements.id);
-              break;
-            case 1:
-              Navigator.pushNamed(context, Assignments.id);
-              break;
-            case 2:
-              Navigator.pushNamed(context, Students_list.id);
-              break;
-          }
-        });
-      },
+      onTap: onTap,
       backgroundColor: Color(0xFFF8F8F8),
       iconSize: 32,
       selectedFontSize: 13,

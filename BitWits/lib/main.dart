@@ -28,8 +28,9 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: Students_list.id,
+        initialRoute: SignUp.id,
         routes: {
+          BottomNavigation.id: (context) => BottomNavigation(),
           Students_list.id: (context) => Students_list(),
           ResetPassword.id: (context) => ResetPassword(),
           Navigate.id: (context) => Navigate(),

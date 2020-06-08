@@ -91,7 +91,6 @@ class _Students_listState extends State<Students_list> {
            },),
          ],
        ),
-       bottomNavigationBar: BottomNavigation(),
        body: Container(
          padding: EdgeInsets.symmetric(horizontal: 8),
          color: Colors.white,
