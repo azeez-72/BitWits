@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/textFields.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,7 +63,15 @@ class ResetPassword extends StatelessWidget {
                       backgroundColor: Colors.red,
                     )..show(context);
                   }
-                })
+                }),
+                SizedBox(height: 15),
+                Container(
+                  padding: EdgeInsets.all(5),
+                  child: FlatButton(
+                    child: Text("SIGN IN",style: TextStyle(color: Colors.blue),),
+                    onPressed: () => Navigator.pushNamed(context, SignIn.id),
+                  ),
+                )
               ], 
             ),
           ),

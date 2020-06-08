@@ -1,4 +1,3 @@
-import 'package:bitwitsapp/BottomNavigation.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/constants.dart';
 import 'package:flutter/material.dart';
@@ -89,6 +88,9 @@ class _Students_listState extends State<Students_list> {
            IconButton(icon: Icon(Icons.search),onPressed:(){
              showSearch(context: context, delegate: SearchNames());
            },),
+           IconButton(icon: Image.asset('images/remove-person-outlined-interface-button.png'),onPressed: (){
+             //TODO: remove person from the list
+           },)
          ],
        ),
        body: Container(

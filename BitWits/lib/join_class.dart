@@ -1,5 +1,4 @@
 import 'package:bitwitsapp/BottomNavigation.dart';
-import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 import 'package:bitwitsapp/Reg&Log/Details.dart';
 import 'package:bitwitsapp/StudentData.dart';
 import 'package:bitwitsapp/textFields.dart';

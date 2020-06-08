@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bitwitsapp/Reg&Log/Details.dart';
-import 'info.dart';
 import 'constants.dart';
 
 class TextFields extends StatefulWidget {

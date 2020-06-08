@@ -1,5 +1,4 @@
 import 'package:bitwitsapp/BottomNavigation.dart';
-import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bitwitsapp/textFields.dart';
@@ -64,12 +63,7 @@ class _CodeDisplayState extends State<CodeDisplay> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  //TODO: fix slow loading
-                  height: 172.85,
-                  width: 270,
-                  child: SvgPicture.asset('svgs/class.svg'),
-                ),
+                SvgPicture.asset('svgs/class.svg',width: 270,fit: BoxFit.fitWidth,alignment: Alignment.topCenter,),
                 SizedBox(height: 10,),
                 Padding(
                   padding: EdgeInsets.only(left: 20,right: 20,top: 20),

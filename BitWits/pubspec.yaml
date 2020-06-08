@@ -43,6 +43,7 @@ flutter:
   uses-material-design: true
   assets:
     - svgs/class.svg
+    - images/
   fonts:
     - family: Pacifico
       fonts:

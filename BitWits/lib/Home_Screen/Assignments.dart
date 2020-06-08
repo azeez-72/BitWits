@@ -1,6 +1,3 @@
-import 'package:bitwitsapp/BottomNavigation.dart';
-import 'package:bitwitsapp/Reg&Log/SignIn.dart';
-import 'package:bitwitsapp/textFields.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,14 +29,8 @@ class _assignmentsState extends State<Assignments> {
             letterSpacing: 1,
           ),
         ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: (){
-            _auth.signOut();
-            Navigator.pushNamed(context, SignIn.id);
-          },
-        ),
         backgroundColor: mainColor,
+        actions: <Widget>[],
       ),
     );
   }
