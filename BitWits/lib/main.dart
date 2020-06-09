@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'Home_Screen/Announcements.dart';
 import 'test_queries.dart';
 import 'package:bitwitsapp/StudentData.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,10 +29,12 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: SignUp.id,
+        home: StreamBuilder(stream: FirebaseAuth.instance.onAuthStateChanged,builder: (context,userSnapShot){
+          if(userSnapShot.hasData) return BottomNavigation();
+          return SignUp();
+        }),
         routes: {
           BottomNavigation.id: (context) => BottomNavigation(),
-          Students_list.id: (context) => Students_list(),
           ResetPassword.id: (context) => ResetPassword(),
           Navigate.id: (context) => Navigate(),
           CreateClass.id: (context) => CreateClass(),
@@ -41,8 +44,6 @@ class MyApp extends StatelessWidget {
           Details.id: (context) => Details(),
           SignIn.id: (context) => SignIn(),
           CodeDisplay.id: (context) => CodeDisplay(),
-          Assignments.id: (context) => Assignments(),
-          Announcements.id: (context) => Announcements(),
         },
       ),
     );

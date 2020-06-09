@@ -5,8 +5,6 @@ import 'package:bitwitsapp/constants.dart';
 
 class Assignments extends StatefulWidget {
 
-  static final String id  = 'assignments';
-
   @override
   _assignmentsState createState() => _assignmentsState();
 }
@@ -30,8 +28,18 @@ class _assignmentsState extends State<Assignments> {
           ),
         ),
         backgroundColor: mainColor,
-        actions: <Widget>[],
+        actions: [
+          IconButton(icon: Icon(Icons.add,size: 30,), onPressed: (){})
+        ],
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   heroTag: "assignments",
+      //   backgroundColor: mainColor,
+      //   elevation: 2,
+      //   child: Icon(Icons.add,size: 28,),
+      //   onPressed: (){
+
+      //   }),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:bitwitsapp/textFields.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'info.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -76,11 +77,19 @@ class _JoinClassState extends State<JoinClass> {
                 //process
                 await saveCode(enteredCode);
                 await saveToDB();
+                await saveToCF();
                 Navigator.pushNamed(context, BottomNavigation.id);
               })
             ],
           );
         });
+    });
+  }
+
+  Future<void> saveToCF() async{
+    Firestore.instance.collection("Classrooms").document(enteredCode).collection("Students").document(currentUser.uid).setData({
+      "name": name,
+      "roll number": rollcon.text
     });
   }
 
@@ -182,6 +191,7 @@ class _JoinClassState extends State<JoinClass> {
                           if(y != 1) {
                             await saveToDB();
                             await saveCode(enteredCode);
+                            await saveToCF();
                             Navigator.pushNamed(context, BottomNavigation.id);
                           }
                         }                        

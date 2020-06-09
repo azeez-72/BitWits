@@ -1,17 +1,12 @@
-import 'package:bitwitsapp/Reg&Log/SignIn.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bitwitsapp/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:bitwitsapp/info.dart';
-
-
-List<String> listStudent = [];
 
 class Students_list extends StatefulWidget {
-  static String id = "students_list";
-
   @override
   _Students_listState createState() => _Students_listState();
 }
@@ -34,42 +29,14 @@ class _Students_listState extends State<Students_list> {
   void initState(){
     super.initState();
 
-    getClassList();
+    getCode();
   }
 
-  //get year and branch from shared preference code
-  Future<void> getDetails() async {
+  Future<void> getCode() async {
+    await registeredCurrentUser();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       code = prefs.getString(currentUser.email);
-      year = code.substring(5,6);
-      if(year == "1") batch = code.substring(1,2);
-      else {
-        Map reversed = Info.getBranch().map((k, v) => MapEntry(v, k));
-        String b = code.substring(0,2);
-        branch = reversed[b];
-      }
-    });
-  }
-
-  //get students list from DB
-  Future<void> getClassList() async{
-    await registeredCurrentUser();
-    await getDetails();
-    var re =  RegExp('(?<=name:)(.*?)(?=,)');
-    try{
-      if(year == "1")
-      data = await DBRef.child("Year $year/Batch $batch").once().then((DataSnapshot snapshot) => snapshot.value.toString());
-      else data = await DBRef.child("Year $year/$branch").once().then((DataSnapshot snapshot) => snapshot.value.toString());   
-    } catch(e){
-      print(e);
-    }
-    Iterable match = re.allMatches(data);
-    setState(() {
-      match.forEach((match) {
-      listStudent.add(data.toString().substring(match.start,match.end).trim());
-      });
-      print(listStudent);
     });
   }
 
@@ -77,79 +44,96 @@ class _Students_listState extends State<Students_list> {
   Widget build(BuildContext context) {
     return Scaffold(
        appBar: AppBar(
-         leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: (){
+         leading: IconButton(icon: Icon(Icons.exit_to_app), onPressed: (){
            _auth.signOut();
-           Navigator.pushNamed(context, SignIn.id);
          }),
          backgroundColor: mainColor,
          titleSpacing: 2,
          title: Text("Classmates",style: TextStyle(letterSpacing: 1,fontSize: 21)), 
          actions: <Widget>[
            IconButton(icon: Icon(Icons.search),onPressed:(){
-             showSearch(context: context, delegate: SearchNames());
+             Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text("Coming soon :)"),
+                backgroundColor: Colors.green,
+                duration: Duration(milliseconds: 1500),
+                ),
+              );
+            //  showSearch(context: context, delegate: SearchNames(searchCode: code));
            },),
-           IconButton(icon: Image.asset('images/remove-person-outlined-interface-button.png'),onPressed: (){
+           IconButton(icon: SvgPicture.asset('svgs/personr.svg',width: 24,height: 24,),onPressed: (){
              //TODO: remove person from the list
            },)
          ],
        ),
-       body: Container(
-         padding: EdgeInsets.symmetric(horizontal: 8),
-         color: Colors.white,
-         child: listStudent.isEmpty? Center(child: CircularProgressIndicator()) : ListView.builder(itemBuilder: (context,index) => ListTile(
-           onTap: (){},
-           title: Text(listStudent[index],style: TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.grey[800]),),
-           leading: Icon(Icons.person_outline,color: mainColor,), 
-         ),
-         itemCount: listStudent.length
-         )
-       ),
+       body: StreamBuilder(stream: Firestore.instance.collection('Classrooms/$code/Students').snapshots(),
+       builder: (context,dataSnapShot){
+        if(dataSnapShot.connectionState == ConnectionState.waiting) return Center(child: CircularProgressIndicator());
+        final studentDocs = dataSnapShot.data.documents;
+        return ListView.builder(itemBuilder: (context,index) => ListTile(
+          onTap: (){
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text(studentDocs[index]['roll number'],
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            ),
+            backgroundColor: mainColor,duration: Duration(seconds: 5)));
+          },
+          title: Text(studentDocs[index]['name'],style: TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.grey[800]),),
+          leading: Icon(Icons.person_outline,color: mainColor,size: 28,), 
+          ),
+          itemCount: studentDocs.length,
+         );
+       }),
     ); 
   }
 }
 
 //Adding search functionality(optional)
-class SearchNames extends SearchDelegate<String>{
-  @override
-  List<Widget> buildActions(BuildContext context) {
+// class SearchNames extends SearchDelegate<String>{
+//   final String searchCode;
 
-      return [IconButton(icon: Icon(Icons.clear), onPressed: (){
-        query = "";
-      })];
-    }
+//   SearchNames({@required this.searchCode});
+
+//   @override
+//   List<Widget> buildActions(BuildContext context) {
+
+//       return [IconButton(icon: Icon(Icons.clear), onPressed: (){
+//         query = "";
+//       })];
+//     }
   
-    @override
-    Widget buildLeading(BuildContext context) {
+//     @override
+//     Widget buildLeading(BuildContext context) {
 
-      return IconButton(icon: Icon(Icons.arrow_back), onPressed: (){
-        close(context, null);
-      });
-    }
+//       return IconButton(icon: Icon(Icons.arrow_back), onPressed: (){
+//         close(context, null);
+//       });
+//     }
   
-    @override
-    Widget buildResults(BuildContext context) {
-      return ListView();
-    }
-    String a;
-    @override
-    Widget buildSuggestions(BuildContext context) {
-      final list = query.isEmpty ? listStudent : listStudent.where((element) => element.startsWith(query.substring(0,1).toUpperCase()+query.substring(1,query.length))).toList();
+//     @override
+//     Widget buildResults(BuildContext context) {
+//       return ListView();
+//     }
 
-      return ListView.builder(itemBuilder: (context,index) => ListTile(
-        onTap: (){},
-        title: RichText(text: TextSpan(
-          text: list[index].substring(0,query.length),
-          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Colors.black),
-          children: [TextSpan(
-            text: list[index].substring(query.length),
-            style: TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.grey[800])
-          )]
-        )),
-        leading: Icon(Icons.person_outline,color: mainColor,),
-      ),
-      itemCount: list.length,
-    );
-  }
-}
+//     @override
+//     Widget buildSuggestions(BuildContext context) {
+//       final list = query.isEmpty ? listStudent : listStudent.where((element) => element.startsWith(query.substring(0,1).toUpperCase()+query.substring(1,query.length))).toList();
 
-//TODO: onTap display roll number functionality
+//       return StreamBuilder(stream: Firestore.instance.collection('Classrooms/$searchCode/Students').snapshots(),builder: (context,dataSnapShot){
+//         return ListView.builder(itemBuilder: (context,index) => ListTile(
+//           onTap: (){},
+//           title: RichText(text: TextSpan(
+//             text: list[index].substring(0,query.length),
+//             style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Colors.black),
+//             children: [TextSpan(
+//               text: list[index].substring(query.length),
+//               style: TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.grey[800])
+//             )]
+//           )),
+//           leading: Icon(Icons.person_outline,color: mainColor,),
+//         ),
+//       itemCount: list.length,
+//       );
+//     });
+//   }
+// }

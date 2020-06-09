@@ -30,22 +30,6 @@ class SignUpState extends State<SignUp> {
   bool showSpinner = false;
   String error = " ";
 
-    @override
-    void initState() {
-      super.initState();
-      getLoggedInUser();
-    }
-
-    void getLoggedInUser() async{
-    try{
-      final user = await _auth.currentUser();
-      loggedInUser = user;
-      if(loggedInUser != null) Navigator.pushNamed(context, Students_list.id);
-    }catch(e){
-      print(e);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<StudentData>(
@@ -139,7 +123,6 @@ class SignUpState extends State<SignUp> {
                                         email: _email, password: _password);
                                   if (newUser != null) {
                                     studentsData.addData(_email, "Name", name); //save name
-                                    print(studentsData.data[_email]["Name"]);
                                     Navigator.pushNamed(context, Navigate.id);
                                   }
                                   setState(() {

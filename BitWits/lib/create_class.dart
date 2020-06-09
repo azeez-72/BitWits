@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'StudentData.dart';
 import 'info.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:bitwitsapp/Reg&Log/Details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,6 +47,13 @@ class _CreateClassState extends State<CreateClass> {
     final regUser = await _auth.currentUser();
     currentUser = regUser;
     print(currentUser.email);
+  }
+
+  Future<void> saveToCF() async{
+    Firestore.instance.collection("Classrooms").document(code).collection("Students").document(currentUser.uid).setData({
+      "name": name,
+      "roll number": rollcon.text
+    });
   }
 
   Future<void> saveToDB() async {
@@ -105,6 +113,7 @@ class _CreateClassState extends State<CreateClass> {
                 studentsData.addData(currentUser.email, "Created class code", code);
                 name = studentsData.data[currentUser.email]["Name"];
                 await saveToDB();
+                await saveToCF();
 
                 Navigator.pushNamed(context, CodeDisplay.id);
               })
@@ -193,6 +202,7 @@ class _CreateClassState extends State<CreateClass> {
                           studentsData.addData(currentUser.email, "Created class code", code);
                           name = studentsData.data[currentUser.email]["Name"];
                           await saveToDB();
+                          await saveToCF();
                             setState(() {
                             showSpinner = false;
                           });
