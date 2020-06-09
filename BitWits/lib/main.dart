@@ -10,19 +10,20 @@ import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Reg&Log/SignUp.dart';
 import 'package:bitwitsapp/Reg&Log/Details.dart';
 import 'package:provider/provider.dart';
+import 'Home_Screen/Announcements.dart';
 import 'test_queries.dart';
 import 'package:bitwitsapp/StudentData.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => StudentData(),),
-        
+        ChangeNotifierProvider(
+          create: (context) => StudentData(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
           SignIn.id: (context) => SignIn(),
           CodeDisplay.id: (context) => CodeDisplay(),
           Assignments.id: (context) => Assignments(),
+          Announcements.id: (context) => Announcements(),
         },
       ),
     );
@@ -50,7 +52,7 @@ class appName extends StatelessWidget {
   final double fontSize;
   final Color color;
 
-  appName({this.fontSize,this.color});
+  appName({this.fontSize, this.color});
   @override
   Widget build(BuildContext context) {
     return Text(
@@ -65,28 +67,29 @@ class appName extends StatelessWidget {
 }
 
 class errorMessage extends StatelessWidget {
-
   final String errorText;
-  
+
   errorMessage(this.errorText);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-       children: [
-         Icon(Icons.error,),
-         SizedBox(width: 10,),
-         Expanded(
-          child: Text(
-           errorText,
-           style: TextStyle(
-             fontSize: 14,
-             color: Colors.white,
-             ),
-           ),
-         ),
-       ]
-    );
+    return Row(children: [
+      Icon(
+        Icons.error,
+      ),
+      SizedBox(
+        width: 10,
+      ),
+      Expanded(
+        child: Text(
+          errorText,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ]);
   }
 }
 //TODO: add ic_launcher for hdpi

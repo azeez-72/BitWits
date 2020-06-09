@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Home_Screen/Announcements.dart';
 import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 import 'package:bitwitsapp/constants.dart';
 import 'package:bitwitsapp/main.dart';
@@ -111,7 +112,7 @@ class _SignInState extends State<SignIn> {
                                     try {
                                       final loginUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
                                       if(loginUser != null){
-                                        Navigator.pushNamed(context, Students_list.id);
+                                        Navigator.pushNamed(context, Announcements.id);
                                       }
                                       setState(() {
                                         showSpinner = false;
