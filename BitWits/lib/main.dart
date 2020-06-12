@@ -1,6 +1,4 @@
 import 'package:bitwitsapp/BottomNavigation.dart';
-import 'package:bitwitsapp/Home_Screen/Assignments.dart';
-import 'package:bitwitsapp/Home_Screen/Students_list.dart';
 import 'package:bitwitsapp/Navigate.dart';
 import 'package:bitwitsapp/Reg&Log/CodeDisplay.dart';
 import 'package:bitwitsapp/create_class.dart';
@@ -11,7 +9,7 @@ import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Reg&Log/SignUp.dart';
 import 'package:bitwitsapp/Reg&Log/Details.dart';
 import 'package:provider/provider.dart';
-import 'Home_Screen/Announcements.dart';
+import 'package:bitwitsapp/loading.dart';
 import 'test_queries.dart';
 import 'package:bitwitsapp/StudentData.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,9 +28,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: StreamBuilder(stream: FirebaseAuth.instance.onAuthStateChanged,builder: (context,userSnapShot){
-          if(userSnapShot.hasData) return BottomNavigation();
-          return SignUp();
-        }),
+            if(userSnapShot.connectionState == ConnectionState.waiting) return LoadingScreen();
+            if(userSnapShot.hasData) return BottomNavigation();
+            return SignUp();
+          }),
         routes: {
           BottomNavigation.id: (context) => BottomNavigation(),
           ResetPassword.id: (context) => ResetPassword(),

@@ -41,6 +41,11 @@ class _JoinClassState extends State<JoinClass> {
     currentUser = regUser;
   }
 
+  Future<void> joinedStatus() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setBool(currentUser.email+"@", true);
+  }
+
   Future<bool> saveCode(String putCode) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return await prefs.setString(currentUser.email, putCode);
@@ -78,6 +83,8 @@ class _JoinClassState extends State<JoinClass> {
                 await saveCode(enteredCode);
                 await saveToDB();
                 await saveToCF();
+                await joinedStatus();
+
                 Navigator.pushNamed(context, BottomNavigation.id);
               })
             ],
@@ -192,6 +199,8 @@ class _JoinClassState extends State<JoinClass> {
                             await saveToDB();
                             await saveCode(enteredCode);
                             await saveToCF();
+                            await joinedStatus();
+
                             Navigator.pushNamed(context, BottomNavigation.id);
                           }
                         }                        

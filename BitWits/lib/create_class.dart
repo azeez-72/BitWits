@@ -38,6 +38,11 @@ class _CreateClassState extends State<CreateClass> {
     registeredCurrentUser();
   }
 
+  Future<void> joinedStatus() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setBool(currentUser.email+"@", true);
+  }
+
   Future<bool> saveCode(String putCode) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return await prefs.setString(currentUser.email, putCode);
@@ -114,6 +119,7 @@ class _CreateClassState extends State<CreateClass> {
                 name = studentsData.data[currentUser.email]["Name"];
                 await saveToDB();
                 await saveToCF();
+                await joinedStatus();
 
                 Navigator.pushNamed(context, CodeDisplay.id);
               })
@@ -203,9 +209,7 @@ class _CreateClassState extends State<CreateClass> {
                           name = studentsData.data[currentUser.email]["Name"];
                           await saveToDB();
                           await saveToCF();
-                            setState(() {
-                            showSpinner = false;
-                          });
+                          await joinedStatus();
 
                           Navigator.pushNamed(context, CodeDisplay.id);
                         }

@@ -1,3 +1,5 @@
+import 'package:bitwitsapp/Navigate.dart';
+import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bitwitsapp/constants.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +48,7 @@ class _Students_listState extends State<Students_list> {
        appBar: AppBar(
          leading: IconButton(icon: Icon(Icons.exit_to_app), onPressed: (){
            _auth.signOut();
+           Navigator.popAndPushNamed(context, SignIn.id);
          }),
          backgroundColor: mainColor,
          titleSpacing: 2,

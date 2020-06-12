@@ -5,6 +5,7 @@ import 'package:bitwitsapp/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'SignIn.dart';
 import 'package:bitwitsapp/textFields.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,6 +30,11 @@ class SignUpState extends State<SignUp> {
   FirebaseUser loggedInUser;
   bool showSpinner = false;
   String error = " ";
+
+  Future<void> joinedStatus(String email) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(email+"@", false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,16 +126,14 @@ class SignUpState extends State<SignUp> {
                                 try {
                                   final newUser =
                                       await _auth.createUserWithEmailAndPassword(
-                                        email: _email, password: _password);
+                                        email: _email.trim(), password: _password);
                                   if (newUser != null) {
                                     studentsData.addData(_email, "Name", name); //save name
-                                    Navigator.pushNamed(context, Navigate.id);
-                                  }
-                                  setState(() {
-                                    showSpinner = false;
-                                  });
+                                    await joinedStatus(_email);
+                                    Navigator.popAndPushNamed(context, Navigate.id);
+                                    }
                                   } catch (e) {
-                                    setState(() {
+                                    setState(() { 
                                       showSpinner = false;
                                     });
                                     error = getError(e);

@@ -18,16 +18,19 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      bottomNavigationBar: bottomnavbar(onTap: 
-        (int index) => setState(() => _selectedIndex = index)),
-      body: IndexedStack(
-        children: <Widget>[
-          Announcements(),
-          Assignments(),
-          Students_list(),
-        ],
-        index: _selectedIndex,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        bottomNavigationBar: bottomnavbar(onTap: 
+          (int index) => setState(() => _selectedIndex = index)),
+        body: IndexedStack(
+          children: <Widget>[
+            Announcements(),
+            Assignments(),
+            Students_list(),
+          ],
+          index: _selectedIndex,
+        ),
       ),
     );
   }
@@ -40,34 +43,36 @@ class bottomnavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      selectedItemColor: mainColor,
-      currentIndex: _selectedIndex,
-      onTap: onTap,
-      backgroundColor: Color(0xFFF8F8F8),
-      iconSize: 32,
-      selectedFontSize: 13,
-      unselectedFontSize: 11,
-      items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-            icon: Icon(
-              Icons.announcement,
-              color: _selectedIndex == 0 ? mainColor : Color(0xFF828282),
-            ),
-            title: Text("Announcements")),
-        BottomNavigationBarItem(
-            icon: Icon(
-              Icons.assignment,
-              color: _selectedIndex == 1 ? mainColor : Color(0xFF828282),
-            ),
-            title: Text("Assignments")),
-        BottomNavigationBarItem(
-            icon: Icon(
-              Icons.people,
-              color: _selectedIndex == 2 ? mainColor : Color(0xFF828282),
-            ),
-            title: Text("Class")),
-      ],
+    return SafeArea(
+      child: BottomNavigationBar(
+        selectedItemColor: mainColor,
+        currentIndex: _selectedIndex,
+        onTap: onTap,
+        backgroundColor: Color(0xFFF8F8F8),
+        iconSize: 32,
+        selectedFontSize: 12,
+        unselectedFontSize: 12,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.announcement,
+                color: _selectedIndex == 0 ? mainColor : Color(0xFF828282),
+              ),
+              title: Text("Announcements")),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.assignment,
+                color: _selectedIndex == 1 ? mainColor : Color(0xFF828282),
+              ),
+              title: Text("Assignments")),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.people,
+                color: _selectedIndex == 2 ? mainColor : Color(0xFF828282),
+              ),
+              title: Text("Class")),
+        ],
+      ),
     );
   }
 }

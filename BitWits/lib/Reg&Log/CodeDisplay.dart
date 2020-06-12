@@ -25,6 +25,9 @@ class _CodeDisplayState extends State<CodeDisplay> {
     super.initState();
 
     getCode();
+    Future.delayed(Duration(seconds: 2),(){
+      
+    });
   }
 
   
@@ -43,57 +46,62 @@ class _CodeDisplayState extends State<CodeDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(color: Colors.white),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 20,right: 20,bottom: 20,top: 40),
-                  child: Text(
-                    "Classroom created!",
-                    style: TextStyle(
-                    color: mainColor,
-                    fontSize: 30,
-                    letterSpacing: 1,
-                    fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                SvgPicture.asset('svgs/class.svg',width: 270,fit: BoxFit.fitWidth,alignment: Alignment.topCenter,),
-                SizedBox(height: 10,),
-                Padding(
-                  padding: EdgeInsets.only(left: 20,right: 20,top: 20),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(height: 20,),
-                      Text('Your classroom code is:',style: TextStyle(fontWeight: FontWeight.w500,fontSize: 20)),
-                      SizedBox(height: 15),
-                      Text(code == null ? "Not available" : code,
-                      style:TextStyle(fontWeight: FontWeight.bold,fontSize: 30)),
-                      SizedBox(height: 15,),
-                      Text(
-                        'You can view the code later',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[700],
-                        ),
+    Size size = MediaQuery.of(context).size;
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(color: Colors.white),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(left: 20,right: 20,bottom: 20,top: 40),
+                    child: Text(
+                      "Classroom created!",
+                      style: TextStyle(
+                      color: mainColor,
+                      fontSize: 30,
+                      letterSpacing: 1,
+                      fontWeight: FontWeight.w400,
                       ),
-                      SizedBox(height: 100,),
-                        button('Proceed to classroom', 18 , (){
-                          Navigator.pushNamed(context, BottomNavigation.id);
-                        }),
-                      ],
                     ),
                   ),
-                ],
+                  Image.asset("images/room.png",height: size.height*0.31,),
+                  // SvgPicture.asset('svgs/class.svg',height: size.height*0.31),
+                  SizedBox(height: 10,),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20,right: 20,top: 20),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 20,),
+                        Text('Your classroom code is:',style: TextStyle(fontWeight: FontWeight.w500,fontSize: 20)),
+                        SizedBox(height: 15),
+                        Text(code == null ? "Not available" : code,
+                        style:TextStyle(fontWeight: FontWeight.bold,fontSize: 30)),
+                        SizedBox(height: 15,),
+                        Text(
+                          'You can view the code later',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                        SizedBox(height: 70,),
+                          button('Proceed to classroom', 18 , (){
+                            Navigator.popAndPushNamed(context, BottomNavigation.id);
+                          }),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
+      ),
     );
   }
 }
