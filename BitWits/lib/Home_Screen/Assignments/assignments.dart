@@ -1,45 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bitwitsapp/constants.dart';
+import 'package:flutter_login_ui/screens/AddAssignment_screen.dart';
 
-class Assignments extends StatefulWidget {
+void main() => runApp(MyApp());
 
-  @override
-  _assignmentsState createState() => _assignmentsState();
-}
-
-// ignore: camel_case_types
-class _assignmentsState extends State<Assignments> {
-  final _auth = FirebaseAuth.instance;
-
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        title: Text(
-          'Assignments',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            letterSpacing: 1,
-          ),
-        ),
-        backgroundColor: mainColor,
-        actions: [
-          IconButton(icon: Icon(Icons.add,size: 30,), onPressed: (){})
-        ],
-      ),
-      // floatingActionButton: FloatingActionButton(
-      //   heroTag: "assignments",
-      //   backgroundColor: mainColor,
-      //   elevation: 2,
-      //   child: Icon(Icons.add,size: 28,),
-      //   onPressed: (){
-
-      //   }),
+    return MaterialApp(
+      title: 'Flutter Login UI',
+      debugShowCheckedModeBanner: false,
+      home: LoginScreen(),
     );
   }
 }
