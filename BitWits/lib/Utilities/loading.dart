@@ -1,4 +1,3 @@
-import 'package:bitwitsapp/constants.dart';
 import 'package:flutter/material.dart';
 
 class LoadingScreen extends StatelessWidget {
@@ -9,8 +8,10 @@ class LoadingScreen extends StatelessWidget {
       body: Container(
         width: double.infinity,
         child: Center(
-          child: Text("loading...",style: TextStyle(color: Colors.grey),)
-        ),
+            child: Text(
+          "Loading...",
+          style: TextStyle(color: Colors.grey[600]),
+        )),
       ),
     );
   }

@@ -1,22 +1,21 @@
 import 'dart:collection';
 
 class Info {
-
   static var years = [
-      "1",
-      "2",
-      "3",
-      "4",
-    ];
+    "1",
+    "2",
+    "3",
+    "4",
+  ];
 
   static var batches = [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-    ];
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+  ];
 
   static var branches = [
     "Computer",
@@ -29,10 +28,9 @@ class Info {
     "Production",
     "Textile",
   ];
-  
-  static Map getBranch(){
 
-    Map<String,String> sform = HashMap();
+  static Map getBranch() {
+    Map<String, String> sform = HashMap();
 
     sform["Computer"] = "cs";
     sform["IT"] = "it";
@@ -46,5 +44,4 @@ class Info {
 
     return sform;
   }
-
 }

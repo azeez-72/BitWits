@@ -1,93 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 const Color mainColor = Color(0xFF2265B3);
 String label;
 
 const errorIcon = Icon(
-    Icons.error,
-    size: 28.0,
-    color: Colors.white,
-  );
+  Icons.error,
+  size: 28.0,
+  color: Colors.white,
+);
 
-InputDecoration textInputDecoration(String label){
+InputDecoration textInputDecoration(String label) {
   return InputDecoration(
     labelText: label, //
-    errorStyle: TextStyle(
-    color: Colors.redAccent, fontSize: 16.0),
+    errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
     border: OutlineInputBorder(
-      borderRadius:BorderRadius.circular(5.0),
-      ),
-    );
-} 
+      borderRadius: BorderRadius.circular(5.0),
+    ),
+  );
+}
 
 const textCardDecoration = BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.only(
+  color: Colors.white,
+  borderRadius: BorderRadius.only(
     topLeft: Radius.circular(70),
     bottomRight: Radius.circular(100),
   ),
 );
 
 const BGDecoration = BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.centerRight, colors: [
-        Color(0xFF2265B3),
-        Color(0xFF00498D),
-        Color(0xFF0052A2),
-      ]),
-    );
+  gradient: LinearGradient(begin: Alignment.centerRight, colors: [
+    Color(0xFF2265B3),
+    Color(0xFF00498D),
+    Color(0xFF0052A2),
+  ]),
+);
 
-String getError(Exception e){
+String getError(Exception e) {
   String exception = e.toString();
   int i1 = exception.indexOf(',');
   int i2 = exception.indexOf(', null');
-  return exception.substring(i1+2,i2);
+  return exception.substring(i1 + 2, i2);
 }
 
-
 class ToggleCR extends StatelessWidget {
-
   final int toggleIndex;
   final Function onToggle;
-  
-  ToggleCR({this.toggleIndex,this.onToggle});
+
+  ToggleCR({this.toggleIndex, this.onToggle});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Column(children: <Widget>[
-        Text(
-          'Are you a CR?',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.black,
-            fontStyle: FontStyle.italic,
+      child: Column(
+        children: <Widget>[
+          Text(
+            'Are you a CR?',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+              fontStyle: FontStyle.italic,
+            ),
           ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 15, bottom: 0),
-          child: ToggleSwitch(
-              minWidth: 50.0,
-              cornerRadius: 5,
-              initialLabelIndex: toggleIndex,
-              activeBgColor: mainColor,
-              activeTextColor: Colors.white,
-              inactiveBgColor: Colors.grey,
-              inactiveTextColor: Colors.white,
-              labels: ['YES', 'NO'],
-              onToggle: onToggle,
-              ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-      ],
+//        Padding(
+//          padding: EdgeInsets.only(top: 15, bottom: 0),
+//          child: ToggleSwitch(
+//              minWidth: 50.0,
+//              cornerRadius: 5,
+//              initialLabelIndex: toggleIndex,
+//              activeBgColor: mainColor,
+//              activeTextColor: Colors.white,
+//              inactiveBgColor: Colors.grey,
+//              inactiveTextColor: Colors.white,
+//              labels: ['YES', 'NO'],
+//              onToggle: onToggle,
+//              ),
+//        ),
+          SizedBox(
+            height: 10,
+          ),
+        ],
       ),
     );
   }
 }
-
 
 class BranchText extends StatelessWidget {
   final String title;
@@ -107,7 +102,6 @@ class BranchText extends StatelessWidget {
   }
 }
 
-
 class Cancel extends StatelessWidget {
   const Cancel({
     Key key,
@@ -116,19 +110,20 @@ class Cancel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-     onPressed: (){
-       Navigator.pop(context);
-     }, child: Text(
-       'CANCEL',
-       style: TextStyle(color: Colors.grey),
-       ),
-      );
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      child: Text(
+        'CANCEL',
+        style: TextStyle(color: Colors.grey),
+      ),
+    );
   }
 }
 //validation
 /*(String value) async {
             //validation
-            if(value.isEmpty){  
+            if(value.isEmpty){
               return "Enter code";
             }
             if(value.isNotEmpty){
@@ -192,7 +187,7 @@ class Cancel extends StatelessWidget {
                       "branch": studentsData.data[currentUser.email]["Branch"],
                       "batch": studentsData.data[currentUser.email]["Batch"],
                     });
-                    Navigator.pushNamed(context, Assignments.id);               
+                    Navigator.pushNamed(context, Assignments.id);
                 }
                 else error = "Invalid code!";
               },child: Text(
@@ -205,9 +200,9 @@ class Cancel extends StatelessWidget {
         }
       );
     });
-  } 
+  }
 
-  
+
   bool codeValidate(String value){
     writeQuery();
     bool check;
@@ -222,7 +217,7 @@ class Cancel extends StatelessWidget {
     return check;
   }
 
-  
+
   Future<void> writeQuery() async {
     //write your  queries
     await ClassRef.child("Year 1/Batch $a/Class code").once().then((DataSnapshot snapshot){
@@ -232,6 +227,6 @@ class Cancel extends StatelessWidget {
         });
       }).catchError((error){
       print(error);
-    }); 
+    });
   }
   */

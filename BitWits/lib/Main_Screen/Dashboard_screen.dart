@@ -1,8 +1,8 @@
-import 'package:bitwitsapp/constants.dart';
+import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:bitwitsapp/Home_Screen/Announcements.dart';
-import 'package:bitwitsapp/Home_Screen/Assignments.dart';
-import 'package:bitwitsapp/Home_Screen/Students_list.dart';
+import 'file:///C:/Users/tasneem/Desktop/BitWits-o/BitWits/lib/Main_Screen/Announcements/Announcements.dart';
+import 'file:///C:/Users/tasneem/Desktop/BitWits-o/BitWits/lib/Main_Screen/Assignments/Assignments.dart';
+import 'package:bitwitsapp/Main_Screen/Students_list.dart';
 
 int _selectedIndex = 0;
 
@@ -14,15 +14,13 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        bottomNavigationBar: bottomnavbar(onTap: 
-          (int index) => setState(() => _selectedIndex = index)),
+        bottomNavigationBar: bottomnavbar(
+            onTap: (int index) => setState(() => _selectedIndex = index)),
         body: IndexedStack(
           children: <Widget>[
             Announcements(),

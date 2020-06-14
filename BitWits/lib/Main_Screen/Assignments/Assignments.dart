@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bitwitsapp/constants.dart';
+import 'package:bitwitsapp/Utilities/constants.dart';
 
 class Assignments extends StatefulWidget {
-
   @override
   _assignmentsState createState() => _assignmentsState();
 }
@@ -29,17 +28,14 @@ class _assignmentsState extends State<Assignments> {
         ),
         backgroundColor: mainColor,
         actions: [
-          IconButton(icon: Icon(Icons.add,size: 30,), onPressed: (){})
+          IconButton(
+              icon: Icon(
+                Icons.add,
+                size: 30,
+              ),
+              onPressed: () {})
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   heroTag: "assignments",
-      //   backgroundColor: mainColor,
-      //   elevation: 2,
-      //   child: Icon(Icons.add,size: 28,),
-      //   onPressed: (){
-
-      //   }),
     );
   }
 }
