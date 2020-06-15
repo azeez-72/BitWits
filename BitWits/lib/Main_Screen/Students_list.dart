@@ -25,6 +25,20 @@ class _Students_listState extends State<Students_list> {
     });
   }
 
+  
+  Future<void> deleteClass() async {
+    await Firestore.instance.collection('Classrooms/$code/Students').getDocuments().then(
+      (snapshot){
+        for(DocumentSnapshot doc in snapshot.documents){
+            doc.reference.delete();
+          }
+        });
+    await Firestore.instance
+      .collection("Status")
+      .document(currentUser.email)
+      .updateData({"Current class code": "NA"});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -83,7 +97,8 @@ class _Students_listState extends State<Students_list> {
             onPressed: () {
               //TODO: remove person from the list
             },
-          )
+          ),
+          //TODO: menu list item builder three dots
         ],
       ),
       body: StreamBuilder(

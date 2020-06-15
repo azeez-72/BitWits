@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Classroom/Choose.dart';
 import 'package:bitwitsapp/Main_Screen/Dashboard_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,7 +24,6 @@ class _CodeDisplayState extends State<CodeDisplay> {
     super.initState();
 
     getCode();
-    Future.delayed(Duration(seconds: 2), () {});
   }
 
   Future<void> registeredCurrentUser() async {
@@ -42,6 +42,19 @@ class _CodeDisplayState extends State<CodeDisplay> {
         code = snapshot.data["Current class code"];
       });
     });
+  }
+
+  Future<void> deleteClass() async {
+    await Firestore.instance.collection('Classrooms/$code/Students').getDocuments().then(
+      (snapshot){
+        for(DocumentSnapshot doc in snapshot.documents){
+            doc.reference.delete();
+          }
+        });
+    await Firestore.instance
+      .collection("Status")
+      .document(currentUser.email)
+      .updateData({"Current class code": "NA"});
   }
 
   @override
@@ -103,12 +116,20 @@ class _CodeDisplayState extends State<CodeDisplay> {
                           ),
                         ),
                         SizedBox(
-                          height: 70,
+                          height: 50,
                         ),
                         button('Proceed to classroom', 18, () {
                           Navigator.popAndPushNamed(
                               context, BottomNavigation.id);
                         }),
+                        SizedBox(height: 15),
+                        FlatButton.icon(
+                          onPressed: () async {
+                            await deleteClass();
+                            Navigator.pushNamed(context, Navigate.id);
+                          }, 
+                          icon: Icon(Icons.delete,color: Colors.red,), 
+                          label: Text("Delete class",style: TextStyle(color: Colors.red),))
                       ],
                     ),
                   ),

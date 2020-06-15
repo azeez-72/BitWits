@@ -17,7 +17,7 @@ class _AnnouncementsState extends State<Announcements> {
   FirebaseUser currentUser;
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 
-  void registeredCurrentUser() async {
+  Future<void> registeredCurrentUser() async {
     final regUser = await _auth.currentUser();
     currentUser = regUser;
     await Firestore.instance
@@ -28,6 +28,7 @@ class _AnnouncementsState extends State<Announcements> {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.setString(
           currentUser.email + "@", snapshot.data["Current class code"]);
+      print(preferences.getString(currentUser.email+"@"));
     });
   }
 
@@ -36,6 +37,7 @@ class _AnnouncementsState extends State<Announcements> {
     super.initState();
 
     registeredCurrentUser();
+    Future.delayed(Duration(seconds: 2));
 
     firebaseMessaging.configure(
       // ignore: missing_return
@@ -77,8 +79,9 @@ class _AnnouncementsState extends State<Announcements> {
           (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting)
           return Center(child: CircularProgressIndicator());
-        if (snapshot.data.getString(currentUser.email + "@") == "NA")
-          return Unjoined();
+        if (snapshot.data.getString(currentUser.email + "@") == "NA"){
+          Navigator.push(context,MaterialPageRoute(builder: (context) => Unjoined()));
+        }
         return Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: false,

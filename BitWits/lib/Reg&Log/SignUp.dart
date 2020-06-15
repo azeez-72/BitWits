@@ -116,7 +116,8 @@ class SignUpState extends State<SignUp> {
                           button('Register',18, () async {
                             if(_formKey.currentState.validate()) {
                               _formKey.currentState.save();
-                            } 
+                            }
+                            if(mounted) 
                             setState(() {
                               showSpinner = true;
                             });
@@ -127,13 +128,10 @@ class SignUpState extends State<SignUp> {
                               if (newUser != null) {
                                 await updateStatus(_email.trim(), name, "NA");
 
-                                setState(() {
-                                  showSpinner = false;
-                                });
-
-                                Navigator.pushReplacementNamed(context, Navigate.id);
+                                Navigator.pushNamed(context, Navigate.id);
                                 }
                               } catch (e) {
+                                if(mounted)
                                 setState(() { 
                                   showSpinner = false;
                                 });
