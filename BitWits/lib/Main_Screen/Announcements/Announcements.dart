@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Announcements extends StatefulWidget {
   @override
@@ -12,7 +13,9 @@ class Announcements extends StatefulWidget {
 
 class _AnnouncementsState extends State<Announcements> {
   final _auth = FirebaseAuth.instance;
+  String textValue = "Hello World!";
   FirebaseUser currentUser;
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 
   void registeredCurrentUser() async {
     final regUser = await _auth.currentUser();
@@ -33,6 +36,29 @@ class _AnnouncementsState extends State<Announcements> {
     super.initState();
 
     registeredCurrentUser();
+
+    firebaseMessaging.configure(
+      // ignore: missing_return
+      onLaunch: (Map<String, dynamic> msg) {
+        print(" onLaunch called ");
+      },
+      // ignore: missing_return
+      onResume: (Map<String, dynamic> msg) {
+        print(" onResume called ");
+      },
+      // ignore: missing_return
+      onMessage: (Map<String, dynamic> msg) {
+        print(" onMessage called ");
+      },
+    );
+    firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, alert: true, badge: true));
+    firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings setting) {
+      print('IOS Setting Registed');
+    });
+    //work area
+    firebaseMessaging.subscribeToTopic('announcements');
   }
 
   @override
