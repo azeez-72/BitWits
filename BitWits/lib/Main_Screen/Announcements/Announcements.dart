@@ -58,7 +58,15 @@ class _AnnouncementsState extends State<Announcements> {
       print('IOS Setting Registed');
     });
     //work area
-    firebaseMessaging.subscribeToTopic('announcements');
+    firebaseMessaging.getToken().then((token) {
+      update(token);
+    });
+  }
+
+  update(String token) {
+    print(token);
+    textValue = token;
+    setState(() {});
   }
 
   @override
