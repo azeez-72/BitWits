@@ -6,7 +6,7 @@ admin.initializeApp(functions.config().functions);
 
 var newData;
 
-exports.messageTrigger = functions.firestore.document('Messages/{messageId}').onCreate(async (snapshot, context) => {
+exports.messageTrigger = functions.firestore.document('Classrooms/{classroomId}/Announcements/{announcementId}').onCreate(async (snapshot, context) => {
     if (snapshot.empty) {
         console.log('No Devices');
         return;

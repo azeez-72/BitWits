@@ -45,9 +45,9 @@ class _AnnouncementsState extends State<Announcements> {
     final notification = message['notification'];
     final data = message['data'];
     final String title = notification['title'];
-    final String body = notification['body'];
+//    final String body = notification['body'];
     final String mMessage = data['message'];
-    print("Title: $title, body: $body, message: $mMessage");
+    print("Title: $title,  message: $mMessage");
     setState(() {
       Message m = Message(title, mMessage);
       _messages.add(m);
@@ -154,3 +154,4 @@ class Message {
     this.message = message;
   }
 }
+//body: $body,
