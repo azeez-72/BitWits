@@ -13,9 +13,9 @@ class Announcements extends StatefulWidget {
 
 class _AnnouncementsState extends State<Announcements> {
   final _auth = FirebaseAuth.instance;
-  String textValue = "Hello World!";
   FirebaseUser currentUser;
-  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  // String textValue = "Hello World!";
+  // final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 
   Future<void> registeredCurrentUser() async {
     final regUser = await _auth.currentUser();
@@ -37,38 +37,38 @@ class _AnnouncementsState extends State<Announcements> {
     super.initState();
 
     registeredCurrentUser();
-    Future.delayed(Duration(seconds: 2));
+  //   Future.delayed(Duration(seconds: 2));
 
-    firebaseMessaging.configure(
-      // ignore: missing_return
-      onLaunch: (Map<String, dynamic> msg) {
-        print(" onLaunch called ");
-      },
-      // ignore: missing_return
-      onResume: (Map<String, dynamic> msg) {
-        print(" onResume called ");
-      },
-      // ignore: missing_return
-      onMessage: (Map<String, dynamic> msg) {
-        print(" onMessage called ");
-      },
-    );
-    firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, alert: true, badge: true));
-    firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings setting) {
-      print('IOS Setting Registed');
-    });
-    //work area
-    firebaseMessaging.getToken().then((token) {
-      update(token);
-    });
-  }
+  //   firebaseMessaging.configure(
+  //     // ignore: missing_return
+  //     onLaunch: (Map<String, dynamic> msg) {
+  //       print(" onLaunch called ");
+  //     },
+  //     // ignore: missing_return
+  //     onResume: (Map<String, dynamic> msg) {
+  //       print(" onResume called ");
+  //     },
+  //     // ignore: missing_return
+  //     onMessage: (Map<String, dynamic> msg) {
+  //       print(" onMessage called ");
+  //     },
+  //   );
+  //   firebaseMessaging.requestNotificationPermissions(
+  //       const IosNotificationSettings(sound: true, alert: true, badge: true));
+  //   firebaseMessaging.onIosSettingsRegistered
+  //       .listen((IosNotificationSettings setting) {
+  //     print('IOS Setting Registed');
+  //   });
+  //   //work area
+  //   firebaseMessaging.getToken().then((token) {
+  //     update(token);
+  //   });
+  // }
 
-  update(String token) {
-    print(token);
-    textValue = token;
-    setState(() {});
+  // update(String token) {
+  //   print(token);
+  //   textValue = token;
+  //   setState(() {});
   }
 
   @override
@@ -80,7 +80,7 @@ class _AnnouncementsState extends State<Announcements> {
         if (snapshot.connectionState == ConnectionState.waiting)
           return Center(child: CircularProgressIndicator());
         if (snapshot.data.getString(currentUser.email + "@") == "NA"){
-          Navigator.push(context,MaterialPageRoute(builder: (context) => Unjoined()));
+          return Unjoined();
         }
         return Scaffold(
           backgroundColor: Colors.white,

@@ -1,6 +1,5 @@
 import 'package:bitwitsapp/Classroom/Choose.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
-import 'package:bitwitsapp/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -29,10 +28,14 @@ class SignUpState extends State<SignUp> {
   String error = " ";
 
   Future<void> updateStatus(String email,String name,String cc) async {
-    Firestore.instance.collection("Status").document(email).setData({
-      "Name": name,
-      "Current class code": cc
-    });
+    try{
+      Firestore.instance.collection("Status").document(email).setData({
+        "Name": name,
+        "Current class code": cc
+      });
+    } catch(e){
+      print(e);
+    }
   }
 
   @override

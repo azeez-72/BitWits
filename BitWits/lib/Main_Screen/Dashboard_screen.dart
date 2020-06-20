@@ -1,10 +1,10 @@
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/tasneem/Desktop/BitWits-o/BitWits/lib/Main_Screen/Announcements/Announcements.dart';
-import 'file:///C:/Users/tasneem/Desktop/BitWits-o/BitWits/lib/Main_Screen/Assignments/Assignments.dart';
+import 'Announcements/Announcements.dart';
+import 'Assignments/Assignments.dart';
 import 'package:bitwitsapp/Main_Screen/Students_list.dart';
 
-int _selectedIndex = 0;
+int _selectedIndex = 1;
 
 class BottomNavigation extends StatefulWidget {
   static String id = "stack";

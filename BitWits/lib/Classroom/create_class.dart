@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:bitwitsapp/Classroom/CodeDisplay.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:bitwitsapp/Utilities/UIStyles.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -22,9 +21,9 @@ class _CreateClassState extends State<CreateClass> {
   final codecon = TextEditingController();
   final rollcon = TextEditingController();
   final _auth = FirebaseAuth.instance;
+  bool singleClass;
   FirebaseUser currentUser;
   String year, branch, code, batch, name;
-  final DBRef = FirebaseDatabase.instance.reference();
 
   @override
   void initState() {
@@ -62,33 +61,12 @@ class _CreateClassState extends State<CreateClass> {
         .collection("Students")
         .document(currentUser.uid)
         .setData({"name": name, "roll number": rollcon.text});
-  }
-
-  Future<void> saveToDB() async {
-    if (year == "1") {
-      await DBRef.child("Students")
-          .child("Year $year")
-          .child("Batch $batch")
-          .child(rollcon.text)
-          .set({"name": name, "email": currentUser.email, "branch": branch});
-      await DBRef.child("Classroom")
-          .child("Year $year")
-          .child("Batch $batch")
-          .set({"CR Roll number": rollcon.text, "Class code": code});
-    } else {
-      await DBRef.child("Students")
-          .child("Year $year")
-          .child(branch)
-          .child(rollcon.text)
-          .set({
-        "name": name,
-        "email": currentUser.email,
-      });
-      await DBRef.child("Classroom")
-          .child("Year $year")
-          .child(branch)
-          .set({"CR Roll number": rollcon.text, "Class code": code});
-    }
+    Firestore.instance
+        .collection('Classrooms')
+        .document(code)
+        .setData({
+          currentUser.email: 'CR-$name'
+        });
   }
 
   createBatchDialog(BuildContext context) {
@@ -129,8 +107,6 @@ class _CreateClassState extends State<CreateClass> {
                 code =
                     "b$batch${Random().nextInt(999).toString()}$year${rollcon.text.substring(rollcon.text.length - 2)}";
                 await updateStatus();
-                ;
-                await saveToDB();
                 await saveToCF();
 
                 Navigator.pushReplacementNamed(context, CodeDisplay.id);
@@ -234,10 +210,9 @@ class _CreateClassState extends State<CreateClass> {
                             showSpinner = true;
                           });
                           await updateStatus();
-                          await saveToDB();
                           await saveToCF();
 
-                          Navigator.pushReplacementNamed(
+                          Navigator.pushNamed(
                               context, CodeDisplay.id);
                         }
                       }

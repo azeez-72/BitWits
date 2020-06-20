@@ -6,7 +6,6 @@ import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class JoinClass extends StatefulWidget {
@@ -21,11 +20,11 @@ class _JoinClassState extends State<JoinClass> {
   final rollcon = TextEditingController();
   final _auth = FirebaseAuth.instance;
   FirebaseUser currentUser;
-  int n, y;
-  String b, enteredCode, error = '', branch, name;
+  int y;
+  String enteredCode,branch, name;
   bool showSpinner = false;
-  final DBRef = FirebaseDatabase.instance.reference();
-
+  bool isValid = false;
+  List<String> codes = [];
   @override
   void initState() {
     super.initState();
@@ -36,6 +35,31 @@ class _JoinClassState extends State<JoinClass> {
   void registeredCurrentUser() async {
     final regUser = await _auth.currentUser();
     currentUser = regUser;
+
+    Firestore.instance.collection('Classrooms').snapshots().listen((snapshot) {
+      snapshot.documents.forEach((doc) {
+        codes.add(doc.documentID);
+      });
+    });
+    print(codes);
+  }
+
+  _getYear(){
+    try {
+      setState(() {
+        y = int.parse(enteredCode.substring(5, 6));
+      });
+    } catch (e) {
+      Flushbar(
+        messageText: Text(
+          'Invalid code',
+          style: TextStyle(fontSize: 15, color: Colors.white),
+        ),
+        icon: errorIcon,
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.red,
+      )..show(context);
+    }
   }
 
   Future<void> updateStatus() async {
@@ -52,6 +76,10 @@ class _JoinClassState extends State<JoinClass> {
         .collection("Status")
         .document(currentUser.email)
         .updateData({"Current class code": enteredCode});
+    if(y == 1) await Firestore.instance
+                  .collection('Status')
+                  .document(currentUser.email)
+                  .setData({'Branch': branch});
   }
 
   createBranchDialog(BuildContext context) {
@@ -89,11 +117,32 @@ class _JoinClassState extends State<JoinClass> {
               Cancel(),
               OK(onPressed: () async {
                 //process
-                await updateStatus();
-                await saveToDB();
-                await saveToCF();
-
-                Navigator.pushReplacementNamed(context, BottomNavigation.id);
+                setState(() => showSpinner = true);
+                for(int i = 0 ; i < codes.length ; i++){
+                  if(enteredCode == codes[i]){
+                    await updateStatus();
+                    await saveToCF();
+                    setState(() {
+                    showSpinner = false;
+                      isValid = true;
+                    });
+                    Navigator.pushNamed(context, BottomNavigation.id);
+                    }
+                  }
+                  if(isValid == false) {
+                  print(isValid);
+                  setState(() => showSpinner = false);
+                  Flushbar(
+                    messageText: Text(
+                      "Invalid code",
+                    style:
+                      TextStyle(fontSize: 15, color: Colors.white),
+                    ),
+                    icon: errorIcon,
+                    duration: Duration(seconds: 2),
+                    backgroundColor: Colors.red,
+                  )..show(context);
+                }
               })
             ],
           );
@@ -101,88 +150,13 @@ class _JoinClassState extends State<JoinClass> {
   }
 
   Future<void> saveToCF() async {
+    if(isValid)
     Firestore.instance
         .collection("Classrooms")
         .document(enteredCode)
         .collection("Students")
         .document(currentUser.uid)
         .setData({"name": name, "roll number": rollcon.text});
-  }
-
-  Future<void> saveToDB() async {
-    if (y == 1)
-      await DBRef.child("Students")
-          .child("Year $y")
-          .child("Batch $n")
-          .child(rollcon.text)
-          .set({"name": name, "email": currentUser.email, "branch": branch});
-    else
-      await DBRef.child("Students")
-          .child("Year $y")
-          .child(branch)
-          .child(rollcon.text)
-          .set({
-        "name": name,
-        "email": currentUser.email,
-      });
-  }
-
-  Future<void> checkCode(String code) async {
-    setState(() {
-      showSpinner = true;
-    });
-    try {
-      y = int.parse(enteredCode.substring(5, 6));
-    } catch (e) {
-      error = "Invalid code";
-    }
-    if (y == 1)
-      try {
-        n = int.parse(enteredCode.substring(1, 2));
-      } catch (e) {
-        error = "Invalid code";
-      }
-    else
-      b = enteredCode.substring(0, 2);
-    if (enteredCode == await getCodeFromDB()) {
-      setState(() {
-        showSpinner = false;
-        error = '';
-      });
-    } else {
-      setState(() {
-        showSpinner = false;
-      });
-      error = "Invalid code";
-      if (error == "Invalid code")
-        Flushbar(
-          messageText: Text(
-            error,
-            style: TextStyle(fontSize: 15, color: Colors.white),
-          ),
-          icon: errorIcon,
-          duration: Duration(seconds: 2),
-          backgroundColor: Colors.red,
-        )..show(context);
-    }
-  }
-
-  Future<String> getCodeFromDB() async {
-    String value;
-    Map reversed = Info.getBranch().map((k, v) => MapEntry(v, k));
-    branch = reversed[b];
-    value = y == 1
-        ? await DBRef.child("Classroom")
-            .child("Year 1")
-            .child("Batch $n/Class code")
-            .once()
-            .then((DataSnapshot snapshot) => snapshot.value)
-        : await DBRef.child("Classroom")
-            .child("Year $y")
-            .child("$branch/Class code")
-            .once()
-            .then((DataSnapshot snapshot) => snapshot.value);
-    return value;
   }
 
   @override
@@ -196,55 +170,74 @@ class _JoinClassState extends State<JoinClass> {
             child: Padding(
               padding: EdgeInsets.only(top: 40, left: 20, right: 20),
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('Enter the following to join a class',
-                        style: TextStyle(
-                          fontSize: 25,
-                          color: mainColor,
-                          fontWeight: FontWeight.w500,
-                        )),
-                    SizedBox(height: 40),
-                    CodeFields('Roll number', TextInputType.number, rollcon),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    CodeFields('Code', TextInputType.text, codecon),
-                    SizedBox(height: 20),
-                    button(
-                      'Join',
-                      18,
-                      () async {
-                        if (rollcon.text.isEmpty || codecon.text.isEmpty)
-                          Flushbar(
-                            messageText: Text(
-                              "Fill in the details",
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.white),
-                            ),
-                            icon: errorIcon,
-                            duration: Duration(seconds: 2),
-                            backgroundColor: Colors.red,
-                          )..show(context);
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text('Enter the following to join a class',
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: mainColor,
+                      fontWeight: FontWeight.w500,
+                    )),
+                  SizedBox(height: 40),
+                  CodeFields('Roll number', TextInputType.number, rollcon),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  CodeFields('Code', TextInputType.text, codecon),
+                  SizedBox(height: 20),
+                  button(
+                    'Join',
+                    18,
+                    () async {
+                      if (rollcon.text.isEmpty || codecon.text.isEmpty)
+                        Flushbar(
+                          messageText: Text(
+                            "Fill in the details",
+                            style:
+                              TextStyle(fontSize: 15, color: Colors.white),
+                          ),
+                          icon: errorIcon,
+                          duration: Duration(seconds: 2),
+                          backgroundColor: Colors.red,
+                        )..show(context);
+                      else {
+                        enteredCode = codecon.text;
+                        _getYear();
+                        if (y == 1) createBranchDialog(context);
                         else {
-                          enteredCode = codecon.text;
-                          await checkCode(enteredCode);
-                          if (y == 1 && error == '')
-                            createBranchDialog(context);
-                          if (error == '') {
-                            if (y != 1) {
+                          setState(() => showSpinner = true);
+                          for(int i = 0 ; i < codes.length ; i++){
+                            if(enteredCode == codes[i]){
                               await updateStatus();
-                              await saveToDB();
                               await saveToCF();
-
-                              Navigator.pushReplacementNamed(
-                                  context, BottomNavigation.id);
+                              setState(() {
+                                showSpinner = false;
+                                isValid = true;
+                              });
+                              print(codes);
+                              Navigator.pushNamed(context, BottomNavigation.id);
                             }
                           }
+                          if(isValid == false) {
+                            print(isValid);
+                            setState(() => showSpinner = false);
+                            Flushbar(
+                              messageText: Text(
+                              "Invalid code",
+                                style:
+                                  TextStyle(fontSize: 15, color: Colors.white),
+                              ),
+                              icon: errorIcon,
+                              duration: Duration(seconds: 2),
+                              backgroundColor: Colors.red,
+                            )..show(context);
+                          }
                         }
-                      },
-                    ),
-                  ]),
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
