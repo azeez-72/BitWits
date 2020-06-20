@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Intermediate.dart';
 import 'package:bitwitsapp/Main_Screen/Dashboard_screen.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'resetpass.dart';
@@ -117,7 +118,7 @@ class _SignInState extends State<SignIn> {
                                           email: email, password: password);
                                   if (loginUser != null) {
                                     Navigator.pushReplacementNamed(
-                                        context, BottomNavigation.id);
+                                        context, Intermediate.id);
                                   }
                                   setState(() {
                                     showSpinner = false;

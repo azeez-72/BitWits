@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Intermediate.dart';
 import 'package:bitwitsapp/Main_Screen/Dashboard_screen.dart';
 import 'package:bitwitsapp/Classroom/Choose.dart';
 import 'package:bitwitsapp/Classroom/CodeDisplay.dart';
@@ -14,6 +15,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
           builder: (context, userSnapShot) {
             if (userSnapShot.connectionState == ConnectionState.waiting)
               return LoadingScreen();
-            if (userSnapShot.hasData) return BottomNavigation();
+            if (userSnapShot.hasData) return Intermediate();
             return SignUp();
           }),
       routes: {
@@ -32,6 +34,7 @@ class MyApp extends StatelessWidget {
         Navigate.id: (context) => Navigate(),
         CreateClass.id: (context) => CreateClass(),
         JoinClass.id: (context) => JoinClass(),
+        Intermediate.id: (context) => Intermediate(),
         Test.id: (context) => Test(),
         SignUp.id: (context) => SignUp(),
         SignIn.id: (context) => SignIn(),

@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Utilities/UIStyles.dart';
 import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Classroom/join_class.dart';
@@ -56,6 +57,7 @@ class Unjoined extends StatelessWidget {
                     FlatButton(
                       onPressed: () {
                         _auth.signOut();
+                        Navigator.pushNamed(context,SignIn.id);
                       },
                       child: Text(
                         "Sign out",

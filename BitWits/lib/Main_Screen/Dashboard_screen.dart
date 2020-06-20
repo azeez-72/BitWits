@@ -1,8 +1,13 @@
 import 'package:bitwitsapp/Utilities/constants.dart';
+import 'package:bitwitsapp/Utilities/loading.dart';
 import 'package:flutter/material.dart';
 import 'Announcements/Announcements.dart';
+import 'package:bitwitsapp/Classroom/unjoined.dart';
 import 'Assignments/Assignments.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bitwitsapp/Main_Screen/Students_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 int _selectedIndex = 1;
 
@@ -14,13 +19,38 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
+  final _auth = FirebaseAuth.instance;
+  FirebaseUser currentUser;
+  
+  Future<void> registeredCurrentUser() async {
+    final regUser = await _auth.currentUser();
+    currentUser = regUser;
+    await Firestore.instance
+        .collection("Status")
+        .document(currentUser.email)
+        .get()
+        .then((DocumentSnapshot snapshot) async {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      await preferences.setString(
+          currentUser.email + "@", snapshot.data["Current class code"]);
+      print(preferences.getString(currentUser.email+"@"));
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    registeredCurrentUser();
+  }
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        backgroundColor: Colors.white,
         bottomNavigationBar: bottomnavbar(
-            onTap: (int index) => setState(() => _selectedIndex = index)),
+          onTap: (int index) => setState(() => _selectedIndex = index)),
         body: IndexedStack(
           children: <Widget>[
             Announcements(),

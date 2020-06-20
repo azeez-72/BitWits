@@ -150,7 +150,6 @@ class _JoinClassState extends State<JoinClass> {
   }
 
   Future<void> saveToCF() async {
-    if(isValid)
     Firestore.instance
         .collection("Classrooms")
         .document(enteredCode)

@@ -14,15 +14,12 @@ class Students_list extends StatefulWidget {
 class _Students_listState extends State<Students_list> {
   String year, batch, code, branch;
   String data;
-  final DBRef = FirebaseDatabase.instance.reference().child("Students");
   final _auth = FirebaseAuth.instance;
   FirebaseUser currentUser;
 
   Future<void> registeredCurrentUser() async {
     final regUser = await _auth.currentUser();
-    setState(() {
-      currentUser = regUser;
-    });
+    currentUser = regUser;
   }
 
   
@@ -111,7 +108,7 @@ class _Students_listState extends State<Students_list> {
             final studentDocs = dataSnapShot.data.documents;
             return ListView.builder(
               itemBuilder: (context, index) => ListTile(
-                onTap: () {
+                onTap: () { //display roll no
                   Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text(
                         studentDocs[index]['roll number'],
