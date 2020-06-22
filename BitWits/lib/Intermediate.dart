@@ -15,10 +15,14 @@ class Intermediate extends StatefulWidget {
 class _IntermediateState extends State<Intermediate> {
   FirebaseUser currentUser;
   final _auth = FirebaseAuth.instance;
+  String _email;
 
   Future<void> registeredCurrentUser() async {
     final regUser = await _auth.currentUser();
-    setState(() => currentUser = regUser);
+    setState(() {
+      currentUser = regUser;
+      _email = currentUser.email;
+    });
   }
 
   @override
@@ -32,7 +36,7 @@ class _IntermediateState extends State<Intermediate> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: Firestore.instance.collection('Status').document(currentUser.email).snapshots(),
+      stream: Firestore.instance.collection('Status').document(_email).snapshots(),
       builder: (context , snapshot){
         if(snapshot.connectionState == ConnectionState.waiting) return LoadingScreen();
         final docs = snapshot.data;
