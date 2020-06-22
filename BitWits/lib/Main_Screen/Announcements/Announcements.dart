@@ -11,7 +11,7 @@ class Announcements extends StatefulWidget {
 
 class _AnnouncementsState extends State<Announcements> {
   final Firestore _db = Firestore.instance;
-//  final _auth = FirebaseAuth.instance;
+
   String textValue = "Hello World!";
   FirebaseUser currentUser;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -134,4 +134,3 @@ class Message {
   }
 }
 //body: $body,
-
