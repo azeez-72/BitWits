@@ -42,8 +42,9 @@ class _IntermediateState extends State<Intermediate> {
       builder: (context , snapshot){
         if(snapshot.connectionState == ConnectionState.waiting) return LoadingScreen();
         final docs = snapshot.data;
+        if(snapshot.connectionState == ConnectionState.active) print(docs['Current class code']+_email);
         if(docs['Current class code'] == 'NA') return Unjoined();
-        else Provider.of<Data>(context).saveEmailAndCode(_email, docs['Current class code']);
+        else Provider.of<Data>(context).saveEmailAndCode(_email, docs['Current class code'],docs['roll number']);
         return Dashboard();
       }
     );

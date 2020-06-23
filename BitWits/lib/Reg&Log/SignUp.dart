@@ -31,7 +31,8 @@ class SignUpState extends State<SignUp> {
     try{
       Firestore.instance.collection("Status").document(email).setData({
         "Name": name,
-        "Current class code": cc
+        "Current class code": cc,
+        "roll number": 'NA'
       });
     } catch(e){
       print(e);

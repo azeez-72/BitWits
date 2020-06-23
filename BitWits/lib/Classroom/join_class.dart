@@ -75,11 +75,14 @@ class _JoinClassState extends State<JoinClass> {
     await Firestore.instance
         .collection("Status")
         .document(currentUser.email)
-        .updateData({"Current class code": enteredCode});
+        .updateData({
+          "Current class code": enteredCode,
+          "roll number": rollcon.text
+        });
     if(y == 1) await Firestore.instance
                   .collection('Status')
                   .document(currentUser.email)
-                  .setData({'Branch': branch});
+                  .setData({'Branch': branch,});
   }
 
   createBranchDialog(BuildContext context) {

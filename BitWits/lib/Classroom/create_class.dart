@@ -38,14 +38,17 @@ class _CreateClassState extends State<CreateClass> {
         .document(currentUser.email)
         .get()
         .then((DocumentSnapshot snapshot) {
-      setState(() {
-        name = snapshot.data["Name"];
-      });
+          setState(() {
+            name = snapshot.data["Name"];
+          });
     });
     await Firestore.instance
         .collection("Status")
         .document(currentUser.email)
-        .updateData({"Current class code": code});
+        .updateData({
+          "Current class code": code,
+          "roll number": rollcon.text
+        });
   }
 
   void registeredCurrentUser() async {

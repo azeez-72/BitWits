@@ -15,7 +15,6 @@ class Assignments extends StatefulWidget {
 
 // ignore: camel_case_types
 class _assignmentsState extends State<Assignments> {
-  final _auth = FirebaseAuth.instance;
 
   //assignments content start
   // final List<String> name = <String>['Launching Missile'];
@@ -101,9 +100,17 @@ class _assignmentsState extends State<Assignments> {
                                     CircularCheckBox(
                                       activeColor: Colors.green[300],
                                       value: isDone[index],
+                                      // value: studentDocs[index]
+                                      //   .collection('Completion Status')
+                                      //   .document(data.rollNumber)
+                                      //   .get()
+                                      //   .then((DocumentSnapshot snapshot) => snapshot.data['isDone']),
                                       onChanged: (value) {
                                         setState(() {
                                           isDone[index] = value;
+                                          // Firestore.instance.collection('Completion Status')
+                                          // .document(data.rollNumber)
+                                          // .updateData({'isDone': value});
                                         });
                                       },
                                     ),

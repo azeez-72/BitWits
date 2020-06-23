@@ -20,12 +20,22 @@ class _AddAssignmentState extends State<AddAssignment> {
   DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
 
   Future<void> _saveToCF(String code){
-    Firestore.instance.collection('Classrooms/$code/Assignments').document().setData({
+    Firestore.instance.collection('Classrooms/$code/Assignments').document(titleController.text).setData({
       'Title': titleController.text,
       'Description': descriptionController.text == '' ? 'Not provided' : descriptionController.text,
       'Created at': DateTime.now(),
       'Deadline': _dateFormat.format(_value),
-      'Completed': false
+    });
+  }
+
+  Future<void> _initialie(String code){
+    Firestore.instance.collection('Classrooms/$code/Students').snapshots().forEach((snapshot) {
+      snapshot.documents.forEach((doc) {
+        Firestore.instance.collection('Classrooms/$code/Assignments/${titleController.text}/Completion Status')
+        .document(doc['roll number']).setData({
+          'isDone': false
+        });
+      });
     });
   }
 
@@ -90,6 +100,7 @@ class _AddAssignmentState extends State<AddAssignment> {
                         )..show(context);
                         else {
                           await _saveToCF(data.currentClassCode);
+                          await _initialie(data.currentClassCode);
                           Navigator.pop(context);
                         }
                       })
