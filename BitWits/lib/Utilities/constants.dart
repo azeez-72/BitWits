@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
 const Color mainColor = Color(0xFF2265B3);
+const bottomSheetRadius = Radius.circular(25);
+const bottomSheetDecoration = BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(topLeft: bottomSheetRadius,topRight: bottomSheetRadius)
+      );
 String label;
 
 const errorIcon = Icon(
@@ -120,6 +125,7 @@ class Cancel extends StatelessWidget {
     );
   }
 }
+
 //validation
 /*(String value) async {
             //validation

@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Reg&Log/SignUp.dart';
 import 'package:bitwitsapp/Utilities/loading.dart';
+import 'package:provider/provider.dart';
+import 'Classroom/Data.dart';
 import 'test_queries.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -18,28 +20,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: StreamBuilder(
-          stream: FirebaseAuth.instance.onAuthStateChanged,
-          builder: (context, userSnapShot) {
-            if (userSnapShot.connectionState == ConnectionState.waiting)
-              return LoadingScreen();
-            if (userSnapShot.hasData) return Intermediate();
-            return SignUp();
-          }),
-      routes: {
-        BottomNavigation.id: (context) => BottomNavigation(),
-        ResetPassword.id: (context) => ResetPassword(),
-        Navigate.id: (context) => Navigate(),
-        CreateClass.id: (context) => CreateClass(),
-        JoinClass.id: (context) => JoinClass(),
-        Intermediate.id: (context) => Intermediate(),
-        Test.id: (context) => Test(),
-        SignUp.id: (context) => SignUp(),
-        SignIn.id: (context) => SignIn(),
-        CodeDisplay.id: (context) => CodeDisplay(),
-      },
+    return ChangeNotifierProvider(
+          create: (context) => Data(),
+          child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: StreamBuilder(
+            stream: FirebaseAuth.instance.onAuthStateChanged,
+            builder: (context, userSnapShot) {
+              if (userSnapShot.connectionState == ConnectionState.waiting)
+                return LoadingScreen();
+              if (userSnapShot.hasData) return Intermediate();
+              return SignUp();
+            }),
+        routes: {
+          Dashboard.id: (context) => Dashboard(),
+          ResetPassword.id: (context) => ResetPassword(),
+          Navigate.id: (context) => Navigate(),
+          CreateClass.id: (context) => CreateClass(),
+          JoinClass.id: (context) => JoinClass(),
+          Intermediate.id: (context) => Intermediate(),
+          Test.id: (context) => Test(),
+          SignUp.id: (context) => SignUp(),
+          SignIn.id: (context) => SignIn(),
+          CodeDisplay.id: (context) => CodeDisplay(),
+        },
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Classroom/Data.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class Students_list extends StatefulWidget {
   @override
@@ -17,12 +19,6 @@ class _Students_listState extends State<Students_list> {
   final _auth = FirebaseAuth.instance;
   FirebaseUser currentUser;
 
-  Future<void> registeredCurrentUser() async {
-    final regUser = await _auth.currentUser();
-    currentUser = regUser;
-  }
-
-  
   Future<void> deleteClass() async {
     await Firestore.instance.collection('Classrooms/$code/Students').getDocuments().then(
       (snapshot){
@@ -37,103 +33,87 @@ class _Students_listState extends State<Students_list> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    getCode();
-  }
-
-  Future<void> getCode() async {
-    await registeredCurrentUser();
-    await Firestore.instance
-        .collection("Status")
-        .document(currentUser.email)
-        .get()
-        .then((DocumentSnapshot snapshot) {
-      setState(() {
-        code = snapshot.data["Current class code"];
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () {
-              _auth.signOut();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, SignIn.id, (route) => false);
-            }),
-        backgroundColor: mainColor,
-        titleSpacing: 2,
-        title: Text("Classmates",
-            style: TextStyle(letterSpacing: 1, fontSize: 21)),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text("Coming soon :)"),
-                  backgroundColor: Colors.green,
-                  duration: Duration(milliseconds: 1500),
-                ),
-              );
-              //  showSearch(context: context, delegate: SearchNames(searchCode: code));
-            },
-          ),
-          IconButton(
-            icon: SvgPicture.asset(
-              'svgs/personr.svg',
-              width: 24,
-              height: 24,
-            ),
-            onPressed: () {
-              //TODO: remove person from the list
-            },
-          ),
-          //TODO: menu list item builder three dots
-        ],
-      ),
-      body: StreamBuilder(
-          stream: Firestore.instance
-              .collection('Classrooms/$code/Students')
-              .snapshots(),
-          builder: (context, dataSnapShot) {
-            if (dataSnapShot.connectionState == ConnectionState.waiting)
-              return Center(child: CircularProgressIndicator());
-            final studentDocs = dataSnapShot.data.documents;
-            return ListView.builder(
-              itemBuilder: (context, index) => ListTile(
-                onTap: () { //display roll no
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                        studentDocs[index]['roll number'],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      backgroundColor: mainColor,
-                      duration: Duration(seconds: 5)));
+    return Consumer<Data>(
+      builder: (context,data,child){
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+                icon: Icon(Icons.exit_to_app),
+                onPressed: () {
+                  _auth.signOut();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, SignIn.id, (route) => false);
+                }),
+            backgroundColor: mainColor,
+            titleSpacing: 2,
+            title: Text("Classmates",
+                style: TextStyle(letterSpacing: 1, fontSize: 21)),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Coming soon :)"),
+                      backgroundColor: Colors.green,
+                      duration: Duration(milliseconds: 1500),
+                    ),
+                  );
+                  //  showSearch(context: context, delegate: SearchNames(searchCode: code));
                 },
-                title: Text(
-                  studentDocs[index]['name'],
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey[800]),
-                ),
-                leading: Icon(
-                  Icons.person_outline,
-                  color: mainColor,
-                  size: 28,
-                ),
               ),
-              itemCount: studentDocs.length,
-            );
-          }),
+              IconButton(
+                icon: SvgPicture.asset(
+                  'svgs/personr.svg',
+                  width: 24,
+                  height: 24,
+                ),
+                onPressed: () {
+                  //TODO: remove person from the list
+                },
+              ),
+              //TODO: menu list item builder three dots
+            ],
+          ),
+          body: StreamBuilder(
+              stream: Firestore.instance
+                  .collection('Classrooms/${data.currentClassCode}/Students')
+                  .snapshots(),
+              builder: (context, dataSnapShot) {
+                if (dataSnapShot.connectionState == ConnectionState.waiting)
+                  return Center(child: CircularProgressIndicator());
+                final studentDocs = dataSnapShot.data.documents;
+                return ListView.builder(
+                  itemBuilder: (context, index) => ListTile(
+                    onTap: () { //display roll no
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                            studentDocs[index]['roll number'],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          backgroundColor: mainColor,
+                          duration: Duration(seconds: 5)));
+                    },
+                    title: Text(
+                      studentDocs[index]['name'],
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey[800]),
+                    ),
+                    leading: Icon(
+                      Icons.person_outline,
+                      color: mainColor,
+                      size: 28,
+                    ),
+                  ),
+                  itemCount: studentDocs.length,
+                );
+              }),
+        );
+      },
     );
   }
 }

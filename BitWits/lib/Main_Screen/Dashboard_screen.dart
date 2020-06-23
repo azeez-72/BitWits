@@ -11,14 +11,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 int _selectedIndex = 1;
 
-class BottomNavigation extends StatefulWidget {
+class Dashboard extends StatefulWidget {
   static String id = "stack";
 
   @override
-  _BottomNavigationState createState() => _BottomNavigationState();
+  _DashboardState createState() => _DashboardState();
 }
 
-class _BottomNavigationState extends State<BottomNavigation> {
+class _DashboardState extends State<Dashboard> {
   final _auth = FirebaseAuth.instance;
   FirebaseUser currentUser;
   

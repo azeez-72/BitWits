@@ -1,4 +1,5 @@
 import 'package:bitwitsapp/Classroom/Choose.dart';
+import 'package:bitwitsapp/Intermediate.dart';
 import 'package:bitwitsapp/Main_Screen/Dashboard_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -120,7 +121,7 @@ class _CodeDisplayState extends State<CodeDisplay> {
                         ),
                         button('Proceed to classroom', 18, () {
                           Navigator.popAndPushNamed(
-                              context, BottomNavigation.id);
+                              context, Intermediate.id);
                         }),
                         SizedBox(height: 15),
                         FlatButton.icon(

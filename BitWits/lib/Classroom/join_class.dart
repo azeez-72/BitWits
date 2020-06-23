@@ -126,7 +126,7 @@ class _JoinClassState extends State<JoinClass> {
                     showSpinner = false;
                       isValid = true;
                     });
-                    Navigator.pushNamed(context, BottomNavigation.id);
+                    Navigator.pushNamed(context, Dashboard.id);
                     }
                   }
                   if(isValid == false) {
@@ -151,9 +151,7 @@ class _JoinClassState extends State<JoinClass> {
 
   Future<void> saveToCF() async {
     Firestore.instance
-        .collection("Classrooms")
-        .document(enteredCode)
-        .collection("Students")
+        .collection("Classrooms/$enteredCode/Students")
         .document(currentUser.uid)
         .setData({"name": name, "roll number": rollcon.text});
   }
@@ -214,7 +212,7 @@ class _JoinClassState extends State<JoinClass> {
                                 isValid = true;
                               });
                               print(codes);
-                              Navigator.pushNamed(context, BottomNavigation.id);
+                              Navigator.pushNamed(context, Dashboard.id);
                             }
                           }
                           if(isValid == false) {

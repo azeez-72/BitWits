@@ -1,9 +1,11 @@
+import 'package:bitwitsapp/Classroom/Data.dart';
 import 'package:bitwitsapp/Classroom/unjoined.dart';
 import 'package:bitwitsapp/Main_Screen/Dashboard_screen.dart';
 import 'package:bitwitsapp/Utilities/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Intermediate extends StatefulWidget {
   static String id = 'intermediate';
@@ -41,7 +43,8 @@ class _IntermediateState extends State<Intermediate> {
         if(snapshot.connectionState == ConnectionState.waiting) return LoadingScreen();
         final docs = snapshot.data;
         if(docs['Current class code'] == 'NA') return Unjoined();
-        return BottomNavigation();
+        else Provider.of<Data>(context).saveEmailAndCode(_email, docs['Current class code']);
+        return Dashboard();
       }
     );
   }
