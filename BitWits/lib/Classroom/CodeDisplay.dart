@@ -32,6 +32,19 @@ class _CodeDisplayState extends State<CodeDisplay> {
     currentUser = regUser;
   }
 
+  showAlertDialog(BuildContext context){
+    AlertDialog alert = AlertDialog(
+      title: Text('Are you sure?',style: TextStyle(color: mainColor,fontWeight: FontWeight.bold),),
+      content: Text('You wanna delete this class?',),
+      actions: [
+        FlatButton(onPressed: () => Navigator.pop(context), child: Text('NO'),),
+        FlatButton(onPressed: () async => await deleteClass(), child: Text('DELETE',style: TextStyle(color: Colors.red[700]),))
+      ],
+    );
+
+    showDialog(context: context,builder: (context) => alert);
+  }
+
   Future<void> getCode() async {
     await registeredCurrentUser();
     await Firestore.instance
@@ -126,7 +139,9 @@ class _CodeDisplayState extends State<CodeDisplay> {
                         SizedBox(height: 15),
                         FlatButton.icon(
                           onPressed: () async {
-                            await deleteClass();
+
+                            
+                            await showAlertDialog(context);
                             Navigator.pushNamed(context, Navigate.id);
                           }, 
                           icon: Icon(Icons.delete,color: Colors.red,), 

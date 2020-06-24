@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Classroom/menu_options/menu_list.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:bitwitsapp/Utilities/loading.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class _DashboardState extends State<Dashboard> {
           children: <Widget>[
             Announcements(),
             Assignments(),
-            Students_list(),
+            MenuList(),
           ],
           index: _selectedIndex,
         ),
@@ -95,10 +96,10 @@ class bottomnavbar extends StatelessWidget {
               title: Text("Assignments")),
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.people,
+                Icons.more_horiz,
                 color: _selectedIndex == 2 ? mainColor : Color(0xFF828282),
               ),
-              title: Text("Class")),
+              title: Text("More")),
         ],
       ),
     );

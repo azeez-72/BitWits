@@ -1,9 +1,11 @@
+import 'package:bitwitsapp/Classroom/menu_options/menu_list.dart';
 import 'package:bitwitsapp/Intermediate.dart';
 import 'package:bitwitsapp/Main_Screen/Dashboard_screen.dart';
 import 'package:bitwitsapp/Classroom/Choose.dart';
 import 'package:bitwitsapp/Classroom/CodeDisplay.dart';
 import 'package:bitwitsapp/Classroom/create_class.dart';
 import 'package:bitwitsapp/Classroom/join_class.dart';
+import 'package:bitwitsapp/Main_Screen/Students_list.dart';
 import 'package:bitwitsapp/Reg&Log/resetpass.dart';
 import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
@@ -24,6 +26,7 @@ class MyApp extends StatelessWidget {
           create: (context) => Data(),
           child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        // initialRoute: MenuList.id,
         home: StreamBuilder(
             stream: FirebaseAuth.instance.onAuthStateChanged,
             builder: (context, userSnapShot) {
@@ -33,6 +36,8 @@ class MyApp extends StatelessWidget {
               return SignUp();
             }),
         routes: {
+          Students_list.id: (context) => Students_list(),
+          MenuList.id: (context) => MenuList(),
           Dashboard.id: (context) => Dashboard(),
           ResetPassword.id: (context) => ResetPassword(),
           Navigate.id: (context) => Navigate(),

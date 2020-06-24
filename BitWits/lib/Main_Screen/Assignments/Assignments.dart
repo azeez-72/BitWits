@@ -67,8 +67,9 @@ class _assignmentsState extends State<Assignments> {
               if(dataSnapShot.connectionState == ConnectionState.waiting) return Center(child: CircularProgressIndicator());
               final studentDocs = dataSnapShot.data.documents;
               print(studentDocs.length.toString());
-              return ListView.builder(
+              return ListView.separated(
               // padding: const EdgeInsets.all(8),
+                separatorBuilder: (BuildContext context,int index) => Divider(thickness: 0.5,color: Colors.grey[400]),
                 itemBuilder: (BuildContext context, int index) {
                   Color textColor = Colors.black;
                   var textdecoration = TextDecoration.none;
@@ -142,7 +143,7 @@ class _assignmentsState extends State<Assignments> {
                             ),
                           ],
                         ),
-                        Divider(thickness: 0.5,color: Colors.grey[400],)
+                        // Divider(thickness: 0.5,color: Colors.grey[400],)
                       ],
                     ),
                   ),

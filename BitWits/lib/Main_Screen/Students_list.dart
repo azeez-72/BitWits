@@ -9,6 +9,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class Students_list extends StatefulWidget {
+  static final String id = 'students_list';
+
   @override
   _Students_listState createState() => _Students_listState();
 }
@@ -38,13 +40,14 @@ class _Students_listState extends State<Students_list> {
       builder: (context,data,child){
         return Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-                icon: Icon(Icons.exit_to_app),
-                onPressed: () {
-                  _auth.signOut();
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, SignIn.id, (route) => false);
-                }),
+            leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
+            // leading: IconButton(
+            //     icon: Icon(Icons.exit_to_app),
+            //     onPressed: () {
+            //       _auth.signOut();
+            //       Navigator.pushNamedAndRemoveUntil(
+            //           context, SignIn.id, (route) => false);
+            //     }),
             backgroundColor: mainColor,
             titleSpacing: 2,
             title: Text("Classmates",
@@ -65,7 +68,8 @@ class _Students_listState extends State<Students_list> {
               ),
               IconButton(
                 icon: SvgPicture.asset(
-                  'svgs/personr.svg',
+                  'svgs/remove_user.svg',
+                  color: Colors.white,
                   width: 24,
                   height: 24,
                 ),
