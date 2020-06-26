@@ -1,4 +1,6 @@
+import 'package:bitwitsapp/Classroom/Choose.dart';
 import 'package:bitwitsapp/Classroom/Data.dart';
+import 'package:bitwitsapp/Intermediate.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
@@ -18,21 +20,26 @@ class Students_list extends StatefulWidget {
 class _Students_listState extends State<Students_list> {
   String year, batch, code, branch;
   String data;
-  final _auth = FirebaseAuth.instance;
-  FirebaseUser currentUser;
 
-  Future<void> deleteClass() async {
-    await Firestore.instance.collection('Classrooms/$code/Students').getDocuments().then(
-      (snapshot){
-        for(DocumentSnapshot doc in snapshot.documents){
-            doc.reference.delete();
-          }
-        });
-    await Firestore.instance
-      .collection("Status")
-      .document(currentUser.email)
-      .updateData({"Current class code": "NA"});
+  Future<void> _leaveClass(String email,String code) async {
+    await Firestore.instance.collection('Status').document(email)
+          .updateData({'Current class code': 'NA'});
+    await Firestore.instance.collection('History').document(email)  
+          .setData({'class left on ${DateTime.now()}': code},merge: true);  
   }
+
+  // Future<void> deleteClass() async {
+  //   await Firestore.instance.collection('Classrooms/$code/Students').getDocuments().then(
+  //     (snapshot){
+  //       for(DocumentSnapshot doc in snapshot.documents){
+  //           doc.reference.delete();
+  //         }
+  //       });
+  //   await Firestore.instance
+  //     .collection("Status")
+  //     .document(currentUser.email)
+  //     .updateData({"Current class code": "NA"});
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -41,28 +48,23 @@ class _Students_listState extends State<Students_list> {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
-            // leading: IconButton(
-            //     icon: Icon(Icons.exit_to_app),
-            //     onPressed: () {
-            //       _auth.signOut();
-            //       Navigator.pushNamedAndRemoveUntil(
-            //           context, SignIn.id, (route) => false);
-            //     }),
             backgroundColor: mainColor,
             titleSpacing: 2,
             title: Text("Classmates",
                 style: TextStyle(letterSpacing: 1, fontSize: 21)),
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Coming soon :)"),
-                      backgroundColor: Colors.green,
-                      duration: Duration(milliseconds: 1500),
-                    ),
-                  );
+                icon: Icon(Icons.exit_to_app),
+                onPressed: () async {
+                  await _leaveClass(data.currentEmail, data.currentClassCode);
+                  Navigator.pushNamedAndRemoveUntil(context, Intermediate.id, (route) => false);
+                  // Scaffold.of(context).showSnackBar(
+                  //   SnackBar(
+                  //     content: Text("Coming soon :)"),
+                  //     backgroundColor: Colors.green,
+                  //     duration: Duration(milliseconds: 1500),
+                  //   ),
+                  // );
                   //  showSearch(context: context, delegate: SearchNames(searchCode: code));
                 },
               ),

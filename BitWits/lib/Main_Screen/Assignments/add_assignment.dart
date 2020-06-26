@@ -28,7 +28,7 @@ class _AddAssignmentState extends State<AddAssignment> {
     });
   }
 
-  Future<void> _initialie(String code){
+  Future<void> _initialize(String code){
     Firestore.instance.collection('Classrooms/$code/Students').snapshots().forEach((snapshot) {
       snapshot.documents.forEach((doc) {
         Firestore.instance.collection('Classrooms/$code/Assignments/${titleController.text}/Completion Status')
@@ -100,7 +100,7 @@ class _AddAssignmentState extends State<AddAssignment> {
                         )..show(context);
                         else {
                           await _saveToCF(data.currentClassCode);
-                          await _initialie(data.currentClassCode);
+                          await _initialize(data.currentClassCode);
                           Navigator.pop(context);
                         }
                       })

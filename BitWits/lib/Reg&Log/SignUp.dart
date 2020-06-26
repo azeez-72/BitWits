@@ -1,4 +1,5 @@
 import 'package:bitwitsapp/Classroom/Choose.dart';
+import 'package:bitwitsapp/Intermediate.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +30,12 @@ class SignUpState extends State<SignUp> {
 
   Future<void> updateStatus(String email,String name,String cc) async {
     try{
-      Firestore.instance.collection("Status").document(email).setData({
+      await Firestore.instance.collection("Status").document(email).setData({
         "Name": name,
         "Current class code": cc,
         "roll number": 'NA'
       });
+      await Firestore.instance.collection('History').document(email).setData({'Name': name},merge: true);
     } catch(e){
       print(e);
     }
@@ -121,22 +123,17 @@ class SignUpState extends State<SignUp> {
                             if(_formKey.currentState.validate()) {
                               _formKey.currentState.save();
                             } 
-                            setState(() {
-                              showSpinner = true;
-                            });
                             try {
+                              setState(() => showSpinner = true);
                               final newUser =
                                 await _auth.createUserWithEmailAndPassword(
                                   email: _email.trim(), password: _password);
-                              if (newUser != null) {
-                                await updateStatus(_email.trim(), name, "NA");
-
-                                Navigator.pushNamed(context, Navigate.id);
+                              if(newUser != null) {
+                                  await updateStatus(_email.trim(), name, "New");
+                                  Navigator.pushNamed(context, Intermediate.id);
                                 }
                               } catch (e) {
-                                setState(() { 
-                                  showSpinner = false;
-                                });
+                                setState(() => showSpinner = false);
                                 error = getError(e);
                                 print(error);
                                 //emphasis

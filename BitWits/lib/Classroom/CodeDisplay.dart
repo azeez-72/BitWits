@@ -1,4 +1,5 @@
 import 'package:bitwitsapp/Classroom/Choose.dart';
+import 'package:bitwitsapp/Classroom/join_class.dart';
 import 'package:bitwitsapp/Intermediate.dart';
 import 'package:bitwitsapp/Main_Screen/Dashboard_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,29 +25,35 @@ class _CodeDisplayState extends State<CodeDisplay> {
   void initState() {
     super.initState();
 
-    getCode();
+    _getCode();
   }
 
-  Future<void> registeredCurrentUser() async {
+  Future<void> _registeredCurrentUser() async {
     final regUser = await _auth.currentUser();
     currentUser = regUser;
   }
 
-  showAlertDialog(BuildContext context){
-    AlertDialog alert = AlertDialog(
-      title: Text('Are you sure?',style: TextStyle(color: mainColor,fontWeight: FontWeight.bold),),
-      content: Text('You wanna delete this class?',),
-      actions: [
-        FlatButton(onPressed: () => Navigator.pop(context), child: Text('NO'),),
-        FlatButton(onPressed: () async => await deleteClass(), child: Text('DELETE',style: TextStyle(color: Colors.red[700]),))
-      ],
+  Future<void> _showDeleteDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Are you sure?',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+          content: Text('You wanna delete this class?',),
+          actions: [
+            FlatButton(onPressed: () => Navigator.pop(context), child: Text('NO'),),
+            FlatButton(onPressed: () async {
+              await _deleteClass();
+              Navigator.pushNamedAndRemoveUntil(context, Navigate.id, (route) => false);
+            },child: Text('DELETE',style: TextStyle(color: Colors.red[700]),))
+          ],          
+        );
+      },
     );
-
-    showDialog(context: context,builder: (context) => alert);
   }
 
-  Future<void> getCode() async {
-    await registeredCurrentUser();
+  Future<void> _getCode() async {
+    await _registeredCurrentUser();
     await Firestore.instance
         .collection("Status")
         .document(currentUser.email)
@@ -58,7 +65,7 @@ class _CodeDisplayState extends State<CodeDisplay> {
     });
   }
 
-  Future<void> deleteClass() async {
+  Future<void> _deleteClass() async {
     await Firestore.instance.collection('Classrooms/$code/Students').getDocuments().then(
       (snapshot){
         for(DocumentSnapshot doc in snapshot.documents){
@@ -68,7 +75,9 @@ class _CodeDisplayState extends State<CodeDisplay> {
     await Firestore.instance
       .collection("Status")
       .document(currentUser.email)
-      .updateData({"Current class code": "NA"});
+      .updateData({"Current class code": "NA","$code CR": 'left'});
+    await Firestore.instance.collection('History').document(currentUser.email)
+          .setData({'class deleted on ${DateTime.now()}': code},merge: true);
   }
 
   @override
@@ -138,12 +147,7 @@ class _CodeDisplayState extends State<CodeDisplay> {
                         }),
                         SizedBox(height: 15),
                         FlatButton.icon(
-                          onPressed: () async {
-
-                            
-                            await showAlertDialog(context);
-                            Navigator.pushNamed(context, Navigate.id);
-                          }, 
+                          onPressed: () => _showDeleteDialog(), 
                           icon: Icon(Icons.delete,color: Colors.red,), 
                           label: Text("Delete class",style: TextStyle(color: Colors.red),))
                       ],

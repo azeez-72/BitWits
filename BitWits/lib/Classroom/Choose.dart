@@ -55,7 +55,7 @@ class Navigate extends StatelessWidget {
                 FlatButton(
                   onPressed: () {
                     _auth.signOut();
-                    Navigator.popAndPushNamed(context, SignIn.id);
+                    Navigator.pushNamedAndRemoveUntil(context, SignIn.id, (route) => false);
                   },
                   child: Text(
                     "Sign out",

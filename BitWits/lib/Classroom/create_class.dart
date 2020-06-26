@@ -8,6 +8,9 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:bitwitsapp/Utilities/info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:provider/provider.dart';
+
+import 'Data.dart';
 
 class CreateClass extends StatefulWidget {
   static final String id = "create_class";
@@ -32,6 +35,10 @@ class _CreateClassState extends State<CreateClass> {
     registeredCurrentUser();
   }
 
+  _unfocus(){
+    FocusScope.of(context).unfocus();
+  }
+
   Future<void> updateStatus() async {
     await Firestore.instance
         .collection("Status")
@@ -49,6 +56,12 @@ class _CreateClassState extends State<CreateClass> {
           "Current class code": code,
           "roll number": rollcon.text
         });
+    await Firestore.instance
+          .collection('Status')
+          .document(currentUser.email)
+          .setData({
+            '$code CR': true
+          },merge: true);
   }
 
   void registeredCurrentUser() async {
@@ -121,111 +134,121 @@ class _CreateClassState extends State<CreateClass> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(top: 40, left: 20, right: 20),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('Enter the following to create a class',
-                        style: TextStyle(
-                          fontSize: 25,
-                          color: mainColor,
-                          fontWeight: FontWeight.w500,
-                        )),
-                    SizedBox(height: 40),
-                    CodeFields('Roll Number', TextInputType.number, rollcon),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    FormField<String>(
-                      builder: (FormFieldState<String> state) {
-                        return InputDecorator(
-                          decoration: textInputDecoration("Year"),
-                          isEmpty: year == '', //
-                          child: DropDown(
-                            value: year,
-                            list: Info.years.map((value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (String newValue) {
+    return Consumer<Data>(
+      builder: (context,studentData,child){
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: ModalProgressHUD(
+            inAsyncCall: showSpinner,
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 40, left: 20, right: 20),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text('Enter the following to create a class',
+                            style: TextStyle(
+                              fontSize: 25,
+                              color: mainColor,
+                              fontWeight: FontWeight.w500,
+                            )),
+                        SizedBox(height: 40),
+                        CodeFields('Roll Number', TextInputType.number, rollcon),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        FormField<String>(
+                          builder: (FormFieldState<String> state) {
+                            return InputDecorator(
+                              decoration: textInputDecoration("Year"),
+                              isEmpty: year == '', //
+                              child: DropDown(
+                                value: year,
+                                list: Info.years.map((value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: (String newValue) {
+                                  _unfocus();
+                                  setState(() {
+                                    year = newValue;
+                                    state.didChange(newValue);
+                                  });
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(height: 15),
+                        FormField<String>(
+                          builder: (FormFieldState<String> state) {
+                            return InputDecorator(
+                              decoration: textInputDecoration("Branch"),
+                              isEmpty: branch == '', //
+                              child: DropDown(
+                                value: branch,
+                                list: Info.branches.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: (String newValue) {
+                                  _unfocus();
+                                  setState(() {
+                                    branch = newValue;
+                                    state.didChange(newValue);
+                                  });
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        button("Create", 18, () async {
+                          _unfocus();
+                          if (rollcon.text == null ||
+                              year == null ||
+                              branch == null)
+                            Flushbar(
+                              messageText: Text(
+                                "Fill in the details",
+                                style: TextStyle(fontSize: 15, color: Colors.white),
+                              ),
+                              icon: errorIcon,
+                              duration: Duration(seconds: 2),
+                              backgroundColor: Colors.red,
+                            )..show(context);
+                          else {
+                            if (year == "1") createBatchDialog(context);
+                            if (year != "1") {
+                              code =
+                                  "${Info.getBranch()[branch]}${Random().nextInt(999).toString()}$year${rollcon.text.substring(rollcon.text.length - 2)}";
                               setState(() {
-                                year = newValue;
-                                state.didChange(newValue);
+                                showSpinner = true;
                               });
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                    SizedBox(height: 15),
-                    FormField<String>(
-                      builder: (FormFieldState<String> state) {
-                        return InputDecorator(
-                          decoration: textInputDecoration("Branch"),
-                          isEmpty: branch == '', //
-                          child: DropDown(
-                            value: branch,
-                            list: Info.branches.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (String newValue) {
-                              setState(() {
-                                branch = newValue;
-                                state.didChange(newValue);
-                              });
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                    SizedBox(height: 20),
-                    button("Create", 18, () async {
-                      if (rollcon.text == null ||
-                          year == null ||
-                          branch == null)
-                        Flushbar(
-                          messageText: Text(
-                            "Fill in the details",
-                            style: TextStyle(fontSize: 15, color: Colors.white),
-                          ),
-                          icon: errorIcon,
-                          duration: Duration(seconds: 2),
-                          backgroundColor: Colors.red,
-                        )..show(context);
-                      else {
-                        if (year == "1") createBatchDialog(context);
-                        if (year != "1") {
-                          code =
-                              "${Info.getBranch()[branch]}${Random().nextInt(999).toString()}$year${rollcon.text.substring(rollcon.text.length - 2)}";
-                          setState(() {
-                            showSpinner = true;
-                          });
-                          await updateStatus();
-                          await saveToCF();
+                              await updateStatus();
+                              await saveToCF();
+                              await Firestore.instance.collection('History').document(studentData.currentEmail)
+                                              .setData({'class created on ${DateTime.now()} with roll number': '$code and ${rollcon.text}'},merge: true);
+                              studentData.addBranch(branch);
 
-                          Navigator.pushNamed(
-                              context, CodeDisplay.id);
-                        }
-                      }
-                    }),
-                    SizedBox(height: 10),
-                  ]),
+                              Navigator.pushNamed(
+                                  context, CodeDisplay.id);
+                            }
+                          }
+                        }),
+                        SizedBox(height: 10),
+                      ]),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }, 
     );
   }
 }

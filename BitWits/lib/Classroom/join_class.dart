@@ -1,4 +1,5 @@
-import 'package:bitwitsapp/Main_Screen/Dashboard_screen.dart';
+import 'package:bitwitsapp/Classroom/Data.dart';
+import 'package:bitwitsapp/Intermediate.dart';
 import 'package:bitwitsapp/Utilities/UIStyles.dart';
 import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Utilities/info.dart';
@@ -7,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class JoinClass extends StatefulWidget {
   static String id = "join_class";
@@ -82,7 +84,16 @@ class _JoinClassState extends State<JoinClass> {
     if(y == 1) await Firestore.instance
                   .collection('Status')
                   .document(currentUser.email)
-                  .setData({'Branch': branch,});
+                  .setData({'Branch': branch,},merge: true);
+
+      await Firestore.instance.collection('Classrooms/$enteredCode/Assignments').getDocuments()
+      .then((snapshot){
+          snapshot.documents.forEach((doc) {
+            Firestore.instance.collection('Classrooms/$enteredCode/Assignments/${doc.documentID}/Completion Status')
+            .document(rollcon.text).setData({'isDone': false});
+          });
+        }
+      );
   }
 
   createBranchDialog(BuildContext context) {
@@ -90,65 +101,68 @@ class _JoinClassState extends State<JoinClass> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: BranchText(
-              title: "branch",
-            ),
-            content: FormField<String>(
-              builder: (FormFieldState<String> state) {
-                return InputDecorator(
-                  decoration: textInputDecoration("Branch"),
-                  isEmpty: branch == '', //
-                  child: DropDown(
-                    value: branch,
-                    list: Info.branches.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        branch = newValue;
-                        state.didChange(newValue);
-                      });
-                    },
-                  ),
-                );
-              },
-            ),
-            actions: <Widget>[
-              Cancel(),
-              OK(onPressed: () async {
-                //process
-                setState(() => showSpinner = true);
-                for(int i = 0 ; i < codes.length ; i++){
-                  if(enteredCode == codes[i]){
-                    await updateStatus();
-                    await saveToCF();
-                    setState(() {
-                    showSpinner = false;
-                      isValid = true;
-                    });
-                    Navigator.pushNamed(context, Dashboard.id);
+                title: BranchText(
+                  title: "branch",
+                ),
+                content: FormField<String>(
+                  builder: (FormFieldState<String> state) {
+                    return InputDecorator(
+                      decoration: textInputDecoration("Branch"),
+                      isEmpty: branch == '', //
+                      child: DropDown(
+                        value: branch,
+                        list: Info.branches.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            FocusScope.of(context).unfocus();
+                            branch = newValue;
+                            state.didChange(newValue);
+                          });
+                        },
+                      ),
+                    );
+                  },
+                ),
+                actions: <Widget>[
+                  Cancel(),
+                  OK(onPressed: () async {
+                    //process
+                    setState(() => showSpinner = true);
+                    for(int i = 0 ; i < codes.length ; i++){
+                      if(enteredCode == codes[i]){
+                        await updateStatus();
+                        await saveToCF();
+                        await Firestore.instance.collection('History').document(currentUser.email)
+                              .setData({'class joined on ${DateTime.now()} with roll number and branch': '${codecon.text} , ${rollcon.text} and $branch'},merge: true);
+                        setState(() {
+                        showSpinner = false;
+                          isValid = true;
+                        });
+                        Navigator.pushNamed(context, Intermediate.id);
+                        }
+                      }
+                      if(isValid == false) {
+                      print(isValid);
+                      setState(() => showSpinner = false);
+                      Flushbar(
+                        messageText: Text(
+                          "Invalid code",
+                        style:
+                          TextStyle(fontSize: 15, color: Colors.white),
+                        ),
+                        icon: errorIcon,
+                        duration: Duration(seconds: 2),
+                        backgroundColor: Colors.red,
+                      )..show(context);
                     }
-                  }
-                  if(isValid == false) {
-                  print(isValid);
-                  setState(() => showSpinner = false);
-                  Flushbar(
-                    messageText: Text(
-                      "Invalid code",
-                    style:
-                      TextStyle(fontSize: 15, color: Colors.white),
-                    ),
-                    icon: errorIcon,
-                    duration: Duration(seconds: 2),
-                    backgroundColor: Colors.red,
-                  )..show(context);
-                }
-              })
-            ],
-          );
+                  })
+                ],
+              );
         });
   }
 
@@ -210,12 +224,14 @@ class _JoinClassState extends State<JoinClass> {
                             if(enteredCode == codes[i]){
                               await updateStatus();
                               await saveToCF();
+                              await Firestore.instance.collection('History').document(currentUser.email)
+                                    .setData({'class joined on ${DateTime.now()} with roll number': '${codecon.text} and ${rollcon.text}'},merge: true);
                               setState(() {
                                 showSpinner = false;
                                 isValid = true;
                               });
                               print(codes);
-                              Navigator.pushNamed(context, Dashboard.id);
+                              Navigator.pushNamed(context, Intermediate.id);
                             }
                           }
                           if(isValid == false) {
