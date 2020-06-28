@@ -18,6 +18,7 @@ class _AddAssignmentState extends State<AddAssignment> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   DateTime _value = DateTime.now();
+  // DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
   DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
   bool showSpinner = false;
 

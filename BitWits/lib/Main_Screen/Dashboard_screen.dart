@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:bitwitsapp/Main_Screen/menu_options/menu_list.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,9 @@ int _selectedIndex = 1;
 
 class Dashboard extends StatefulWidget {
   static String id = "stack";
+  final String code,roll;
+
+  Dashboard({this.code,this.roll});
 
   @override
   _DashboardState createState() => _DashboardState();
@@ -40,7 +45,23 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
 
     registeredCurrentUser();
+    _getCompletionMap(widget.code, widget.roll);
   }
+
+  Future<void> _getCompletionMap(String code,String roll) async {
+    await Firestore.instance.collection('Classrooms/$code/Assignments').getDocuments()
+    .then((snapshot){
+      snapshot.documents.forEach((doc) async { 
+        await Firestore.instance
+          .collection('Classrooms/$code/Assignment Status')
+          .document(doc.documentID)
+          .get().then((DocumentSnapshot docSnap){
+            setState(() => Assignments.completionMap[doc.documentID] =  docSnap[roll]);
+        }); 
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

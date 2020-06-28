@@ -55,7 +55,7 @@ class _IntermediateState extends State<Intermediate> {
           Provider.of<Data>(context).saveEmailAndCode(docs['Name'],_email, docs['Current class code'],docs['roll number'],_uuid);
           if(docs['Current class code'].toString().substring(5,6) == '1') Provider.of<Data>(context).addBranch(docs['Branch']);
         }
-        return Dashboard();
+        return Dashboard(code: docs['Current class code'],roll: docs['roll number']);
       }
     );
   }

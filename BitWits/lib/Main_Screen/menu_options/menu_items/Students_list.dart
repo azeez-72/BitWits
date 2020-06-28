@@ -1,14 +1,9 @@
-import 'package:bitwitsapp/Classroom/Choose.dart';
 import 'package:bitwitsapp/Classroom/Data.dart';
 import 'package:bitwitsapp/Intermediate.dart';
-import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Utilities/info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class Students_list extends StatefulWidget {
@@ -21,6 +16,7 @@ class Students_list extends StatefulWidget {
 class _Students_listState extends State<Students_list> {
   String year, batch, code, branch;
   String data;
+  bool status;
   ScrollController controller = ScrollController();
 
   Future<void> _leaveClass(String email,String code) async {
@@ -46,7 +42,20 @@ class _Students_listState extends State<Students_list> {
     await Firestore.instance.collection('Classrooms/$code/Students').document(uid).updateData({'CR': true});
   }
 
-  Widget showActionDialog(String actionShow,String email,String code,String crEmail) => 
+  Widget showAddDialog(String actionShow,String email,String code,String crEmail) => 
+    AlertDialog(
+      title: Text('Are you sure?'),
+      content: Text(actionShow),
+      actions: [
+        FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL',style: TextStyle(color: Colors.grey),)),
+        FlatButton(onPressed: () async {
+          await _addAsCR(email,code,crEmail);
+          Navigator.pop(context);
+        },child: Text('YES'))
+      ],
+    );
+
+  Widget showRemoveDialog(String actionShow,String email,String code,String crEmail) => 
     AlertDialog(
       title: Text('Are you sure?'),
       content: Text(actionShow),
@@ -62,13 +71,35 @@ class _Students_listState extends State<Students_list> {
   Future<void> _selectAction(String value,String code,String crEmail,String name,String email){
     switch (value) {
       case 'CR':
-        showDialog(context: context,builder: (context) => showActionDialog('Add $name as CR?',email,code,crEmail));
+        showDialog(context: context,builder: (context) => showAddDialog('Add $name as CR?',email,code,crEmail));
         break;
-      case 'Remove':
-        showDialog(context: context,builder: (context) => showActionDialog('Remove $name from class?',email,code,crEmail));
-        break;
+      // case 'Remove':
+      //   showDialog(context: context,builder: (context) => showRemoveDialog('Remove $name from class?',email,code,crEmail));
+      //   break;
       default:
         print('none');
+    }
+  }
+
+  Widget blockUnBlockDialog(String msg,String code,bool status) =>
+    AlertDialog(
+      title: Text('$msg class?'),
+      actions: [
+        FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL',style: TextStyle(color: Colors.grey),)),
+        FlatButton(
+          onPressed: () async => await Firestore.instance.collection('Classrooms').document(code).updateData({'block': status}),
+          child: null
+        )
+      ],
+    );
+
+  Future<void> _selectClassAction(String value,bool status,String code) {
+    switch (value) {
+      case 'blockunblock':
+        if(status) blockUnBlockDialog('Unblock',code,status);
+        else blockUnBlockDialog('Block',code,status);
+        break;
+      default:
     }
   }
 
@@ -115,8 +146,8 @@ class _Students_listState extends State<Students_list> {
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.exit_to_app),
-                onPressed: () async {
-                  await showDialog(context: context,builder: (context) => leaveClassAlert(data.currentEmail,data.currentClassCode));
+                  onPressed: () async => await showDialog(context: context,builder: (context) => leaveClassAlert(data.currentEmail,data.currentClassCode))
+              ),
                   // Scaffold.of(context).showSnackBar(
                   //   SnackBar(
                   //     content: Text("Coming soon :)"),
@@ -124,9 +155,17 @@ class _Students_listState extends State<Students_list> {
                   //     duration: Duration(milliseconds: 1500),
                   //   ),
                   // );
-                  //  showSearch(context: context, delegate: SearchNames(searchCode: code));
+                  //  showSearch(context: context, delegate: SearchNames(searchCode: code))
+              if(data.isCr) PopupMenuButton(
+                icon: Icon(Icons.more_vert,color: Colors.white,),
+                itemBuilder: (context) {
+                  Firestore.instance.collection('Classrooms').document(code).get().then((value) => setState(() => status = value.data['block']));
+                  return <PopupMenuEntry<String>> [
+                    PopupMenuItem(value: 'blockunblock',child: Text(status == null ? 'Loading...' : status ? 'Unblock' : 'Block'))
+                  ];
                 },
-              ),
+                onSelected: (String val) => _selectClassAction(val, status, data.currentClassCode),
+              )
             ],
           ),
           body: Scrollbar(
@@ -172,10 +211,10 @@ class _Students_listState extends State<Students_list> {
                             value: 'CR',
                             child: Text('Add as CR')
                           ),
-                          PopupMenuItem<String>(
-                            value: 'Remove',
-                            child: Text('Remove user')
-                          )
+                          // PopupMenuItem<String>(
+                          //   value: 'Remove',
+                          //   child: Text('Remove user')
+                          // )
                         ]
                       ) : null : null,
                     ),

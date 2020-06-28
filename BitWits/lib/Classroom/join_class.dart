@@ -1,4 +1,3 @@
-import 'package:bitwitsapp/Classroom/Data.dart';
 import 'package:bitwitsapp/Intermediate.dart';
 import 'package:bitwitsapp/Utilities/UIStyles.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
 
 class JoinClass extends StatefulWidget {
   static String id = "join_class";
@@ -27,7 +25,7 @@ class _JoinClassState extends State<JoinClass> {
   bool showSpinner = false;
   bool isValid = false;
   List<String> codes = [];
-  
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +62,13 @@ class _JoinClassState extends State<JoinClass> {
       )..show(context);
     }
   }
+
+  // Future<void> _checkStatus(String code) async {
+  //   await Firestore.instance.collection('Classrooms').document(code).get()
+  //         .then((doc){
+  //           setState(() => status = doc.data['block']);
+  //         });
+  // }
 
   Future<void> updateStatus() async {
     await Firestore.instance
@@ -145,6 +150,18 @@ class _JoinClassState extends State<JoinClass> {
                           isValid = true;
                         });
                         Navigator.pushNamed(context, Intermediate.id);
+                        // else {
+                        //   setState(() => showSpinner = false);
+                        //   Flushbar(
+                        //   messageText: Text(
+                        //     "Class is blocked!",
+                        //     style:
+                        //       TextStyle(fontSize: 15, color: Colors.white),
+                        //   ),
+                        //   icon: Icon(Icons.block,color: Colors.white,),
+                        //   duration: Duration(seconds: 2),
+                        //   backgroundColor: Colors.red,
+                        //   )..show(context);}
                         }
                       }
                       if(isValid == false) {
@@ -153,8 +170,8 @@ class _JoinClassState extends State<JoinClass> {
                       Flushbar(
                         messageText: Text(
                           "Invalid code",
-                        style:
-                          TextStyle(fontSize: 15, color: Colors.white),
+                          style:
+                            TextStyle(fontSize: 15, color: Colors.white),
                         ),
                         icon: errorIcon,
                         duration: Duration(seconds: 2),
@@ -223,6 +240,7 @@ class _JoinClassState extends State<JoinClass> {
                           setState(() => showSpinner = true);
                           for(int i = 0 ; i < codes.length ; i++){
                             if(enteredCode == codes[i]){
+                              FocusScope.of(context).unfocus();
                               await updateStatus();
                               await saveToCF();
                               await Firestore.instance.collection('History').document(currentUser.email)
@@ -233,6 +251,16 @@ class _JoinClassState extends State<JoinClass> {
                               });
                               print(codes);
                               Navigator.pushNamed(context, Intermediate.id);
+                              // else Flushbar(
+                              //   messageText: Text(
+                              //     "Class is blocked!",
+                              //     style:
+                              //       TextStyle(fontSize: 15, color: Colors.white),
+                              //   ),
+                              //   icon: Icon(Icons.block,color: Colors.white,),
+                              //   duration: Duration(seconds: 2),
+                              //   backgroundColor: Colors.red,
+                              // )..show(context);
                             }
                           }
                           if(isValid == false) {

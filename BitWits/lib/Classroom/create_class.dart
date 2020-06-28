@@ -78,7 +78,7 @@ class _CreateClassState extends State<CreateClass> {
     await Firestore.instance
         .collection('Classrooms')
         .document(code)
-        .setData({currentUser.email: 'CR-$name'});
+        .setData({currentUser.email: 'CR-$name','block': false});
   }
 
   createBatchDialog(BuildContext context) {

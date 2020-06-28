@@ -84,6 +84,7 @@ class _AnnouncementsState extends State<Announcements> {
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
+        leading: IconButton(icon: Icon(Icons.info_outline),onPressed: (){},),
         title: Text(
           'Announcements',
           style: TextStyle(
