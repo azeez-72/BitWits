@@ -23,12 +23,12 @@ class _DetailsState extends State<Details> {
   TextEditingController nameCon = TextEditingController();
   // TextEditingController rollCon = TextEditingController();
 
-  Future<void> _editName(String email,String uid,String code) async {
+  Future<void> _editName(String oldName,String email,String uid,String code) async {
     await Firestore.instance.collection('Status').document(email).updateData({'Name': nameCon.text});
     await Firestore.instance.collection('Classrooms/$code/Students')
           .document(uid).updateData({'name': nameCon.text});
     await Firestore.instance.collection('History').document(email)
-          .setData({'Name change on ${DateTime.now()}': nameCon.text},merge: true);
+          .setData({'Name change on ${DateTime.now()} from $oldName': nameCon.text},merge: true);
   }
 
   // Future<void> _editRollNumber(String email,String uid,String code) async {
@@ -63,8 +63,8 @@ class _DetailsState extends State<Details> {
               if(_isEditableName)  IconButton(icon: Icon(Icons.done,),onPressed: () async{ 
                 if(nameCon.text == '') print('error');
                   else{
+                    await _editName(studentData.name,studentData.currentEmail, studentData.uid, studentData.currentClassCode);
                     studentData.updateName(nameCon.text);
-                    await _editName(studentData.currentEmail, studentData.uid, studentData.currentClassCode);
                   }
                   // if(_isEditableRoll){
                   //   if(rollCon.text == '') print('error');
@@ -178,7 +178,7 @@ class DetailRow extends StatelessWidget {
       children: [
         Text('$field:',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
         SizedBox(width: 10,),
-        Flexible(child: Text(value,style: TextStyle(fontSize: 16),softWrap: false,overflow: TextOverflow.fade,)),
+        Flexible(child: Text(value == null ? 'NA' : value,style: TextStyle(fontSize: 16),softWrap: false,overflow: TextOverflow.fade,)),
       ],
     );
   }

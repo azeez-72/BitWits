@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:bitwitsapp/Classroom/Data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,18 +18,29 @@ class Assignments extends StatefulWidget {
 // ignore: camel_case_types
 class _assignmentsState extends State<Assignments> {
 
-  //assignments content start
-  // final List<String> name = <String>['Launching Missile'];
-  // final List<String> description = <String>[
-  //   'You decide the location to destroy'
-  // ];
-  final List<bool> isDone = <bool>[false];
-  final List<DateTime> _datesOfSubmission = <DateTime>[DateTime.now()];
-  //end
+  Map<String,bool> _completionMap = HashMap<String,bool>();
 
-  // Future<void> update(int index,bool value,String code){
-  //   Firestore.instance.collection('Classrooms/$code/Assignments').
-  // }
+  Future<void> _getCompletionMap(String code,String roll) async {
+    await Firestore.instance.collection('Classrooms/$code/Assignments').getDocuments()
+    .then((snapshot){
+      snapshot.documents.forEach((doc) async { 
+        await Firestore.instance
+          .collection('Classrooms/$code/Assignment Status')
+          .document(doc.documentID)
+          .get().then((DocumentSnapshot docSnap){
+            setState(() =>_completionMap[doc.documentID] =  docSnap[roll]);
+        }); 
+      });
+    });
+  }
+
+  Future<void> _updateValue(String code,String title,String roll,bool value) async {
+    await Firestore.instance
+          .collection('Classrooms/$code/Assignment Status')
+          .document(title).updateData({roll : value});
+
+    setState(() => _completionMap[title] = value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,102 +69,93 @@ class _assignmentsState extends State<Assignments> {
               onPressed: () {
                 showModalBottomSheet(context: context, builder: (context) => AddAssignment(),isScrollControlled: true);
               }
-            )
+            ),
+            IconButton(icon: Icon(Icons.refresh), onPressed: () async => await _getCompletionMap(data.currentClassCode, data.rollNumber))
           ],
         ),
-        body: Padding(
-          padding: EdgeInsets.only(top: 8,right: 8),
-          child: StreamBuilder(
-            stream: Firestore.instance.collection('Classrooms/${data.currentClassCode}/Assignments').snapshots(),
-            builder: (context,dataSnapShot){
-              if(dataSnapShot.connectionState == ConnectionState.waiting) return Center(child: CircularProgressIndicator());
-              final studentDocs = dataSnapShot.data.documents;
-              print(studentDocs.length.toString());
-              return ListView.separated(
-              // padding: const EdgeInsets.all(8),
-                separatorBuilder: (BuildContext context,int index) => Divider(thickness: 0.5,color: Colors.grey[400]),
-                itemBuilder: (BuildContext context, int index) {
-                  Color textColor = Colors.black;
-                  var textdecoration = TextDecoration.none;
-                  if (isDone[index] == true) {
-                    textColor = Colors.blueGrey[300];
-                    textdecoration = TextDecoration.lineThrough;
-                  }
-                  return ListTile(
-                    title: Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            ConstrainedBox(
-                            constraints: BoxConstraints(minWidth: mobile.size.width*2/3),
-                              child: Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      "${index+1}. ${studentDocs[index]['Title']}", //to change
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontFamily: "Thesis",
-                                        color: textColor,
-                                        decoration: textdecoration,
+        body: Scrollbar(
+          child: Padding(
+            padding: EdgeInsets.only(top: 8,right: 8),
+            child: StreamBuilder(
+              stream: Firestore.instance.collection('Classrooms/${data.currentClassCode}/Assignments').snapshots(),
+              builder: (context,dataSnapShot) {
+                if(dataSnapShot.connectionState == ConnectionState.waiting) return Center(child: CircularProgressIndicator());
+                final studentDocs = dataSnapShot.data.documents;
+                return ListView.separated(
+                // padding: const EdgeInsets.all(8),
+                  separatorBuilder: (BuildContext context,int index) => Divider(thickness: 0.5,color: Colors.grey[400]),
+                  itemBuilder: (context,index) {
+                    // _getCompletionMap(data.currentClassCode,data.rollNumber);
+                    print(studentDocs[index]['Title']+':'+_completionMap[studentDocs[index]['Title']].toString());
+                    Color textColor = Colors.black;
+                    var textdecoration = TextDecoration.none;
+                    if (_completionMap[studentDocs[index]['Title']] == true) {
+                      textColor = Colors.blueGrey[300];
+                      textdecoration = TextDecoration.lineThrough;
+                    }
+                    return ListTile(
+                      title: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              ConstrainedBox(
+                              constraints: BoxConstraints(minWidth: mobile.size.width*2/3),
+                                child: Container(
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text(
+                                        "${index+1}. ${studentDocs[index]['Title']}", //to change
+                                        style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontFamily: "Thesis",
+                                          color: textColor,
+                                          decoration: textdecoration,
+                                        ),
                                       ),
-                                    ),
-                                    CircularCheckBox(
-                                      activeColor: Colors.green[300],
-                                      value: isDone[index],
-                                      // value: studentDocs[index]
-                                      //   .collection('Completion Status')
-                                      //   .document(data.rollNumber)
-                                      //   .get()
-                                      //   .then((DocumentSnapshot snapshot) => snapshot.data['isDone']),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          isDone[index] = value;
-                                          // Firestore.instance.collection('Completion Status')
-                                          // .document(data.rollNumber)
-                                          // .updateData({'isDone': value});
-                                        });
-                                      },
+                                      CircularCheckBox(
+                                        value: _completionMap[studentDocs[index]['Title']],
+                                        activeColor: Colors.green[300],
+                                        onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Due:',style: TextStyle(fontWeight: FontWeight.bold),),
+                                    SizedBox(height: 5,),
+                                    Text(
+                                      //TODO: CHANGE THE FONTSIZE
+                                      studentDocs[index]['Deadline'],
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black87,
+                                        // color: _datesOfSubmission[index]
+                                        //             .difference(DateTime.now())
+                                        //             .inDays <
+                                        //         2
+                                        //     ? Colors.red
+                                        //     : Colors.black87,
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ),
-                            Container(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text('Due:',style: TextStyle(fontWeight: FontWeight.bold),),
-                                  SizedBox(height: 5,),
-                                  Text(
-                                    //TODO: CHANGE THE FONTSIZE
-                                    studentDocs[index]['Deadline'],
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: _datesOfSubmission[index]
-                                                  .difference(DateTime.now())
-                                                  .inDays <
-                                              2
-                                          ? Colors.red
-                                          : Colors.black87,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Divider(thickness: 0.5,color: Colors.grey[400],)
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  // onTap: () => {showBottomSheet(context, index)},
+                  );
+                  },itemCount: studentDocs.length
                 );
-              },itemCount: studentDocs.length
-              );
-            },
+              },
+            ),
           ),
         ),
       );

@@ -17,6 +17,12 @@ class Info {
     "6",
   ];
 
+  static var yrs = [
+    'SY',
+    'TY',
+    'Final',  
+  ];
+
   static var branches = [
     "Computer",
     "IT",
@@ -44,4 +50,6 @@ class Info {
 
     return sform;
   }
+
+
 }

@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           create: (context) => Data(),
           child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        // initialRoute: MenuList.id,
+        // initialRoute: Test.id,
         home: StreamBuilder(
             stream: FirebaseAuth.instance.onAuthStateChanged,
             builder: (context, userSnapShot) {

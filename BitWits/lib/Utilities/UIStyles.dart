@@ -110,6 +110,7 @@ class _CodeFieldsState extends State<CodeFields> {
     return Container(
         child: TextField(
       style: TextStyle(fontSize: 17),
+      maxLines: labelTag == 'Description(optional)' ? null : 1,
       autofocus: true,
       controller: ctr,
       keyboardType: textInputType,

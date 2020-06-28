@@ -27,6 +27,7 @@ class _JoinClassState extends State<JoinClass> {
   bool showSpinner = false;
   bool isValid = false;
   List<String> codes = [];
+  
   @override
   void initState() {
     super.initState();
@@ -88,9 +89,9 @@ class _JoinClassState extends State<JoinClass> {
 
       await Firestore.instance.collection('Classrooms/$enteredCode/Assignments').getDocuments()
       .then((snapshot){
-          snapshot.documents.forEach((doc) {
-            Firestore.instance.collection('Classrooms/$enteredCode/Assignments/${doc.documentID}/Completion Status')
-            .document(rollcon.text).setData({'isDone': false});
+          snapshot.documents.forEach((doc) async {
+            await Firestore.instance.collection('Classrooms/$enteredCode/Assignment Status')
+            .document(doc.documentID).setData({rollcon.text: false},merge: true);
           });
         }
       );
@@ -167,10 +168,10 @@ class _JoinClassState extends State<JoinClass> {
   }
 
   Future<void> saveToCF() async {
-    Firestore.instance
+    await Firestore.instance
         .collection("Classrooms/$enteredCode/Students")
         .document(currentUser.uid)
-        .setData({"name": name, "roll number": rollcon.text});
+        .setData({"name": name, "roll number": rollcon.text,"email": currentUser.email,'CR': false});
   }
 
   @override

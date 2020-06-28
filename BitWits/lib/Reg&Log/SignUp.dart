@@ -31,11 +31,11 @@ class SignUpState extends State<SignUp> {
   Future<void> updateStatus(String email,String name,String cc) async {
     try{
       await Firestore.instance.collection("Status").document(email).setData({
-        "Name": name,
+        "Name": name.substring(0,1).toUpperCase() + name.substring(1),
         "Current class code": cc,
         "roll number": 'NA'
       });
-      await Firestore.instance.collection('History').document(email).setData({'Name': name},merge: true);
+      await Firestore.instance.collection('History').document(email).setData({'Name': name.substring(0,1).toUpperCase() + name.substring(1)},merge: true);
     } catch(e){
       print(e);
     }

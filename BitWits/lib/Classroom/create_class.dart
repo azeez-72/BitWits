@@ -71,18 +71,14 @@ class _CreateClassState extends State<CreateClass> {
   }
 
   Future<void> saveToCF() async {
-    Firestore.instance
-        .collection("Classrooms")
-        .document(code)
-        .collection("Students")
+    await Firestore.instance
+        .collection("Classrooms/$code/Students")
         .document(currentUser.uid)
-        .setData({"name": name, "roll number": rollcon.text});
-    Firestore.instance
+        .setData({"name": name, "roll number": rollcon.text, "email": currentUser.email,'CR': true});
+    await Firestore.instance
         .collection('Classrooms')
         .document(code)
-        .setData({
-          currentUser.email: 'CR-$name'
-        });
+        .setData({currentUser.email: 'CR-$name'});
   }
 
   createBatchDialog(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +12,7 @@ class Test extends StatefulWidget {
 
 class _TestState extends State<Test> {
   bool isValid = false;
+  String docID;
 
   @override
   void initState() {
@@ -37,13 +39,10 @@ class _TestState extends State<Test> {
 
   _writeQuery() {
     //write your  queries
-    Firestore.instance.collection('Classrooms').snapshots().listen((snapshot) {
+    var querySnapShot = Firestore.instance.collection('Classrooms/cs523243/Students').where('email',isEqualTo: 'rajesh@panmasala.com').limit(1).getDocuments();
+    querySnapShot.then((snapshot){
       snapshot.documents.forEach((doc) {
-        if('es148286' == doc.documentID){
-          setState(() {
-            isValid = true;
-          });
-        }
+        print(doc.data);
       });
     });
   }
@@ -52,7 +51,7 @@ class _TestState extends State<Test> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: Center(child: Text(isValid.toString()),
+      child: Center(child: Text('Testing!'),
     ));
   }
 }

@@ -2,6 +2,7 @@ import 'package:bitwitsapp/Classroom/Choose.dart';
 import 'package:bitwitsapp/Classroom/Data.dart';
 import 'package:bitwitsapp/Intermediate.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
+import 'package:bitwitsapp/Utilities/info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +21,55 @@ class Students_list extends StatefulWidget {
 class _Students_listState extends State<Students_list> {
   String year, batch, code, branch;
   String data;
+  ScrollController controller = ScrollController();
 
   Future<void> _leaveClass(String email,String code) async {
     await Firestore.instance.collection('Status').document(email)
           .updateData({'Current class code': 'NA'});
     await Firestore.instance.collection('History').document(email)  
           .setData({'class left on ${DateTime.now()}': code},merge: true);  
+  }
+
+  Future<void> _addAsCR(String email,String code,String crEmail) async{
+    String uid;
+    await Firestore.instance.collection('Status').document(email).setData({'$code CR': true},merge: true);
+    await Firestore.instance.collection('History').document(email)
+      .setData({'made CR on ${DateTime.now()} by $crEmail': code},merge: true);
+    await Firestore.instance.collection('History').document(crEmail)
+      .setData({'assigned CR status on ${DateTime.now()} to $email': code},merge: true);
+    await Firestore.instance.collection('Classrooms/$code/Students')
+      .where('email',isEqualTo: email).limit(1).getDocuments().then((snapshot){
+        snapshot.documents.forEach((doc) {
+          uid = doc.documentID;
+        });
+      });
+    await Firestore.instance.collection('Classrooms/$code/Students').document(uid).updateData({'CR': true});
+  }
+
+  Widget showActionDialog(String actionShow,String email,String code,String crEmail) => 
+    AlertDialog(
+      title: Text('Are you sure?'),
+      content: Text(actionShow),
+      actions: [
+        FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL',style: TextStyle(color: Colors.grey),)),
+        FlatButton(onPressed: () async {
+          await _addAsCR(email,code,crEmail);
+          Navigator.pop(context);
+        },child: Text('YES'))
+      ],
+    );
+
+  Future<void> _selectAction(String value,String code,String crEmail,String name,String email){
+    switch (value) {
+      case 'CR':
+        showDialog(context: context,builder: (context) => showActionDialog('Add $name as CR?',email,code,crEmail));
+        break;
+      case 'Remove':
+        showDialog(context: context,builder: (context) => showActionDialog('Remove $name from class?',email,code,crEmail));
+        break;
+      default:
+        print('none');
+    }
   }
 
   // Future<void> deleteClass() async {
@@ -41,6 +85,21 @@ class _Students_listState extends State<Students_list> {
   //     .updateData({"Current class code": "NA"});
   // }
 
+  AlertDialog leaveClassAlert(String email,String code){
+    return AlertDialog(
+      title: Text('Leave this class?'),
+      actions: [
+        FlatButton(onPressed: () => Navigator.pop(context), child: Text('NO',style: TextStyle(color: Colors.grey),)),
+        FlatButton(onPressed: () async {
+          await _leaveClass(email, code);
+          Navigator.pushNamedAndRemoveUntil(context, Intermediate.id, (route) => false);
+        }, child: Text('YES'))
+      ],
+    );
+  }
+
+  Map reversed = Info.getBranch().map((k, v) => MapEntry(v, k));
+
   @override
   Widget build(BuildContext context) {
     return Consumer<Data>(
@@ -50,14 +109,14 @@ class _Students_listState extends State<Students_list> {
             leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
             backgroundColor: mainColor,
             titleSpacing: 2,
-            title: Text("Classmates",
+            title: Text(data.currentClassCode.substring(0,1) == 'b' ? 'Batch-${data.currentClassCode.substring(1,2)}'
+                          :  reversed[data.currentClassCode.substring(0,2)]+ ' ' + Info.yrs[int.parse(data.currentClassCode.substring(5,6))-2],
                 style: TextStyle(letterSpacing: 1, fontSize: 21)),
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.exit_to_app),
                 onPressed: () async {
-                  await _leaveClass(data.currentEmail, data.currentClassCode);
-                  Navigator.pushNamedAndRemoveUntil(context, Intermediate.id, (route) => false);
+                  await showDialog(context: context,builder: (context) => leaveClassAlert(data.currentEmail,data.currentClassCode));
                   // Scaffold.of(context).showSnackBar(
                   //   SnackBar(
                   //     content: Text("Coming soon :)"),
@@ -68,58 +127,88 @@ class _Students_listState extends State<Students_list> {
                   //  showSearch(context: context, delegate: SearchNames(searchCode: code));
                 },
               ),
-              IconButton(
-                icon: SvgPicture.asset(
-                  'svgs/remove_user.svg',
-                  color: Colors.white,
-                  width: 24,
-                  height: 24,
-                ),
-                onPressed: () {
-                  //TODO: remove person from the list
-                },
-              ),
-              //TODO: menu list item builder three dots
             ],
           ),
-          body: StreamBuilder(
-              stream: Firestore.instance
-                  .collection('Classrooms/${data.currentClassCode}/Students')
-                  .snapshots(),
-              builder: (context, dataSnapShot) {
-                if (dataSnapShot.connectionState == ConnectionState.waiting)
-                  return Center(child: CircularProgressIndicator());
-                final studentDocs = dataSnapShot.data.documents;
-                return ListView.builder(
-                  itemBuilder: (context, index) => ListTile(
-                    onTap: () { //display roll no
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                            studentDocs[index]['roll number'],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 16),
+          body: Scrollbar(
+              child: StreamBuilder(
+                stream: Firestore.instance
+                    .collection('Classrooms/${data.currentClassCode}/Students')
+                    .orderBy('name',descending: false)
+                    .snapshots(),
+                builder: (context, dataSnapShot) {
+                  if (dataSnapShot.connectionState == ConnectionState.waiting)
+                    return Center(child: CircularProgressIndicator());
+                  final studentDocs = dataSnapShot.data.documents;
+                  return ListView.builder(
+                    itemBuilder: (context, index) => ListTile(
+                      onTap: () { //display roll no
+                        data.isCr ? Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                              studentDocs[index]['roll number'],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            backgroundColor: mainColor,
+                            duration: Duration(seconds: 5))): null;
+                      },
+                      title: Text(
+                        studentDocs[index]['name'],
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: data.name == studentDocs[index]['name'] ? Colors.blue : Colors.grey[800]),
+                      ),
+                      leading: Icon(
+                        Icons.person_outline,
+                        color: mainColor,
+                        size: 28,
+                      ),
+                      // trailing: data.isCr ? Member() : null,
+                      trailing: studentDocs[index]['CR'] ? Text('CR   ',style: TextStyle(color: mainColor,fontSize: 16,fontWeight: FontWeight.bold),) : data.isCr ? data.name != studentDocs[index]['name'] ? PopupMenuButton(
+                        icon: Icon(Icons.more_vert,color: Colors.grey[700],),
+                        onSelected: (String val) => _selectAction(val,data.currentClassCode,data.currentEmail,studentDocs[index]['name'],studentDocs[index]['email']),
+                        itemBuilder: (context) => <PopupMenuEntry<String>>[
+                          PopupMenuItem<String>(
+                            value: 'CR',
+                            child: Text('Add as CR')
                           ),
-                          backgroundColor: mainColor,
-                          duration: Duration(seconds: 5)));
-                    },
-                    title: Text(
-                      studentDocs[index]['name'],
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.grey[800]),
+                          PopupMenuItem<String>(
+                            value: 'Remove',
+                            child: Text('Remove user')
+                          )
+                        ]
+                      ) : null : null,
                     ),
-                    leading: Icon(
-                      Icons.person_outline,
-                      color: mainColor,
-                      size: 28,
-                    ),
-                  ),
-                  itemCount: studentDocs.length,
-                );
-              }),
+                    itemCount: studentDocs.length,
+                  );
+                }),
+          ),
         );
       },
+    );
+  }
+}
+
+class Member extends StatelessWidget {
+  final Function selectAction;
+
+  Member({this.selectAction});
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      icon: Icon(Icons.more_vert,color: Colors.grey[700],),
+      onSelected: (String val) => selectAction(val),
+      itemBuilder: (context) => <PopupMenuEntry<String>>[
+        PopupMenuItem<String>(
+          value: 'Add as CR',
+          child: Text('Add as CR')
+        ),
+        PopupMenuItem<String>(
+          value: 'remove',
+          child: Text('Remove user')
+        )
+      ]
     );
   }
 }
