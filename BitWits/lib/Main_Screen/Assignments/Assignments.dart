@@ -22,6 +22,7 @@ class Assignments extends StatefulWidget {
 class _assignmentsState extends State<Assignments> {
 
   DateTime _newValue = DateTime.now();
+  bool check = false;
   DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
 
   Future _selectDate() async {
@@ -144,6 +145,39 @@ class _assignmentsState extends State<Assignments> {
                       textdecoration = TextDecoration.lineThrough;
                     }
                     return ListTile(
+                      onTap: () => showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context){
+                          return Container(
+                            height: mobile.size.height*0.75,
+                            width: double.infinity,
+                            child: Scrollbar(
+                              child: ListView(
+                                children: [
+                                  ListTile(
+                                    trailing:  Assignments.completionMap[studentDocs[index]['Title']] != null ? Assignments.completionMap[studentDocs[index]['Title']] ? Icon(Icons.check,color: Colors.green,size: 28,)
+                                            : Icon(Icons.error_outline,color: DateTime.parse(studentDocs[index]['Deadline'])
+                                                      .difference(DateTime.now())
+                                                      .inDays <
+                                                  2 ? Colors.red : Colors.grey,size: 28,) : null,
+                                    title: Text('Description',textAlign: TextAlign.start,
+                                      style: TextStyle(color: mainColor,fontSize: 24,fontWeight: FontWeight.bold),),
+                                      leading: IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context)),
+                                  ),
+                                  //TODO: place holder for assignment pdf or image
+                                  Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child: Container(
+                                      child: Text(studentDocs[index]['Description'],style: TextStyle(fontSize: 16,wordSpacing: 1,height: 1.2),
+                                    ),
+                                  ))
+                                ]
+                              ),
+                            ),
+                          );
+                        }
+                      ),
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[

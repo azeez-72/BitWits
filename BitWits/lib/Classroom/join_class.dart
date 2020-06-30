@@ -155,8 +155,8 @@ Future<void> _saveToCF() async {
                     await _validateCode(enteredCode);
                     if(isValid) {
                       try{
-                        await _saveToCF();
                         await _updateStatus();
+                        await _saveToCF();
                         await Firestore.instance.collection('History').document(currentUser.email)
                         .setData({'class joined on ${DateTime.now()} with roll number and branch': '${codecon.text} , ${rollcon.text} and $branch'},merge: true);
                         Navigator.pushReplacementNamed(context, Intermediate.id);
@@ -259,8 +259,8 @@ Future<void> _saveToCF() async {
                           if(isValid) {
                             try{
                               FocusScope.of(context).unfocus();
-                              await _saveToCF();
                               await _updateStatus();
+                              await _saveToCF();
                               await Firestore.instance.collection('History').document(currentUser.email)
                               .setData({'class joined on ${DateTime.now()} with roll number and branch': '${codecon.text} , ${rollcon.text} and $branch'},merge: true);
                               Navigator.pushNamed(context, Intermediate.id);

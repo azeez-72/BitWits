@@ -38,16 +38,17 @@ class _CreateClassState extends State<CreateClass> {
     FocusScope.of(context).unfocus();
   }
 
-  Future<void> updateStatus() async {
+  Future<void> _getName() async {
     await Firestore.instance
-        .collection("Status")
-        .document(currentUser.email)
-        .get()
-        .then((DocumentSnapshot snapshot) {
-          setState(() {
-            name = snapshot.data["Name"];
-          });
+      .collection("Status")
+      .document(currentUser.email)
+      .get()
+      .then((DocumentSnapshot snapshot) {
+        setState(() => name = snapshot.data['Name']);
     });
+  }
+
+  Future<void> updateStatus() async {
     await Firestore.instance
         .collection("Status")
         .document(currentUser.email)
@@ -66,7 +67,6 @@ class _CreateClassState extends State<CreateClass> {
   void registeredCurrentUser() async {
     final regUser = await _auth.currentUser();
     currentUser = regUser;
-    print(currentUser.email);
   }
 
   Future<void> saveToCF() async {
@@ -121,6 +121,7 @@ class _CreateClassState extends State<CreateClass> {
                       "b$batch${Random().nextInt(999).toString()}$year${rollcon.text.substring(rollcon.text.length - 2)}";
                   setState(() => fySpinner = true);
                   try{
+                    await _getName();
                     await updateStatus();
                     await saveToCF();
                     Navigator.pushReplacementNamed(context, CodeDisplay.id);
@@ -131,7 +132,7 @@ class _CreateClassState extends State<CreateClass> {
                       backgroundColor: Colors.red,
                       messageText: 
                         Text(
-                          'An error occured...Pls try agian later!',
+                          'An error occurred...Pls try agian later!',
                           style: TextStyle(
                             color: Colors.white
                           ),
@@ -243,6 +244,7 @@ class _CreateClassState extends State<CreateClass> {
                                   "${Info.getBranch()[branch]}${Random().nextInt(999).toString()}$year${rollcon.text.substring(rollcon.text.length - 2)}";
                               setState(() => showSpinner = true);
                               try{
+                                await _getName();
                                 await updateStatus();
                                 await saveToCF();
                                 await Firestore.instance.collection('History').document(studentData.currentEmail)
@@ -252,7 +254,7 @@ class _CreateClassState extends State<CreateClass> {
                                 Navigator.pushNamed(
                                     context, CodeDisplay.id);
                               } catch(e){
-                                setState(() => fySpinner = false);
+                                setState(() => showSpinner = false);
                                 Flushbar(
                                   icon: errorIcon,
                                   backgroundColor: Colors.red,

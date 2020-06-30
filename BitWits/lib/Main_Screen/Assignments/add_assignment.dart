@@ -62,61 +62,65 @@ class _AddAssignmentState extends State<AddAssignment> {
               color: Color(0xFF757575),
               child: Container(
                 decoration: bottomSheetDecoration,
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    children: <Widget>[
-                      Text('Add assignment',style: TextStyle(color: mainColor,fontSize: 22,fontWeight: FontWeight.bold),),
-                      SizedBox(height: 20,),
-                      CodeFields('title', TextInputType.text, titleController),
-                      SizedBox(height: 15),
-                      CodeFields('Description(optional)', TextInputType.text, descriptionController),
-                      SizedBox(height: 15),
-                      Container(
-                      child: FlatButton.icon(
-                        label: Text("SELECT DATE OF SUBMISSION",style: TextStyle(color: mainColor),),
-                        icon: Icon(
-                          Icons.date_range,
-                          color: mainColor,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 16,left: 16,top: 8,bottom: 24),
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          trailing: IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context)),
+                          title: Text('Add assignment',style: TextStyle(color: mainColor,fontSize: 22,fontWeight: FontWeight.bold),)),
+                        SizedBox(height: 5,),
+                        CodeFields('title', TextInputType.text, titleController),
+                        SizedBox(height: 15),
+                        CodeFields('Description(optional)', TextInputType.text, descriptionController),
+                        SizedBox(height: 15),
+                        Container(
+                        child: FlatButton.icon(
+                          label: Text("SELECT DATE OF SUBMISSION",style: TextStyle(color: mainColor),),
+                          icon: Icon(
+                            Icons.date_range,
+                            color: mainColor,
+                          ),
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                             _selectDate();
+                          },
+                          ),
                         ),
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                           _selectDate();
-                        },
+                        Container(
+                          child: Text(
+                            _dateFormat.format(_value).toString().split('-').reversed.join('-'),
+                            style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.w500),
+                          ),
                         ),
+                        SizedBox(height: 20,),
+                        button('Add', 18,
+                          () async {
+                            FocusScope.of(context).unfocus();
+                            if(titleController.text == '')
+                            Flushbar(
+                              messageText: Text(
+                                "Pls enter the title",
+                              style:
+                                TextStyle(fontSize: 15, color: Colors.white),
+                              ),
+                              icon: errorIcon,
+                              duration: Duration(seconds: 2),
+                              backgroundColor: Colors.red,
+                            )..show(context);
+                            else {
+                              setState(() => showSpinner = true);
+                              await _saveToCF(data.currentClassCode);
+                              await _initialize(data.currentClassCode);
+                              setState(() => showSpinner = false);
+                              Navigator.pop(context);
+                            }
+                          })
+                        ],
                       ),
-                      Container(
-                        child: Text(
-                          _dateFormat.format(_value).toString().split('-').reversed.join('-'),
-                          style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                      SizedBox(height: 20,),
-                      button('Add', 18,
-                        () async {
-                          FocusScope.of(context).unfocus();
-                          if(titleController.text == '')
-                          Flushbar(
-                            messageText: Text(
-                              "Pls enter the title",
-                            style:
-                              TextStyle(fontSize: 15, color: Colors.white),
-                            ),
-                            icon: errorIcon,
-                            duration: Duration(seconds: 2),
-                            backgroundColor: Colors.red,
-                          )..show(context);
-                          else {
-                            setState(() => showSpinner = true);
-                            await _saveToCF(data.currentClassCode);
-                            await _initialize(data.currentClassCode);
-                            setState(() => showSpinner = false);
-                            Navigator.pop(context);
-                          }
-                        })
-                      ],
                     ),
-                  ),
+                ),
               ),
             ),
           ),
