@@ -200,11 +200,11 @@ class _assignmentsState extends State<Assignments> {
                                   ),
                                   Flexible(
                                     flex: 3,
-                                    child: CircularCheckBox(
-                                      value: Assignments.completionMap[studentDocs[index]['Title']] == null ? false : Assignments.completionMap[studentDocs[index]['Title']],
-                                      activeColor: Colors.green[300],
-                                      onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
-                                    ),
+                                    //child: CircularCheckBox(
+                                      //value: Assignments.completionMap[studentDocs[index]['Title']] == null ? false : Assignments.completionMap[studentDocs[index]['Title']],
+                                      //activeColor: Colors.green[300],
+                                      //onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
+                                    //),
                                   ),
                                 ],
                               ),
