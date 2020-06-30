@@ -94,14 +94,6 @@ class _AnnouncementsState extends State<Announcements> {
           ),
         ),
         backgroundColor: mainColor,
-        actions: [
-          IconButton(
-              icon: Icon(
-                Icons.add,
-                size: 30,
-              ),
-              onPressed: () {}),
-        ],
       ),
       body: ListView.builder(
         itemCount: null == _messages ? 0 : _messages.length,

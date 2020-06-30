@@ -29,16 +29,12 @@ class SignUpState extends State<SignUp> {
   String error = " ";
 
   Future<void> updateStatus(String email,String name,String cc) async {
-    try{
-      await Firestore.instance.collection("Status").document(email).setData({
-        "Name": name.substring(0,1).toUpperCase() + name.substring(1),
-        "Current class code": cc,
-        "roll number": 'NA'
-      });
-      await Firestore.instance.collection('History').document(email).setData({'Name': name.substring(0,1).toUpperCase() + name.substring(1)},merge: true);
-    } catch(e){
-      print(e);
-    }
+    await Firestore.instance.collection("Status").document(email).setData({
+      "Name": name.substring(0,1).toUpperCase() + name.substring(1),
+      "Current class code": cc,
+      "roll number": 'NA'
+    });
+    await Firestore.instance.collection('History').document(email).setData({'Name': name.substring(0,1).toUpperCase() + name.substring(1)},merge: true);
   }
 
   @override
@@ -129,8 +125,19 @@ class SignUpState extends State<SignUp> {
                                 await _auth.createUserWithEmailAndPassword(
                                   email: _email.trim(), password: _password);
                               if(newUser != null) {
+                                try{
                                   await updateStatus(_email.trim(), name, "New");
                                   Navigator.pushNamed(context, Intermediate.id);
+                                } catch(e){
+                                  setState(() => showSpinner = false);
+                                  Scaffold.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: errorMessage('An error occured...Pls try again later!'),
+                                      backgroundColor: Colors.red,
+                                      duration: Duration(seconds: 3,),
+                                    )
+                                  );
+                                }
                                 }
                               } catch (e) {
                                 setState(() => showSpinner = false);

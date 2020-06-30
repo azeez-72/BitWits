@@ -6,7 +6,6 @@ import 'package:bitwitsapp/Utilities/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class Intermediate extends StatefulWidget {
@@ -40,7 +39,7 @@ class _IntermediateState extends State<Intermediate> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return _email == null ? LoadingScreen() : StreamBuilder(
       stream: Firestore.instance.collection('Status').document(_email).snapshots(),
       builder: (context , snapshot){
         if(snapshot.connectionState == ConnectionState.waiting) return LoadingScreen();

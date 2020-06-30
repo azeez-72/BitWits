@@ -120,9 +120,6 @@ class _SignInState extends State<SignIn> {
                                     Navigator.pushReplacementNamed(
                                         context, Intermediate.id);
                                   }
-                                  setState(() {
-                                    showSpinner = false;
-                                  });
                                 } catch (e) {
                                   setState(() {
                                     showSpinner = false;

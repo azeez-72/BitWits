@@ -24,7 +24,7 @@ class _AddAssignmentState extends State<AddAssignment> {
 
   Future<void> _saveToCF(String code) async {
     await Firestore.instance.collection('Classrooms/$code/Assignments').document(titleController.text).setData({
-      'Title': titleController.text,
+      'Title': titleController.text.trim(),
       'Description': descriptionController.text == '' ? 'Not provided' : descriptionController.text,
       'Created at': DateTime.now(),
       'Deadline': _dateFormat.format(_value),
@@ -36,7 +36,7 @@ class _AddAssignmentState extends State<AddAssignment> {
       .then((snapshot){
         snapshot.documents.forEach((doc) {
           Firestore.instance.collection('Classrooms/$code/Assignment Status')
-          .document(titleController.text).setData({doc['roll number']: false},merge: true);
+          .document(titleController.text.trim()).setData({doc['roll number']: false},merge: true);
         });
       });
   }
@@ -79,13 +79,16 @@ class _AddAssignmentState extends State<AddAssignment> {
                           Icons.date_range,
                           color: mainColor,
                         ),
-                        onPressed: () => _selectDate(),
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                           _selectDate();
+                        },
                         ),
                       ),
                       Container(
                         child: Text(
-                          _dateFormat.format(_value),
-                          style: TextStyle(fontSize: 18.0),
+                          _dateFormat.format(_value).toString().split('-').reversed.join('-'),
+                          style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.w500),
                         ),
                       ),
                       SizedBox(height: 20,),

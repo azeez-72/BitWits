@@ -1,7 +1,6 @@
 import 'package:bitwitsapp/Classroom/Choose.dart';
-import 'package:bitwitsapp/Classroom/join_class.dart';
 import 'package:bitwitsapp/Intermediate.dart';
-import 'package:bitwitsapp/Main_Screen/Dashboard_screen.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bitwitsapp/Utilities/UIStyles.dart';
@@ -43,8 +42,23 @@ class _CodeDisplayState extends State<CodeDisplay> {
           actions: [
             FlatButton(onPressed: () => Navigator.pop(context), child: Text('NO'),),
             FlatButton(onPressed: () async {
-              await _deleteClass();
-              Navigator.pushNamedAndRemoveUntil(context, Navigate.id, (route) => false);
+              try{
+                await _deleteClass();
+                Navigator.pushNamedAndRemoveUntil(context, Navigate.id, (route) => false);
+              } catch(e){
+                Flushbar(
+                  icon: errorIcon,
+                  backgroundColor: Colors.red,
+                  messageText: 
+                    Text(
+                      'Unable to delete...Pls try agian later!',
+                      style: TextStyle(
+                      color: Colors.white
+                      ),
+                    ),
+                  duration: Duration(seconds: 2),
+                )..show(context);
+              }
             },child: Text('DELETE',style: TextStyle(color: Colors.red[700]),))
           ],          
         );

@@ -12,14 +12,15 @@ class Test extends StatefulWidget {
 
 class _TestState extends State<Test> {
   bool isValid = false;
-  String docID;
+  String code = 'cs523243';
 
   @override
   void initState() {
     super.initState();
 
     // writeQuery();
-    _writeQuery();
+    _executeQuery();
+    print('hello');
   }
 
   // Future<void> getDetails() async {
@@ -37,14 +38,19 @@ class _TestState extends State<Test> {
   //   });
   // }
 
-  _writeQuery() {
+  _executeQuery() {
     //write your  queries
-    var querySnapShot = Firestore.instance.collection('Classrooms/cs523243/Students').where('email',isEqualTo: 'rajesh@panmasala.com').limit(1).getDocuments();
-    querySnapShot.then((snapshot){
-      snapshot.documents.forEach((doc) {
-        print(doc.data);
+    Firestore.instance.collection('Classrooms').getDocuments()
+      .then((snapshot){
+        var docs = snapshot.documents;
+        for(var doc in docs) {
+          print(doc.documentID);
+          if(code == doc.documentID){
+            print('valid');
+            break;
+          }
+        }
       });
-    });
   }
 
   @override

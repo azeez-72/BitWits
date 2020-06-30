@@ -1,5 +1,5 @@
 import 'dart:collection';
-
+import 'package:flushbar/flushbar.dart';
 import 'package:bitwitsapp/Classroom/Data.dart';
 import 'package:bitwitsapp/Utilities/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:circular_check_box/circular_check_box.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'add_assignment.dart';
 
@@ -19,7 +20,18 @@ class Assignments extends StatefulWidget {
 
 // ignore: camel_case_types
 class _assignmentsState extends State<Assignments> {
-  int n = 2;
+
+  DateTime _newValue = DateTime.now();
+  DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
+
+  Future _selectDate() async {
+    DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: new DateTime.now(),
+        firstDate: new DateTime(2020),
+        lastDate: new DateTime(2025));
+    if (picked != null) setState(() => _newValue = picked);
+  }
 
   Future<void> _updateValue(String code,String title,String roll,bool value) async {
     await Firestore.instance
@@ -27,6 +39,55 @@ class _assignmentsState extends State<Assignments> {
           .document(title).updateData({roll : value});
 
     setState(() => Assignments.completionMap[title] = value);
+  }
+
+  Widget _deleteDialog(String code,String title){
+    return AlertDialog(
+      title: Text('Delete $title ?'),
+      actions: [
+        FlatButton(onPressed: () => Navigator.pop(context), child: Text('NO')),
+        FlatButton(onPressed: () async {
+          try{
+            await Firestore.instance.collection('Classrooms/$code/Assignments').document(title).delete();
+            await Firestore.instance.collection('Classrooms/$code/Assignment Status').document(title).delete();
+            Flushbar(
+              icon: Icon(Icons.check,color:Colors.white),
+              messageText: Text('Assignment deleted',style: TextStyle(color: Colors.white),),
+              duration: Duration(seconds: 2),
+            )..show(context);
+            Navigator.pop(context);
+          } catch(e){
+              Flushbar(
+              icon: errorIcon,
+                backgroundColor: Colors.red,
+                messageText: 
+                Text(
+                  'Unable to delete...Pls try agian later!',
+                  style: TextStyle(
+                  color: Colors.white
+                    ),
+                  ),
+                duration: Duration(seconds: 2),
+              )..show(context);
+          }
+        },child: Text('YES')),
+      ],
+    );
+  }
+
+  _showAssignmentAction(String value,String code,String title) async {
+    switch (value) {
+      case 'Edit':
+        //add date picker
+        await _selectDate();
+        await Firestore.instance.collection('Classrooms/$code/Assignments').document(title).updateData({'Deadline': _dateFormat.format(_newValue)});
+        //TODO: notify users
+        break;
+      case 'Delete':
+        showDialog(context: context,builder: (context) => _deleteDialog(code,title));
+        break;
+      default:
+    }
   }
 
   @override
@@ -65,7 +126,7 @@ class _assignmentsState extends State<Assignments> {
         ),
         body: Assignments.completionMap == null ? LoadingScreen() : Scrollbar(
           child: Padding(
-            padding: EdgeInsets.only(top: 8),
+            padding: EdgeInsets.only(top: 8,bottom: 8),
             child: StreamBuilder(
               stream: Firestore.instance.collection('Classrooms/${data.currentClassCode}/Assignments').orderBy('Deadline').snapshots(),
               builder: (context,dataSnapShot) {
@@ -83,44 +144,53 @@ class _assignmentsState extends State<Assignments> {
                       textdecoration = TextDecoration.lineThrough;
                     }
                     return ListTile(
-                      title: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              ConstrainedBox(
-                              constraints: BoxConstraints(minWidth: mobile.size.width*2/3),
-                                child: Container(
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text(
-                                        "${index+1}. ${studentDocs[index]['Title']}", //to change
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                          fontFamily: "Thesis",
-                                          color: textColor,
-                                          decoration: textdecoration,
-                                        ),
+                          ConstrainedBox(
+                          constraints: BoxConstraints(minWidth: data.isCr? mobile.size.width*0.5665 : mobile.size.width*2/3,maxWidth: data.isCr? mobile.size.width*0.5665 : mobile.size.width*2/3 ),
+                            child: Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Flexible(
+                                    flex: 5,
+                                    child: Text(
+                                      "${index+1}. ${studentDocs[index]['Title']}", //to change
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontFamily: "Thesis",
+                                        color: textColor,
+                                        decoration: textdecoration,
                                       ),
-                                      CircularCheckBox(
-                                        value: Assignments.completionMap[studentDocs[index]['Title']] == null ? false : Assignments.completionMap[studentDocs[index]['Title']],
-                                        activeColor: Colors.green[300],
-                                        onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                  Flexible(
+                                    flex: 3,
+                                    child: CircularCheckBox(
+                                      value: Assignments.completionMap[studentDocs[index]['Title']] == null ? false : Assignments.completionMap[studentDocs[index]['Title']],
+                                      activeColor: Colors.green[300],
+                                      onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Container(
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                               Container(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text('Due:',style: TextStyle(fontWeight: FontWeight.normal),),
                                     SizedBox(height: 5,),
                                     Text(
-                                      //TODO: CHANGE THE FONTSIZE
-                                      studentDocs[index]['Deadline'].toString().split('-').reversed.join('-'),
+                                      DateTime.parse(studentDocs[index]['Deadline'])
+                                                    .difference(DateTime.now())
+                                                    .inDays <
+                                                0 ?
+                                      '${studentDocs[index]['Deadline'].toString().split('-').reversed.join('-')}\nExceeded' : studentDocs[index]['Deadline'].toString().split('-').reversed.join('-'),
                                       softWrap: false,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -128,7 +198,7 @@ class _assignmentsState extends State<Assignments> {
                                         fontWeight: DateTime.parse(studentDocs[index]['Deadline'])
                                                     .difference(DateTime.now())
                                                     .inDays <
-                                                2 ? FontWeight.bold : FontWeight.normal,
+                                                2 ? FontWeight.bold : FontWeight.w500,
                                         color: DateTime.parse(studentDocs[index]['Deadline'])
                                                     .difference(DateTime.now())
                                                     .inDays <
@@ -140,11 +210,25 @@ class _assignmentsState extends State<Assignments> {
                                   ],
                                 ),
                               ),
+                              if(data.isCr)
+                              PopupMenuButton(
+                                icon: Icon(Icons.more_vert,color: Colors.grey[700],),
+                                onSelected: (String val) => _showAssignmentAction(val,data.currentClassCode,studentDocs[index]['Title']),
+                                itemBuilder: (context) => <PopupMenuEntry<String>>[
+                                  PopupMenuItem<String>(
+                                    value: 'Edit',
+                                    child: Text('Change submission date'),
+                                  ),
+                                  PopupMenuItem<String>(
+                                    value: 'Delete',
+                                    child: Text('Delete assignment'),
+                                  )
+                                ]
+                              ),
                             ],
                           ),
                         ],
                       ),
-                    ),
                   );
                   },itemCount: studentDocs.length
                 );

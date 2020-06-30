@@ -20,11 +20,10 @@ class CreateClass extends StatefulWidget {
 }
 
 class _CreateClassState extends State<CreateClass> {
-  bool showSpinner = false;
+  bool showSpinner = false,fySpinner = false;
   final codecon = TextEditingController();
   final rollcon = TextEditingController();
   final _auth = FirebaseAuth.instance;
-  bool singleClass;
   FirebaseUser currentUser;
   String year, branch, code, batch, name;
 
@@ -85,45 +84,64 @@ class _CreateClassState extends State<CreateClass> {
     return showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: BranchText(
-              title: "batch",
+          return ModalProgressHUD(
+            inAsyncCall: fySpinner,
+            child: AlertDialog(
+              title: BranchText(
+                title: "batch",
+              ),
+              content: FormField<String>(
+                builder: (FormFieldState<String> state) {
+                  return InputDecorator(
+                    decoration: textInputDecoration("Batch"),
+                    isEmpty: branch == '', //
+                    child: DropDown(
+                      value: batch,
+                      list: Info.batches.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          batch = newValue;
+                          state.didChange(newValue);
+                        });
+                      },
+                    ),
+                  );
+                },
+              ),
+              actions: <Widget>[
+                Cancel(),
+                OK(onPressed: () async {
+                  //process
+                  code =
+                      "b$batch${Random().nextInt(999).toString()}$year${rollcon.text.substring(rollcon.text.length - 2)}";
+                  setState(() => fySpinner = true);
+                  try{
+                    await updateStatus();
+                    await saveToCF();
+                    Navigator.pushReplacementNamed(context, CodeDisplay.id);
+                  } catch(e){
+                    setState(() => fySpinner = false);
+                    Flushbar(
+                      icon: errorIcon,
+                      backgroundColor: Colors.red,
+                      messageText: 
+                        Text(
+                          'An error occured...Pls try agian later!',
+                          style: TextStyle(
+                            color: Colors.white
+                          ),
+                        ),
+                        duration: Duration(seconds: 2),
+                    )..show(context);
+                  }
+                })
+              ],
             ),
-            content: FormField<String>(
-              builder: (FormFieldState<String> state) {
-                return InputDecorator(
-                  decoration: textInputDecoration("Batch"),
-                  isEmpty: branch == '', //
-                  child: DropDown(
-                    value: batch,
-                    list: Info.batches.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        batch = newValue;
-                        state.didChange(newValue);
-                      });
-                    },
-                  ),
-                );
-              },
-            ),
-            actions: <Widget>[
-              Cancel(),
-              OK(onPressed: () async {
-                //process
-                code =
-                    "b$batch${Random().nextInt(999).toString()}$year${rollcon.text.substring(rollcon.text.length - 2)}";
-                await updateStatus();
-                await saveToCF();
-
-                Navigator.pushReplacementNamed(context, CodeDisplay.id);
-              })
-            ],
           );
         });
   }
@@ -223,17 +241,31 @@ class _CreateClassState extends State<CreateClass> {
                             if (year != "1") {
                               code =
                                   "${Info.getBranch()[branch]}${Random().nextInt(999).toString()}$year${rollcon.text.substring(rollcon.text.length - 2)}";
-                              setState(() {
-                                showSpinner = true;
-                              });
-                              await updateStatus();
-                              await saveToCF();
-                              await Firestore.instance.collection('History').document(studentData.currentEmail)
-                                              .setData({'class created on ${DateTime.now()} with roll number': '$code and ${rollcon.text}'},merge: true);
-                              studentData.addBranch(branch);
+                              setState(() => showSpinner = true);
+                              try{
+                                await updateStatus();
+                                await saveToCF();
+                                await Firestore.instance.collection('History').document(studentData.currentEmail)
+                                                .setData({'class created on ${DateTime.now()} with roll number': '$code and ${rollcon.text}'},merge: true);
+                                studentData.addBranch(branch);
 
-                              Navigator.pushNamed(
-                                  context, CodeDisplay.id);
+                                Navigator.pushNamed(
+                                    context, CodeDisplay.id);
+                              } catch(e){
+                                setState(() => fySpinner = false);
+                                Flushbar(
+                                  icon: errorIcon,
+                                  backgroundColor: Colors.red,
+                                  messageText: 
+                                    Text(
+                                      'An error occured...Pls try agian later!',
+                                      style: TextStyle(
+                                        color: Colors.white
+                                      ),
+                                    ),
+                                    duration: Duration(seconds: 2),
+                                )..show(context);
+                              }
                             }
                           }
                         }),

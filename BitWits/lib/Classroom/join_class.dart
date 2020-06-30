@@ -22,9 +22,7 @@ class _JoinClassState extends State<JoinClass> {
   FirebaseUser currentUser;
   int y;
   String enteredCode,branch, name;
-  bool showSpinner = false;
-  bool isValid = false;
-  List<String> codes = [];
+  bool showSpinner = false,isValid = false;
 
   @override
   void initState() {
@@ -36,13 +34,20 @@ class _JoinClassState extends State<JoinClass> {
   void registeredCurrentUser() async {
     final regUser = await _auth.currentUser();
     currentUser = regUser;
+  }
 
-    Firestore.instance.collection('Classrooms').snapshots().listen((snapshot) {
-      snapshot.documents.forEach((doc) {
-        codes.add(doc.documentID);
-      });
+  _validateCode(String code) async {
+    await Firestore.instance.collection('Classrooms').getDocuments()
+    .then((snapshot){
+      var docs = snapshot.documents;
+      for(var doc in docs) {
+        print(doc.documentID);
+        if(code == doc.documentID){
+          setState(() => isValid = true);
+          break;
+        }
+      }
     });
-    print(codes);
   }
 
   _getYear(){
@@ -70,7 +75,7 @@ class _JoinClassState extends State<JoinClass> {
   //         });
   // }
 
-  Future<void> updateStatus() async {
+  Future<void> _updateStatus() async {
     await Firestore.instance
         .collection("Status")
         .document(currentUser.email)
@@ -100,6 +105,13 @@ class _JoinClassState extends State<JoinClass> {
           });
         }
       );
+  }
+
+Future<void> _saveToCF() async {
+    await Firestore.instance
+        .collection("Classrooms/$enteredCode/Students")
+        .document(currentUser.uid)
+        .setData({"name": name, "roll number": rollcon.text,"email": currentUser.email,'CR': false});
   }
 
   createBranchDialog(BuildContext context) {
@@ -136,20 +148,47 @@ class _JoinClassState extends State<JoinClass> {
                 ),
                 actions: <Widget>[
                   Cancel(),
-                  OK(onPressed: () async {
+                  OK(
+                    onPressed: () async {
                     //process
                     setState(() => showSpinner = true);
-                    for(int i = 0 ; i < codes.length ; i++){
-                      if(enteredCode == codes[i]){
-                        await updateStatus();
-                        await saveToCF();
+                    await _validateCode(enteredCode);
+                    if(isValid) {
+                      try{
+                        await _saveToCF();
+                        await _updateStatus();
                         await Firestore.instance.collection('History').document(currentUser.email)
-                              .setData({'class joined on ${DateTime.now()} with roll number and branch': '${codecon.text} , ${rollcon.text} and $branch'},merge: true);
-                        setState(() {
-                        showSpinner = false;
-                          isValid = true;
-                        });
-                        Navigator.pushNamed(context, Intermediate.id);
+                        .setData({'class joined on ${DateTime.now()} with roll number and branch': '${codecon.text} , ${rollcon.text} and $branch'},merge: true);
+                        Navigator.pushReplacementNamed(context, Intermediate.id);
+                      }catch(e){
+                        setState(() => showSpinner = false);
+                        Flushbar(
+                          icon: errorIcon,
+                          backgroundColor: Colors.red,
+                          messageText: 
+                            Text(
+                              'An error occured...Pls try agian later!',
+                               style: TextStyle(
+                                  color: Colors.white
+                              ),
+                            ),
+                          duration: Duration(seconds: 2),
+                        )..show(context);
+                      }
+                    }
+                    else{
+                      setState(() => showSpinner = false);
+                      Flushbar(
+                          messageText: Text(
+                            "Invalid code",
+                            style:
+                              TextStyle(fontSize: 15, color: Colors.white),
+                          ),
+                          icon: errorIcon,
+                          duration: Duration(seconds: 2),
+                          backgroundColor: Colors.red,
+                      )..show(context);
+                    }
                         // else {
                         //   setState(() => showSpinner = false);
                         //   Flushbar(
@@ -163,32 +202,10 @@ class _JoinClassState extends State<JoinClass> {
                         //   backgroundColor: Colors.red,
                         //   )..show(context);}
                         }
-                      }
-                      if(isValid == false) {
-                      print(isValid);
-                      setState(() => showSpinner = false);
-                      Flushbar(
-                        messageText: Text(
-                          "Invalid code",
-                          style:
-                            TextStyle(fontSize: 15, color: Colors.white),
-                        ),
-                        icon: errorIcon,
-                        duration: Duration(seconds: 2),
-                        backgroundColor: Colors.red,
-                      )..show(context);
-                    }
-                  })
+                  )
                 ],
               );
         });
-  }
-
-  Future<void> saveToCF() async {
-    await Firestore.instance
-        .collection("Classrooms/$enteredCode/Students")
-        .document(currentUser.uid)
-        .setData({"name": name, "roll number": rollcon.text,"email": currentUser.email,'CR': false});
   }
 
   @override
@@ -238,43 +255,42 @@ class _JoinClassState extends State<JoinClass> {
                         if (y == 1) createBranchDialog(context);
                         else {
                           setState(() => showSpinner = true);
-                          for(int i = 0 ; i < codes.length ; i++){
-                            if(enteredCode == codes[i]){
+                          await _validateCode(enteredCode);
+                          if(isValid) {
+                            try{
                               FocusScope.of(context).unfocus();
-                              await updateStatus();
-                              await saveToCF();
+                              await _saveToCF();
+                              await _updateStatus();
                               await Firestore.instance.collection('History').document(currentUser.email)
-                                    .setData({'class joined on ${DateTime.now()} with roll number': '${codecon.text} and ${rollcon.text}'},merge: true);
-                              setState(() {
-                                showSpinner = false;
-                                isValid = true;
-                              });
-                              print(codes);
+                              .setData({'class joined on ${DateTime.now()} with roll number and branch': '${codecon.text} , ${rollcon.text} and $branch'},merge: true);
                               Navigator.pushNamed(context, Intermediate.id);
-                              // else Flushbar(
-                              //   messageText: Text(
-                              //     "Class is blocked!",
-                              //     style:
-                              //       TextStyle(fontSize: 15, color: Colors.white),
-                              //   ),
-                              //   icon: Icon(Icons.block,color: Colors.white,),
-                              //   duration: Duration(seconds: 2),
-                              //   backgroundColor: Colors.red,
-                              // )..show(context);
+                            }catch(e){
+                              setState(() => showSpinner = false);
+                              Flushbar(
+                                icon: errorIcon,
+                                backgroundColor: Colors.red,
+                                messageText: 
+                                  Text(
+                                    'An error occured...Pls try agian later!',
+                                    style: TextStyle(
+                                        color: Colors.white
+                                    ),
+                                  ),
+                                duration: Duration(seconds: 2),
+                              )..show(context);
                             }
                           }
-                          if(isValid == false) {
-                            print(isValid);
+                          else{
                             setState(() => showSpinner = false);
                             Flushbar(
-                              messageText: Text(
-                              "Invalid code",
-                                style:
-                                  TextStyle(fontSize: 15, color: Colors.white),
-                              ),
-                              icon: errorIcon,
-                              duration: Duration(seconds: 2),
-                              backgroundColor: Colors.red,
+                                messageText: Text(
+                                  "Invalid code",
+                                  style:
+                                    TextStyle(fontSize: 15, color: Colors.white),
+                                ),
+                                icon: errorIcon,
+                                duration: Duration(seconds: 2),
+                                backgroundColor: Colors.red,
                             )..show(context);
                           }
                         }

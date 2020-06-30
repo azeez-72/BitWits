@@ -47,7 +47,7 @@ class _Students_listState extends State<Students_list> {
       title: Text('Are you sure?'),
       content: Text(actionShow),
       actions: [
-        FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL',style: TextStyle(color: Colors.grey),)),
+        FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL')),
         FlatButton(onPressed: () async {
           await _addAsCR(email,code,crEmail);
           Navigator.pop(context);
@@ -60,7 +60,7 @@ class _Students_listState extends State<Students_list> {
       title: Text('Are you sure?'),
       content: Text(actionShow),
       actions: [
-        FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL',style: TextStyle(color: Colors.grey),)),
+        FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL')),
         FlatButton(onPressed: () async {
           await _addAsCR(email,code,crEmail);
           Navigator.pop(context);
@@ -85,7 +85,7 @@ class _Students_listState extends State<Students_list> {
     AlertDialog(
       title: Text('$msg class?'),
       actions: [
-        FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL',style: TextStyle(color: Colors.grey),)),
+        FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL')),
         FlatButton(
           onPressed: () async => await Firestore.instance.collection('Classrooms').document(code).updateData({'block': status}),
           child: null
@@ -120,7 +120,7 @@ class _Students_listState extends State<Students_list> {
     return AlertDialog(
       title: Text('Leave this class?'),
       actions: [
-        FlatButton(onPressed: () => Navigator.pop(context), child: Text('NO',style: TextStyle(color: Colors.grey),)),
+        FlatButton(onPressed: () => Navigator.pop(context), child: Text('NO')),
         FlatButton(onPressed: () async {
           await _leaveClass(email, code);
           Navigator.pushNamedAndRemoveUntil(context, Intermediate.id, (route) => false);
