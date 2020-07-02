@@ -41,14 +41,15 @@ class _TestState extends State<Test> {
   _executeQuery() {
     //write your  queries
     Firestore.instance.collection('Classrooms').getDocuments()
-      .then((snapshot){
+      .then((snapshot) async {
         var docs = snapshot.documents;
         for(var doc in docs) {
-          print(doc.documentID);
-          if(code == doc.documentID){
-            print('valid');
-            break;
-          }
+          await Firestore.instance.collection('Classrooms/${doc.documentID}/Assignments').getDocuments()
+          .then((snap) {
+            snap.documents.forEach((element) {
+              if(element.data['G-drive link'] != null) print(doc.documentID);
+            });
+          });
         }
       });
   }

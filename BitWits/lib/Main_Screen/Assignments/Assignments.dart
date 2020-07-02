@@ -163,15 +163,20 @@ class _assignmentsState extends State<Assignments> {
                                   studentDocs[index]['G-drive link'] != null ? 
                                   SizedBox(height: 16) : null,
                                   studentDocs[index]['G-drive link'] != null ?
-                                  OutlineButton(
-                                    highlightedBorderColor: mainColor,
-                                    //studentDocs[index]['G-drive link'] has the link
-                                    child: Text('Open File',style: TextStyle(color: mainColor),),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    onPressed: (){
-                                      launch(studentDocs[index]['G-drive link']);
-                                      //open file using gdrive
-                                    }
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.only(left: 16),
+                                    child: ButtonTheme(
+                                      minWidth: 100,
+                                      height: 40,
+                                      child: OutlineButton(
+                                        borderSide: BorderSide(color: mainColor),
+                                        //studentDocs[index]['G-drive link'] has the link
+                                        child: Text('Open File',style: TextStyle(color: mainColor,fontSize: 18),),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                                        onPressed: () => launch(studentDocs[index]['G-drive link'])
+                                      ),
+                                    ),
                                   ) : null,
                                   Padding(
                                     padding: EdgeInsets.all(16),
