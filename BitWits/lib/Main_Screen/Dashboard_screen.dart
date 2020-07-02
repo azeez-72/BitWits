@@ -1,13 +1,10 @@
-import 'dart:collection';
-
 import 'package:bitwitsapp/Main_Screen/menu_options/menu_list.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
+import 'package:bitwitsapp/Utilities/loading.dart';
 import 'package:flutter/material.dart';
 import 'Announcements/Announcements.dart';
 import 'Assignments/Assignments.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 int _selectedIndex = 1;
 
@@ -22,29 +19,28 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  final _auth = FirebaseAuth.instance;
-  FirebaseUser currentUser;
+  // final _auth = FirebaseAuth.instance;
+  // FirebaseUser currentUser;
   
-  Future<void> registeredCurrentUser() async {
-    final regUser = await _auth.currentUser();
-    currentUser = regUser;
-    await Firestore.instance
-        .collection("Status")
-        .document(currentUser.email)
-        .get()
-        .then((DocumentSnapshot snapshot) async {
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      await preferences.setString(
-          currentUser.email + "@", snapshot.data["Current class code"]);
-      print(preferences.getString(currentUser.email+"@"));
-    });
-  }
+  // Future<void> registeredCurrentUser() async {
+  //   final regUser = await _auth.currentUser();
+  //   currentUser = regUser;
+  //   await Firestore.instance
+  //       .collection("Status")
+  //       .document(currentUser.email)
+  //       .get()
+  //       .then((DocumentSnapshot snapshot) async {
+  //     SharedPreferences preferences = await SharedPreferences.getInstance();
+  //     await preferences.setString(
+  //         currentUser.email + "@", snapshot.data["Current class code"]);
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
 
-    registeredCurrentUser();
+    // registeredCurrentUser();
     _getCompletionMap(widget.code, widget.roll);
   }
 
@@ -64,20 +60,17 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        bottomNavigationBar: bottomnavbar(
-          onTap: (int index) => setState(() => _selectedIndex = index)),
-        body: IndexedStack(
-          children: <Widget>[
-            Announcements(),
-            Assignments(),
-            MenuList(),
-          ],
-          index: _selectedIndex,
-        ),
+    return Assignments.completionMap == null ? LoadingScreen() : Scaffold(
+      backgroundColor: Colors.white,
+      bottomNavigationBar: bottomnavbar(
+        onTap: (int index) => setState(() => _selectedIndex = index)),
+      body: IndexedStack(
+        children: <Widget>[
+          Announcements(),
+          Assignments(),
+          MenuList(),
+        ],
+        index: _selectedIndex,
       ),
     );
   }

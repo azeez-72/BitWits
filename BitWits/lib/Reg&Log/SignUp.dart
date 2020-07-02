@@ -127,7 +127,8 @@ class SignUpState extends State<SignUp> {
                               if(newUser != null) {
                                 try{
                                   await updateStatus(_email.trim(), name, "New");
-                                  Navigator.pushNamed(context, Intermediate.id);
+                                  setState(() => showSpinner = false);
+                                  Navigator.popAndPushNamed(context, Intermediate.id);
                                 } catch(e){
                                   setState(() => showSpinner = false);
                                   Scaffold.of(context).showSnackBar(

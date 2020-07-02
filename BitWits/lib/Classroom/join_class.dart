@@ -22,7 +22,7 @@ class _JoinClassState extends State<JoinClass> {
   FirebaseUser currentUser;
   int y;
   String enteredCode,branch, name;
-  bool showSpinner = false,isValid = false;
+  bool showSpinner = false,isValid = false,fySpinner = false;
 
   @override
   void initState() {
@@ -100,6 +100,10 @@ class _JoinClassState extends State<JoinClass> {
       await Firestore.instance.collection('Classrooms/$enteredCode/Assignments').getDocuments()
       .then((snapshot){
           snapshot.documents.forEach((doc) async {
+
+            await Firestore.instance.collection('Classrooms/$enteredCode/Assignments')
+            .document(doc.documentID).setData({'Completion status': {rollcon.text : false}},merge: true);
+
             await Firestore.instance.collection('Classrooms/$enteredCode/Assignment Status')
             .document(doc.documentID).setData({rollcon.text: false},merge: true);
           });
@@ -118,93 +122,98 @@ Future<void> _saveToCF() async {
     return showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-                title: BranchText(
-                  title: "branch",
-                ),
-                content: FormField<String>(
-                  builder: (FormFieldState<String> state) {
-                    return InputDecorator(
-                      decoration: textInputDecoration("Branch"),
-                      isEmpty: branch == '', //
-                      child: DropDown(
-                        value: branch,
-                        list: Info.branches.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            FocusScope.of(context).unfocus();
-                            branch = newValue;
-                            state.didChange(newValue);
-                          });
-                        },
-                      ),
-                    );
-                  },
-                ),
-                actions: <Widget>[
-                  Cancel(),
-                  OK(
-                    onPressed: () async {
-                    //process
-                    setState(() => showSpinner = true);
-                    await _validateCode(enteredCode);
-                    if(isValid) {
-                      try{
-                        await _updateStatus();
-                        await _saveToCF();
-                        await Firestore.instance.collection('History').document(currentUser.email)
-                        .setData({'class joined on ${DateTime.now()} with roll number and branch': '${codecon.text} , ${rollcon.text} and $branch'},merge: true);
-                        Navigator.pushReplacementNamed(context, Intermediate.id);
-                      }catch(e){
-                        setState(() => showSpinner = false);
-                        Flushbar(
-                          icon: errorIcon,
-                          backgroundColor: Colors.red,
-                          messageText: 
-                            Text(
-                              'An error occured...Pls try agian later!',
-                               style: TextStyle(
-                                  color: Colors.white
-                              ),
-                            ),
-                          duration: Duration(seconds: 2),
-                        )..show(context);
-                      }
-                    }
-                    else{
-                      setState(() => showSpinner = false);
-                      Flushbar(
-                          messageText: Text(
-                            "Invalid code",
-                            style:
-                              TextStyle(fontSize: 15, color: Colors.white),
+          return StatefulBuilder(
+            builder: (context,setState) => ModalProgressHUD(
+              inAsyncCall: fySpinner,
+              child: AlertDialog(
+                    title: BranchText(
+                      title: "branch",
+                    ),
+                    content: FormField<String>(
+                      builder: (FormFieldState<String> state) {
+                        return InputDecorator(
+                          decoration: textInputDecoration("Branch"),
+                          isEmpty: branch == '', //
+                          child: DropDown(
+                            value: branch,
+                            list: Info.branches.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                FocusScope.of(context).unfocus();
+                                branch = newValue;
+                                state.didChange(newValue);
+                              });
+                            },
                           ),
-                          icon: errorIcon,
-                          duration: Duration(seconds: 2),
-                          backgroundColor: Colors.red,
-                      )..show(context);
-                    }
-                        // else {
-                        //   setState(() => showSpinner = false);
-                        //   Flushbar(
-                        //   messageText: Text(
-                        //     "Class is blocked!",
-                        //     style:
-                        //       TextStyle(fontSize: 15, color: Colors.white),
-                        //   ),
-                        //   icon: Icon(Icons.block,color: Colors.white,),
-                        //   duration: Duration(seconds: 2),
-                        //   backgroundColor: Colors.red,
-                        //   )..show(context);}
+                        );
+                      },
+                    ),
+                    actions: <Widget>[
+                      Cancel(),
+                      OK(
+                        onPressed: () async {
+                        //process
+                        setState(() => fySpinner = true);
+                        await _validateCode(enteredCode);
+                        if(isValid) {
+                          try{
+                            await _updateStatus();
+                            await _saveToCF();
+                            await Firestore.instance.collection('History').document(currentUser.email)
+                            .setData({'class joined on ${DateTime.now()} with roll number and branch': '${codecon.text} , ${rollcon.text} and $branch'},merge: true);
+                            Navigator.pushReplacementNamed(context, Intermediate.id);
+                          }catch(e){
+                            setState(() => fySpinner = false);
+                            Flushbar(
+                              icon: errorIcon,
+                              backgroundColor: Colors.red,
+                              messageText: 
+                                Text(
+                                  'An error occured...Pls try agian later!',
+                                   style: TextStyle(
+                                      color: Colors.white
+                                  ),
+                                ),
+                              duration: Duration(seconds: 2),
+                            )..show(context);
+                          }
                         }
-                  )
-                ],
-              );
+                        else{
+                          setState(() => fySpinner = false);
+                          Flushbar(
+                              messageText: Text(
+                                "Invalid code",
+                                style:
+                                  TextStyle(fontSize: 15, color: Colors.white),
+                              ),
+                              icon: errorIcon,
+                              duration: Duration(seconds: 2),
+                              backgroundColor: Colors.red,
+                          )..show(context);
+                        }
+                            // else {
+                            //   setState(() => showSpinner = false);
+                            //   Flushbar(
+                            //   messageText: Text(
+                            //     "Class is blocked!",
+                            //     style:
+                            //       TextStyle(fontSize: 15, color: Colors.white),
+                            //   ),
+                            //   icon: Icon(Icons.block,color: Colors.white,),
+                            //   duration: Duration(seconds: 2),
+                            //   backgroundColor: Colors.red,
+                            //   )..show(context);}
+                            }
+                      )
+                    ],
+                  ),
+            ),
+          );
         });
   }
 

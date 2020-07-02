@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'package:flushbar/flushbar.dart';
 import 'package:bitwitsapp/Classroom/Data.dart';
 import 'package:bitwitsapp/Utilities/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:intl/intl.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'add_assignment.dart';
 
@@ -22,7 +22,7 @@ class Assignments extends StatefulWidget {
 class _assignmentsState extends State<Assignments> {
 
   DateTime _newValue = DateTime.now();
-  bool check = false;
+  bool check = false,delSpinner = false;
   DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
 
   Future _selectDate() async {
@@ -43,36 +43,29 @@ class _assignmentsState extends State<Assignments> {
   }
 
   Widget _deleteDialog(String code,String title){
-    return AlertDialog(
-      title: Text('Delete $title ?'),
-      actions: [
-        FlatButton(onPressed: () => Navigator.pop(context), child: Text('NO')),
-        FlatButton(onPressed: () async {
-          try{
-            await Firestore.instance.collection('Classrooms/$code/Assignments').document(title).delete();
-            await Firestore.instance.collection('Classrooms/$code/Assignment Status').document(title).delete();
-            Flushbar(
-              icon: Icon(Icons.check,color:Colors.white),
-              messageText: Text('Assignment deleted',style: TextStyle(color: Colors.white),),
-              duration: Duration(seconds: 2),
-            )..show(context);
-            Navigator.pop(context);
-          } catch(e){
-              Flushbar(
-              icon: errorIcon,
-                backgroundColor: Colors.red,
-                messageText: 
-                Text(
-                  'Unable to delete...Pls try agian later!',
-                  style: TextStyle(
-                  color: Colors.white
-                    ),
-                  ),
-                duration: Duration(seconds: 2),
-              )..show(context);
-          }
-        },child: Text('YES')),
-      ],
+    return StatefulBuilder(
+      builder: (context,setState) => ModalProgressHUD(
+        inAsyncCall: delSpinner,
+        child: AlertDialog(
+        title: Text('Delete $title ?'),
+        actions: [
+            FlatButton(onPressed: () => Navigator.pop(context), child: Text('NO')),
+            FlatButton(onPressed: () async {
+              setState(() => delSpinner = true);
+              try{
+                await Firestore.instance.collection('Classrooms/$code/Assignments').document(title).delete();
+                await Firestore.instance.collection('Classrooms/$code/Assignment Status').document(title).delete();
+                setState(() => delSpinner = false);
+                Navigator.pop(context);
+              } catch(e){
+                setState(() => delSpinner = false);
+                //TODO: display error
+                Navigator.pop(context);
+              }
+            },child: Text('YES')),
+        ],
+      ),
+      ),
     );
   }
 
@@ -125,7 +118,7 @@ class _assignmentsState extends State<Assignments> {
             // IconButton(icon: Icon(Icons.refresh), onPressed: () async => await _getCompletionMap(data.currentClassCode, data.rollNumber))
           ],
         ),
-        body: Assignments.completionMap == null ? LoadingScreen() : Scrollbar(
+        body: Assignments.completionMap.isNotEmpty ? Assignments.completionMap == null ? LoadingScreen() : Scrollbar(
           child: Padding(
             padding: EdgeInsets.only(top: 8,bottom: 8),
             child: StreamBuilder(
@@ -223,8 +216,9 @@ class _assignmentsState extends State<Assignments> {
                                       DateTime.parse(studentDocs[index]['Deadline'])
                                                     .difference(DateTime.now())
                                                     .inDays <
-                                                0 ?
-                                      '${studentDocs[index]['Deadline'].toString().split('-').reversed.join('-')}\nExceeded' : studentDocs[index]['Deadline'].toString().split('-').reversed.join('-'),
+                                                0 ? Assignments.completionMap[studentDocs[index]['Title']] ?
+                                      '${studentDocs[index]['Deadline'].toString().split('-').reversed.join('-')}\nExceeded' : studentDocs[index]['Deadline'].toString().split('-').reversed.join('-')
+                                                                                                                            : studentDocs[index]['Deadline'].toString().split('-').reversed.join('-'),
                                       softWrap: false,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -232,13 +226,13 @@ class _assignmentsState extends State<Assignments> {
                                         fontWeight: DateTime.parse(studentDocs[index]['Deadline'])
                                                     .difference(DateTime.now())
                                                     .inDays <
-                                                2 ? FontWeight.bold : FontWeight.w500,
+                                                2 ? !Assignments.completionMap[studentDocs[index]['Title']] ? FontWeight.bold : FontWeight.w500 : FontWeight.w500,
                                         color: DateTime.parse(studentDocs[index]['Deadline'])
                                                     .difference(DateTime.now())
                                                     .inDays <
                                                 2
-                                            ? Colors.red
-                                            : Colors.black87,
+                                            ? !Assignments.completionMap[studentDocs[index]['Title']] ? Colors.red
+                                            : Colors.black : Colors.black,
                                       ),
                                     ),
                                   ],
@@ -269,7 +263,7 @@ class _assignmentsState extends State<Assignments> {
               },
             ),
           ),
-        ),
+        ) : Center(child: Container(height: 50,width: 250,child: Text( data.isCr? 'No assignments!...Click on + to add an assignment' : 'No assignments yet',textAlign: TextAlign.center,style: TextStyle(color: Colors.grey[500],fontSize: 18,),))),
       );
       },
     );

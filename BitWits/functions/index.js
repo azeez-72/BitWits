@@ -1,8 +1,28 @@
-const functions = require('firebase-functions');
+//new code start
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+admin.initializeApp();
+// admin.initializeApp(functions.config().functions);
 
-const admin = require('firebase-admin');
+const db = admin.firestore();
+const fcm = admin.messaging();
 
-admin.initializeApp(functions.config().functions);
+export const sendToTopic = functions.firestore
+  .document('Classrooms/{classroomId}/Assignments/{assignmentsId}')
+  .onCreate(async snapshot => {
+    const class_code = snapshot.data();
+
+    console.log(class_code);
+
+    const payload = admin.messaging.MessagingPayload = {
+      notification: {
+        title: 'New assignment',
+        body: class_code.Title,
+        click_action: 'FLUTTER_NOTIFICATION_CLICK'
+      }
+    };
+    return fcm.sendToTopic('assignments',payload);
+  });
 
 var newData;
 

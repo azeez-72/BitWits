@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:clipboard_manager/clipboard_manager.dart';
 
 class Students_list extends StatefulWidget {
   static final String id = 'students_list';
@@ -16,8 +17,7 @@ class Students_list extends StatefulWidget {
 class _Students_listState extends State<Students_list> {
   String year, batch, code, branch;
   String data;
-  bool status;
-  ScrollController controller = ScrollController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   Future<void> _leaveClass(String email,String code) async {
     await Firestore.instance.collection('Status').document(email)
@@ -81,23 +81,41 @@ class _Students_listState extends State<Students_list> {
     }
   }
 
-  Widget blockUnBlockDialog(String msg,String code,bool status) =>
-    AlertDialog(
-      title: Text('$msg class?'),
-      actions: [
-        FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL')),
-        FlatButton(
-          onPressed: () async => await Firestore.instance.collection('Classrooms').document(code).updateData({'block': status}),
-          child: null
+  // Widget blockUnBlockDialog(String msg,String code,bool status) =>
+  //   AlertDialog(
+  //     title: Text('$msg class?'),
+  //     actions: [
+  //       FlatButton(onPressed: () => Navigator.pop(context), child: Text('CANCEL')),
+  //       FlatButton(
+  //         onPressed: () async => await Firestore.instance.collection('Classrooms').document(code).updateData({'block': status}),
+  //         child: null
+  //       )
+  //     ],
+  //   );
+
+  Widget _alertShowCode(String code) => AlertDialog(
+    title: Text('Class code is:',style: TextStyle(color: mainColor),),
+    actions: [FlatButton(onPressed: () => Navigator.pop(context), child: Text('CLOSE'))],
+    content: Row(
+      children: [
+        Text(code,style: TextStyle(color: mainColor,fontSize: 20,fontStyle: FontStyle.italic),),
+        SizedBox(width: 10),
+        IconButton(icon: Icon(Icons.content_copy,color: Colors.grey),
+          onPressed: () {
+            ClipboardManager.copyToClipBoard(code).then((value){
+              final snackBar = SnackBar(content: Text('Copied to clipboard'),duration: Duration(seconds: 2),);
+              _scaffoldKey.currentState.showSnackBar(snackBar);
+            });
+          }
         )
       ],
-    );
-
-  Future<void> _selectClassAction(String value,bool status,String code) {
+    ),
+  );
+  
+  Future<void> _selectClassAction(String value,String code) {
     switch (value) {
-      case 'blockunblock':
-        if(status) blockUnBlockDialog('Unblock',code,status);
-        else blockUnBlockDialog('Block',code,status);
+      case 'show code':
+        showDialog(context: context,builder: (context) => _alertShowCode(code));
         break;
       default:
     }
@@ -136,6 +154,7 @@ class _Students_listState extends State<Students_list> {
     return Consumer<Data>(
       builder: (context,data,child){
         return Scaffold(
+          key: _scaffoldKey,
           appBar: AppBar(
             leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
             backgroundColor: mainColor,
@@ -159,12 +178,12 @@ class _Students_listState extends State<Students_list> {
               if(data.isCr) PopupMenuButton(
                 icon: Icon(Icons.more_vert,color: Colors.white,),
                 itemBuilder: (context) {
-                  Firestore.instance.collection('Classrooms').document(code).get().then((value) => setState(() => status = value.data['block']));
                   return <PopupMenuEntry<String>> [
-                    PopupMenuItem(value: 'blockunblock',child: Text(status == null ? 'Loading...' : status ? 'Unblock' : 'Block'))
+                    // PopupMenuItem(value: 'blockunblock',child: Text(status == null ? 'Loading...' : status ? 'Unblock' : 'Block'))
+                    PopupMenuItem(value: 'show code',child: Text('View code'))
                   ];
                 },
-                onSelected: (String val) => _selectClassAction(val, status, data.currentClassCode),
+                onSelected: (String val) => _selectClassAction(val, data.currentClassCode),
               )
             ],
           ),

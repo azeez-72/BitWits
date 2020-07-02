@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Classroom/Data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Announcements extends StatefulWidget {
@@ -154,371 +156,237 @@ class _AnnouncementsState extends State<Announcements> {
     //work area
   }
 
+  // Future<void> _saveHistory(String url,String email) async {
+  //   try{await Firestore.instance.collection('Announcement taps').document(url).setData({email: DateTime.now()},merge: true);}
+  //   catch(e){print(e);}
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.info_outline),
-          onPressed: () {
-            _settingModalBottomSheet(context);
-          },
-        ),
-        title: Text(
-          'Announcements',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            letterSpacing: 1,
+    return Consumer<Data>(
+      builder: (context,data,child) => Scaffold(
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomPadding: false,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.info_outline),
+            onPressed: () => _settingModalBottomSheet(context),
           ),
-        ),
-        backgroundColor: mainColor,
-        actions: [
-          IconButton(
-              icon: Icon(Icons.add, size: 30),
-             // onPressed : () {}
+          title: Text(
+            'Announcements',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              letterSpacing: 1,
+            ),
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: 20.0,
+          backgroundColor: mainColor,
+        ),
+        body: SafeArea(
+          child: Scrollbar(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  AnnouncementSection(title: 'COVID-19',visible: _visible["COVID-19"],onTap: () => {toggleVisibility("COVID-19")},),
+                  Visibility(
+                    visible: _visible["COVID-19"],
+                    child: Container(
+                      height: _itemCount == 0 ? 50 : 350,
+                      child: _itemCount == 0
+                          ? Text("Loading...")
+                          : ListView.builder(
+                              itemBuilder: (context, index) {
+                                return AnnouncementList(subtitle: jsonResponse['COVID-19'][index],
+                                onTap: () async => {
+                                  print(
+                                      "Clicked on ${jsonResponse['COVID-19'][index]}"),
+                                  // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
+                                  _launchURL(jsonResponse['COVID-19'][index]
+                                      .toString())
+                                },);
+                              },
+                              itemCount: jsonResponse['COVID-19'].length,
+                            ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  AnnouncementSection(title: 'DEGREE',visible: _visible['DEGREE'],onTap: () => {toggleVisibility('DEGREE')},),
+                  Visibility(
+                    visible: _visible["DEGREE"],
+                    child: Container(
+                      height: _itemCount == 0 ? 50 : 350,
+                      child: _itemCount == 0
+                          ? Text("Loading...")
+                          : ListView.builder(
+                              itemBuilder: (context, index) {
+                                return AnnouncementList(subtitle: jsonResponse['DEGREE'][index],
+                                onTap: () async => {
+                                  print(
+                                      "Clicked on ${jsonResponse['DEGREE'][index]}"),
+                                  // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
+                                  _launchURL(jsonResponse['DEGREE'][index]
+                                      .toString())
+                                },);
+                              },
+                              itemCount: jsonResponse['DEGREE'].length,
+                            ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  AnnouncementSection(title: 'Exam Section',visible: _visible['EXAM_SECTION'],onTap: () => {toggleVisibility('EXAM_SECTION')},),
+                  Visibility(
+                    visible: _visible["EXAM_SECTION"],
+                    child: Container(
+                      height: _itemCount == 0 ? 50 : 350,
+                      child: _itemCount == 0
+                          ? Text("Loading...")
+                          : ListView.builder(
+                              itemBuilder: (context, index) {
+                                return AnnouncementList(subtitle: jsonResponse['Exam_Section'][index],
+                                onTap: () async => {
+                                  print(
+                                      "Clicked on ${jsonResponse['Exam_Section'][index]}"),
+                                  // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
+                                  _launchURL(jsonResponse['Exam_Section'][index]
+                                      .toString())
+                                },);
+                              },
+                              itemCount: jsonResponse['Exam_Section'].length,
+                            ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  AnnouncementSection(title: 'Notices',visible: _visible['NOTICE'],onTap: () => {toggleVisibility('NOTICE')},),
+                  Visibility(
+                    visible: _visible["NOTICE"],
+                    child: Container(
+                      height: _itemCount == 0 ? 50 : 350,
+                      child: _itemCount == 0
+                          ? Text("Loading...")
+                          : ListView.builder(
+                              itemBuilder: (context, index) {
+                                return AnnouncementList(subtitle: jsonResponse['Notice'][index],
+                                onTap: () async => {
+                                  print(
+                                      "Clicked on ${jsonResponse['Notice'][index]}"),
+                                  // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
+                                  _launchURL(jsonResponse['Notice'][index]
+                                      .toString())
+                                },);
+                              },
+                              itemCount: jsonResponse['Notice'].length,
+                            ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  //Component changed to Miscellaneous
+                  AnnouncementSection(title: 'Miscellaneous',visible: _visible['COMPONENT'],onTap: () => {toggleVisibility('COMPONENT')},),
+                  Visibility(
+                    visible: _visible["COMPONENT"],
+                    child: Container(
+                      height: _itemCount == 0 ? 50 : 350,
+                      child: _itemCount == 0
+                          ? Text("Loading...")
+                          : ListView.builder(
+                              itemBuilder: (context, index) {
+                                return AnnouncementList(subtitle: jsonResponse['component'][index],
+                                onTap: () async => {
+                                  print(
+                                      "Clicked on ${jsonResponse['component'][index]}"),
+                                  // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
+                                  _launchURL(jsonResponse['component'][index]
+                                      .toString())
+                                },);
+                              },
+                              itemCount: jsonResponse['component'].length,
+                            ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                ],
               ),
-
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                        margin: EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          "COVID-19",
-                          style: TextStyle(fontSize: 24.0),
-                        )),
-                    IconButton(
-                      icon: Icon(_visible["COVID-19"] == false
-                          ? Icons.arrow_drop_down
-                          : Icons.arrow_drop_up),
-                      onPressed: () => {toggleVisibility("COVID-19")},
-                    )
-                  ]),
-              Visibility(
-                visible: _visible["COVID-19"],
-                child: Container(
-                  height: _itemCount == 0 ? 50 : 350,
-                  child: _itemCount == 0
-                      ? Text("Loading...")
-                      : ListView.builder(
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.only(bottom: 2.0),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border(
-                                      bottom: BorderSide(
-                                    color: Colors.black54,
-                                  ),
-                                  ),
-                              ),
-                              padding: EdgeInsets.only(
-                                  left: 20, right: 20, top: 10, bottom: 10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  ListTile(
-                                    subtitle: Text(
-                                      jsonResponse['COVID-19'][index],
-                                      style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          color: Color(0xFF2265B3), fontSize: 18.0),
-                                    ),
-                                    onTap: () => {
-                                      print(
-                                          "Clicked on ${jsonResponse['COVID-19'][index]}"),
-                                      _launchURL(jsonResponse['COVID-19'][index]
-                                          .toString())
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          itemCount: jsonResponse['COVID-19'].length,
-                        ),
-                ),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                        margin: EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          "Degree",
-                          style: TextStyle(fontSize: 24.0),
-                        )),
-                    IconButton(
-                      icon: Icon(_visible["DEGREE"] == false
-                          ? Icons.arrow_drop_down
-                          : Icons.arrow_drop_up),
-                      onPressed: () => {toggleVisibility("DEGREE")},
-                    )
-                  ]),
-              Visibility(
-                visible: _visible["DEGREE"],
-                child: Container(
-                  height: _itemCount == 0 ? 50 : 350,
-                  child: _itemCount == 0
-                      ? Text("Loading...")
-                      : ListView.builder(
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.only(bottom: 2.0),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border(
-                                      bottom: BorderSide(
-                                    color: Colors.black54,
-                                  ))),
-                              padding: EdgeInsets.only(
-                                  left: 20, right: 20, top: 10, bottom: 10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  ListTile(
-                                    //title: Text("DEGREE", style: TextStyle(fontSize: 24.0),),
-                                    subtitle: Text(
-                                      jsonResponse['DEGREE'][index],
-                                      style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          color: Color(0xFF2265B3), fontSize: 18.0),
-                                    ),
-                                    onTap: () => {
-                                      print(
-                                          "Clicked on ${jsonResponse['DEGREE'][index]}"),
-                                      _launchURL(jsonResponse['DEGREE'][index]
-                                          .toString())
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          itemCount: jsonResponse['DEGREE'].length,
-                        ),
-                ),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                        margin: EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          "Exam Section",
-                          style: TextStyle(fontSize: 24.0),
-                        )),
-                    IconButton(
-                      icon: Icon(_visible["EXAM_SECTION"] == false
-                          ? Icons.arrow_drop_down
-                          : Icons.arrow_drop_up),
-                      onPressed: () => {toggleVisibility("EXAM_SECTION")},
-                    )
-                  ]),
-              AnnouncementsTile(),
-              SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                        margin: EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          "Notices",
-                          style: TextStyle(fontSize: 24.0),
-                        )),
-                    IconButton(
-                      icon: Icon(_visible["NOTICE"] == false
-                          ? Icons.arrow_drop_down
-                          : Icons.arrow_drop_up),
-                      onPressed: () => {toggleVisibility("NOTICE")},
-                    )
-                  ]),
-              Visibility(
-                visible: _visible["NOTICE"],
-                child: Container(
-                  height: _itemCount == 0 ? 50 : 350,
-                  child: _itemCount == 0
-                      ? Text("Loading...")
-                      : ListView.builder(
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.only(bottom: 2.0),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border(
-                                      bottom: BorderSide(
-                                    color: Colors.black54,
-                                  ))),
-                              padding: EdgeInsets.only(
-                                  left: 20, right: 20, top: 10, bottom: 10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  ListTile(
-                                    //title: Text("NOTICE", style: TextStyle(fontSize: 24.0),),
-                                    subtitle: Text(
-                                      jsonResponse['Notice'][index],
-                                      style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          color: Color(0xFF2265B3), fontSize: 18.0),
-                                    ),
-                                    onTap: () => {
-                                      print(
-                                          "Clicked on ${jsonResponse['Notice'][index]}"),
-                                      _launchURL(jsonResponse['Notice'][index]
-                                          .toString())
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          itemCount: jsonResponse['Notice'].length,
-                        ),
-                ),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-
-              ///Component changed to Miscellaneous
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                        margin: EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          "Miscellaneous",
-                          style: TextStyle(fontSize: 24.0),
-                        )),
-                    IconButton(
-                      icon: Icon(_visible["COMPONENT"] == false
-                          ? Icons.arrow_drop_down
-                          : Icons.arrow_drop_up),
-                      onPressed: () => {toggleVisibility("COMPONENT")},
-                    )
-                  ],
-              ),
-              Visibility(
-                visible: _visible["COMPONENT"],
-                child: Container(
-                  height: _itemCount == 0 ? 50 : 350,
-                  child: _itemCount == 0
-                      ? Text("Loading...")
-                      : ListView.builder(
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.only(bottom: 2.0),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                              ),
-                              padding: EdgeInsets.only(
-                                  left: 20, right: 20, top: 10, bottom: 10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  ListTile(
-                                    subtitle: Text(
-                                      jsonResponse['component'][index],
-                                      style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          color: Color(0xFF2265B3), fontSize: 18.0),
-                                    ),
-                                    onTap: () => {
-                                      print("Clicked on ${jsonResponse['component'][index]}"),
-                                      _launchURL(jsonResponse['component'][index].toString())
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          itemCount: jsonResponse['component'].length,
-                        ),
-                ),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
+}
 
-  Visibility AnnouncementsTile() {
-    return Visibility(
-      visible: _visible["EXAM_SECTION"],
-      child: Container(
-        height: _itemCount == 0 ? 50 : 350,
-        child: _itemCount == 0
-            ? Text("Loading...")
-            : ListView.builder(
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 2.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ),
-                    padding: EdgeInsets.only(
-                        left: 20, right: 20, top: 10, bottom: 10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        ListTile(
-                          subtitle: Text(
-                            jsonResponse['Exam_Section'][index],
-                            style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: Color(0xFF2265B3), fontSize: 18.0),
-                          ),
-                          onTap: () => {
-                            print(
-                                "Clicked on ${jsonResponse['Exam_Section'][index]}"),
-                            _launchURL(
-                                jsonResponse['Exam_Section'][index].toString())
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                itemCount: jsonResponse['Exam_Section'].length,
-              ),
+class AnnouncementList extends StatelessWidget {
+
+  final Function onTap;
+  final String subtitle;
+
+  AnnouncementList({this.subtitle,this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 2.0),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+              bottom: BorderSide(
+            color: Colors.black54,
+          ))),
+      padding: EdgeInsets.only(
+          left: 20, right: 20, top: 10, bottom: 10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          ListTile(
+            subtitle: Text(
+              subtitle,
+              style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  color: Color(0xFF2265B3), fontSize: 18.0),
+            ),
+            onTap: onTap,
+          ),
+        ],
       ),
+    );
+  }
+}
+
+class AnnouncementSection extends StatelessWidget {
+
+  final Function onTap;
+  final String title;
+  final bool visible;
+
+  AnnouncementSection({this.title,this.visible,this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(
+                title,
+                style: TextStyle(fontSize: 24.0),
+              ),
+      trailing: IconButton(
+            icon: Icon(visible == false
+                ? Icons.arrow_drop_down
+                : Icons.arrow_drop_up,color: Colors.black,),
+            onPressed: onTap,
+          ),
+      onTap: onTap,
     );
   }
 }

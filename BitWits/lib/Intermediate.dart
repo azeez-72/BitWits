@@ -16,30 +16,29 @@ class Intermediate extends StatefulWidget {
 }
 
 class _IntermediateState extends State<Intermediate> {
-  FirebaseUser currentUser;
   final _auth = FirebaseAuth.instance;
   String _email,_uuid;
 
-  Future<void> registeredCurrentUser() async {
-    final regUser = await _auth.currentUser();
-    setState(() {
-      currentUser = regUser;
-      _email = currentUser.email;
-      _uuid = currentUser.uid;
-    });
-  }
+  Future<void> registeredCurrentUser() async =>
+     await _auth.currentUser()
+      .then((value) {
+        setState(() {
+          _email = value.email;
+          _uuid = value.uid;
+        });
+      });
 
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(Duration(seconds: 2));
     registeredCurrentUser();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _email == null ? LoadingScreen() : StreamBuilder(
+
+    return _email != null && _uuid != null ? StreamBuilder(
       stream: Firestore.instance.collection('Status').document(_email).snapshots(),
       builder: (context , snapshot){
         if(snapshot.connectionState == ConnectionState.waiting) return LoadingScreen();
@@ -56,6 +55,6 @@ class _IntermediateState extends State<Intermediate> {
         }
         return Dashboard(code: docs['Current class code'],roll: docs['roll number']);
       }
-    );
+    ) : LoadingScreen();
   }
 }
