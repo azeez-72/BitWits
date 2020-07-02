@@ -163,13 +163,14 @@ class _assignmentsState extends State<Assignments> {
                                   SizedBox(height: 16) : null,
                                   studentDocs[index]['G-drive link'] != null ?
                                   OutlineButton(
+                                    highlightedBorderColor: mainColor,
                                     //studentDocs[index]['G-drive link'] has the link
                                     child: Text('Open File',style: TextStyle(color: mainColor),),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                     onPressed: (){
                                       //open file using gdrive
                                     }
-                                  ) : FlutterIcons.null__mco,
+                                  ) : null,
                                   Padding(
                                     padding: EdgeInsets.all(16),
                                     child: Container(
