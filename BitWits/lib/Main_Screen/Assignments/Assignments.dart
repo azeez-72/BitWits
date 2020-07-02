@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 //import 'package:circular_check_box/circular_check_box.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -158,7 +159,17 @@ class _assignmentsState extends State<Assignments> {
                                       style: TextStyle(color: mainColor,fontSize: 24,fontWeight: FontWeight.bold),),
                                       leading: IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context)),
                                   ),
-                                  //TODO: place holder for assignment pdf or image
+                                  studentDocs[index]['G-drive link'] != null ? 
+                                  SizedBox(height: 16) : null,
+                                  studentDocs[index]['G-drive link'] != null ?
+                                  OutlineButton(
+                                    //studentDocs[index]['G-drive link'] has the link
+                                    child: Text('Open File',style: TextStyle(color: mainColor),),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    onPressed: (){
+                                      //open file using gdrive
+                                    }
+                                  ) : FlutterIcons.null__mco,
                                   Padding(
                                     padding: EdgeInsets.all(16),
                                     child: Container(
@@ -193,11 +204,11 @@ class _assignmentsState extends State<Assignments> {
                                   ),
                                   Flexible(
                                     flex: 3,
-                                    //child: CircularCheckBox(
-                                      //value: Assignments.completionMap[studentDocs[index]['Title']] == null ? false : Assignments.completionMap[studentDocs[index]['Title']],
-                                      //activeColor: Colors.green[300],
-                                      //onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
-                                    //),
+                                    child: Checkbox(
+                                      value: Assignments.completionMap[studentDocs[index]['Title']] == null ? false : Assignments.completionMap[studentDocs[index]['Title']],
+                                      activeColor: Colors.green[300],
+                                      onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
+                                    ),
                                   ),
                                 ],
                               ),

@@ -17,6 +17,7 @@ class _AddAssignmentState extends State<AddAssignment> {
 
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController linkController = TextEditingController();
   DateTime _value = DateTime.now();
   // DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
   DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
@@ -26,6 +27,7 @@ class _AddAssignmentState extends State<AddAssignment> {
     await Firestore.instance.collection('Classrooms/$code/Assignments').document(titleController.text).setData({
       'Title': titleController.text.trim(),
       'Description': descriptionController.text == '' ? 'Not provided' : descriptionController.text,
+      'G-drive link': linkController.text.trim(),
       'Created at': DateTime.now(),
       'Deadline': _dateFormat.format(_value),
     });
@@ -75,6 +77,7 @@ class _AddAssignmentState extends State<AddAssignment> {
                         SizedBox(height: 15),
                         CodeFields('Description(optional)', TextInputType.text, descriptionController),
                         SizedBox(height: 15),
+                        CodeFields('G-drive link for assignment(optional)',TextInputType.text,linkController),
                         Container(
                         child: FlatButton.icon(
                           label: Text("SELECT DATE OF SUBMISSION",style: TextStyle(color: mainColor),),
