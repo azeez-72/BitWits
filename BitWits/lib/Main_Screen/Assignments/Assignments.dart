@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
-import 'package:circular_check_box/circular_check_box.dart';
+//import 'package:circular_check_box/circular_check_box.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -193,11 +193,11 @@ class _assignmentsState extends State<Assignments> {
                                   ),
                                   Flexible(
                                     flex: 3,
-                                    child: CircularCheckBox(
-                                      value: Assignments.completionMap[studentDocs[index]['Title']] == null ? false : Assignments.completionMap[studentDocs[index]['Title']],
-                                      activeColor: Colors.green[300],
-                                      onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
-                                    ),
+                                    //child: CircularCheckBox(
+                                      //value: Assignments.completionMap[studentDocs[index]['Title']] == null ? false : Assignments.completionMap[studentDocs[index]['Title']],
+                                      //activeColor: Colors.green[300],
+                                      //onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
+                                    //),
                                   ),
                                 ],
                               ),
