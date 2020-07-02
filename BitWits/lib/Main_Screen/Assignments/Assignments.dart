@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'add_assignment.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Assignments extends StatefulWidget {
   static Map<String,bool> completionMap = HashMap();
@@ -168,6 +169,7 @@ class _assignmentsState extends State<Assignments> {
                                     child: Text('Open File',style: TextStyle(color: mainColor),),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                     onPressed: (){
+                                      launch(studentDocs[index]['G-drive link']);
                                       //open file using gdrive
                                     }
                                   ) : null,
