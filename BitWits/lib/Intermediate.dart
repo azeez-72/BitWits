@@ -56,9 +56,8 @@ class _IntermediateState extends State<Intermediate> {
             if(docs['Current class code'].toString().substring(5,6) == '1') Provider.of<Data>(context).addBranch(docs['Branch']);
           }
         
-        }
-        if(snapshot.connectionState == ConnectionState.done) 
-          return Dashboard(code: docs['Current class code'],roll: docs['roll number']);
+        } 
+        return Dashboard(code: docs['Current class code'],roll: docs['roll number']);
       }
     ) : LoadingScreen();
   }
