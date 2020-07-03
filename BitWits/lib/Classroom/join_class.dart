@@ -102,7 +102,7 @@ class _JoinClassState extends State<JoinClass> {
           snapshot.documents.forEach((doc) async {
 
             await Firestore.instance.collection('Classrooms/$enteredCode/Assignments')
-            .document(doc.documentID).setData({'Completion status': {rollcon.text : false}},merge: true);
+            .document(doc.documentID).setData({'Completions': {rollcon.text : false}},merge: true);
 
             await Firestore.instance.collection('Classrooms/$enteredCode/Assignment Status')
             .document(doc.documentID).setData({rollcon.text: false},merge: true);

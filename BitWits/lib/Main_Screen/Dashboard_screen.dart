@@ -1,18 +1,13 @@
 import 'package:bitwitsapp/Main_Screen/menu_options/menu_list.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
-import 'package:bitwitsapp/Utilities/loading.dart';
 import 'package:flutter/material.dart';
 import 'Announcements/Announcements.dart';
 import 'Assignments/Assignments.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 int _selectedIndex = 1;
 
 class Dashboard extends StatefulWidget {
   static String id = "stack";
-  final String code,roll;
-
-  Dashboard({this.code,this.roll});
 
   @override
   _DashboardState createState() => _DashboardState();
@@ -37,30 +32,8 @@ class _DashboardState extends State<Dashboard> {
   // }
 
   @override
-  void initState() {
-    super.initState();
-
-    // registeredCurrentUser();
-    _getCompletionMap(widget.code, widget.roll);
-  }
-
-  Future<void> _getCompletionMap(String code,String roll) async {
-    await Firestore.instance.collection('Classrooms/$code/Assignments').getDocuments()
-    .then((snapshot){
-      snapshot.documents.forEach((doc) async { 
-        await Firestore.instance
-          .collection('Classrooms/$code/Assignment Status')
-          .document(doc.documentID)
-          .get().then((DocumentSnapshot docSnap){
-            setState(() => Assignments.completionMap[doc.documentID] =  docSnap[roll]);
-        }); 
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Assignments.completionMap == null ? LoadingScreen() : Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: bottomnavbar(
         onTap: (int index) => setState(() => _selectedIndex = index)),

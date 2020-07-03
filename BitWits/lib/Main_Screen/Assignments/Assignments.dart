@@ -1,12 +1,9 @@
-import 'dart:collection';
 import 'package:bitwitsapp/Classroom/Data.dart';
-import 'package:bitwitsapp/Utilities/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-//import 'package:circular_check_box/circular_check_box.dart';
+import 'package:circular_check_box/circular_check_box.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +11,6 @@ import 'add_assignment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Assignments extends StatefulWidget {
-  static Map<String,bool> completionMap = HashMap();
   
   @override
   _assignmentsState createState() => _assignmentsState();
@@ -37,11 +33,8 @@ class _assignmentsState extends State<Assignments> {
   }
 
   Future<void> _updateValue(String code,String title,String roll,bool value) async {
-    await Firestore.instance
-          .collection('Classrooms/$code/Assignment Status')
-          .document(title).updateData({roll : value});
-
-    setState(() => Assignments.completionMap[title] = value);
+    await Firestore.instance.collection('Classrooms/$code/Assignments')
+          .document(title).setData({'Completions' : {roll : value}},merge: true);
   }
 
   Widget _deleteDialog(String code,String title){
@@ -120,7 +113,7 @@ class _assignmentsState extends State<Assignments> {
             // IconButton(icon: Icon(Icons.refresh), onPressed: () async => await _getCompletionMap(data.currentClassCode, data.rollNumber))
           ],
         ),
-        body: Assignments.completionMap.isNotEmpty ? Assignments.completionMap == null ? LoadingScreen() : Scrollbar(
+        body: Scrollbar(
           child: Padding(
             padding: EdgeInsets.only(top: 8,bottom: 8),
             child: StreamBuilder(
@@ -132,10 +125,9 @@ class _assignmentsState extends State<Assignments> {
                 // padding: const EdgeInsets.all(8),
                   separatorBuilder: (BuildContext context,int index) => Divider(thickness: 0.5,color: Colors.grey[400]),
                   itemBuilder: (context,index) {
-                    // _getCompletionMap(data.currentClassCode,data.rollNumber);
                     Color textColor = Colors.black;
                     var textdecoration = TextDecoration.none;
-                    if (Assignments.completionMap[studentDocs[index]['Title']] == null ? false : Assignments.completionMap[studentDocs[index]['Title']] == true) {
+                    if (studentDocs[index]['Completions'][data.rollNumber] == null ? false : studentDocs[index]['Completions'][data.rollNumber] == true) {
                       textColor = Colors.blueGrey[300];
                       textdecoration = TextDecoration.lineThrough;
                     }
@@ -151,33 +143,33 @@ class _assignmentsState extends State<Assignments> {
                               child: ListView(
                                 children: [
                                   ListTile(
-                                    trailing:  Assignments.completionMap[studentDocs[index]['Title']] != null ? Assignments.completionMap[studentDocs[index]['Title']] ? Icon(Icons.check,color: Colors.green,size: 28,)
+                                    trailing: studentDocs[index]['Completions'][data.rollNumber] ? Icon(Icons.check,color: Colors.green,size: 28,)
                                             : Icon(Icons.error_outline,color: DateTime.parse(studentDocs[index]['Deadline'])
                                                       .difference(DateTime.now())
                                                       .inDays <
-                                                  2 ? Colors.red : Colors.grey,size: 28,) : null,
+                                                  2 ? Colors.red : Colors.grey,size: 28,),
                                     title: Text('Description',textAlign: TextAlign.start,
                                       style: TextStyle(color: mainColor,fontSize: 24,fontWeight: FontWeight.bold),),
                                       leading: IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context)),
                                   ),
-                                  studentDocs[index]['G-drive link'] != null || studentDocs[index]['G-drive link'] != '' ? 
-                                  SizedBox(height: 16) : null,
-                                  studentDocs[index]['G-drive link'] != null || studentDocs[index]['G-drive link'] != '' ?
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    padding: EdgeInsets.only(left: 16),
-                                    child: ButtonTheme(
-                                      minWidth: 100,
-                                      height: 40,
-                                      child: OutlineButton(
-                                        borderSide: BorderSide(color: mainColor),
-                                        //studentDocs[index]['G-drive link'] has the link
-                                        child: Text('Open File',style: TextStyle(color: mainColor,fontSize: 18),),
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                                        onPressed: () => launch(studentDocs[index]['G-drive link'])
+                                  if(studentDocs[index]['G-drive link'] != '')
+                                    SizedBox(height: 16),
+                                  if(studentDocs[index]['G-drive link'] != '')
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      padding: EdgeInsets.only(left: 16),
+                                      child: ButtonTheme(
+                                        minWidth: 100,
+                                        height: 40,
+                                        child: OutlineButton(
+                                          borderSide: BorderSide(color: mainColor),
+                                          //studentDocs[index]['G-drive link'] has the link
+                                          child: Text('Open File',style: TextStyle(color: mainColor,fontSize: 18),),
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                                          onPressed: () => launch(studentDocs[index]['G-drive link'])
+                                        ),
                                       ),
                                     ),
-                                  ) : null,
                                   Padding(
                                     padding: EdgeInsets.all(16),
                                     child: Container(
@@ -212,8 +204,8 @@ class _assignmentsState extends State<Assignments> {
                                   ),
                                   Flexible(
                                     flex: 3,
-                                    child: Checkbox(
-                                      value: Assignments.completionMap[studentDocs[index]['Title']] == null ? false : Assignments.completionMap[studentDocs[index]['Title']],
+                                    child: CircularCheckBox(
+                                      value: studentDocs[index]['Completions'][data.rollNumber] == null ? false : studentDocs[index]['Completions'][data.rollNumber],
                                       activeColor: Colors.green[300],
                                       onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
                                     ),
@@ -235,7 +227,7 @@ class _assignmentsState extends State<Assignments> {
                                       DateTime.parse(studentDocs[index]['Deadline'])
                                                     .difference(DateTime.now())
                                                     .inDays <
-                                                0 ? Assignments.completionMap[studentDocs[index]['Title']] ?
+                                                0 ? studentDocs[index]['Completions'][data.rollNumber] ?
                                       '${studentDocs[index]['Deadline'].toString().split('-').reversed.join('-')}\nExceeded' : studentDocs[index]['Deadline'].toString().split('-').reversed.join('-')
                                                                                                                             : studentDocs[index]['Deadline'].toString().split('-').reversed.join('-'),
                                       softWrap: false,
@@ -245,12 +237,12 @@ class _assignmentsState extends State<Assignments> {
                                         fontWeight: DateTime.parse(studentDocs[index]['Deadline'])
                                                     .difference(DateTime.now())
                                                     .inDays <
-                                                2 ? !Assignments.completionMap[studentDocs[index]['Title']] ? FontWeight.bold : FontWeight.w500 : FontWeight.w500,
+                                                2 ? !studentDocs[index]['Completions'][data.rollNumber] ? FontWeight.bold : FontWeight.bold : FontWeight.w500,
                                         color: DateTime.parse(studentDocs[index]['Deadline'])
                                                     .difference(DateTime.now())
                                                     .inDays <
                                                 2
-                                            ? !Assignments.completionMap[studentDocs[index]['Title']] ? Colors.red
+                                            ? !studentDocs[index]['Completions'][data.rollNumber]? Colors.red
                                             : Colors.black : Colors.black,
                                       ),
                                     ),
@@ -282,7 +274,8 @@ class _assignmentsState extends State<Assignments> {
               },
             ),
           ),
-        ) : Center(child: Container(height: 50,width: 250,child: Text( data.isCr? 'No assignments!...Click on + to add an assignment' : 'No assignments yet',textAlign: TextAlign.center,style: TextStyle(color: Colors.grey[500],fontSize: 18,),))),
+        ),
+        // ) : Center(child: Container(height: 50,width: 250,child: Text( data.isCr? 'No assignments!...Click on + to add an assignment' : 'No assignments yet',textAlign: TextAlign.center,style: TextStyle(color: Colors.grey[500],fontSize: 18,),))),
       );
       },
     );

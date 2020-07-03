@@ -57,7 +57,7 @@ class _IntermediateState extends State<Intermediate> {
           }
         
         } 
-        return Dashboard(code: docs['Current class code'],roll: docs['roll number']);
+        return Dashboard();
       }
     ) : LoadingScreen();
   }

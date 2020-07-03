@@ -21,7 +21,6 @@ class _AddAssignmentState extends State<AddAssignment> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController linkController = TextEditingController();
   DateTime _value = DateTime.now();
-  // DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
   DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
   bool showSpinner = false;
 
@@ -36,13 +35,15 @@ class _AddAssignmentState extends State<AddAssignment> {
   }
 
   Future<void> _initialize(String code) async {
-    await Firestore.instance.collection('Classrooms/$code/Students').getDocuments()
+    try{
+      await Firestore.instance.collection('Classrooms/$code/Students').getDocuments()
       .then((snapshot){
-        snapshot.documents.forEach((doc) {
-          Firestore.instance.collection('Classrooms/$code/Assignment Status')
-          .document(titleController.text.trim()).setData({doc['roll number']: false},merge: true);
+        snapshot.documents.forEach((doc) async {
+          await Firestore.instance.collection('Classrooms/$code/Assignments')
+          .document(titleController.text.trim()).setData({'Completions' : {doc.data['roll number']: false}},merge: true);
         });
       });
+    } catch(e){print(e);}
   }
 
   Future _selectDate() async {
@@ -116,10 +117,23 @@ class _AddAssignmentState extends State<AddAssignment> {
                             )..show(context);
                             else {
                               setState(() => showSpinner = true);
-                              await _saveToCF(data.currentClassCode);
-                              await _initialize(data.currentClassCode);
-                              setState(() => showSpinner = false);
-                              Navigator.pop(context);
+                              try{
+                                await _saveToCF(data.currentClassCode);
+                                await _initialize(data.currentClassCode);
+                                setState(() => showSpinner = false);
+                                Navigator.pop(context);
+                              } catch(e){
+                                  Flushbar(
+                                    messageText: Text(
+                                      "'An error occured...Pls try again later!",
+                                    style:
+                                      TextStyle(fontSize: 15, color: Colors.white),
+                                    ),
+                                    icon: errorIcon,
+                                    duration: Duration(seconds: 2),
+                                    backgroundColor: Colors.red,
+                                )..show(context);
+                              }
                             }
                           })
                         ],
