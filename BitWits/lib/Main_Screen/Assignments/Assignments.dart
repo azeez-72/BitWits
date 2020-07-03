@@ -160,9 +160,9 @@ class _assignmentsState extends State<Assignments> {
                                       style: TextStyle(color: mainColor,fontSize: 24,fontWeight: FontWeight.bold),),
                                       leading: IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context)),
                                   ),
-                                  studentDocs[index]['G-drive link'] != null ? 
+                                  studentDocs[index]['G-drive link'] != null || studentDocs[index]['G-drive link'] != '' ? 
                                   SizedBox(height: 16) : null,
-                                  studentDocs[index]['G-drive link'] != null ?
+                                  studentDocs[index]['G-drive link'] != null || studentDocs[index]['G-drive link'] != '' ?
                                   Container(
                                     alignment: Alignment.centerLeft,
                                     padding: EdgeInsets.only(left: 16),

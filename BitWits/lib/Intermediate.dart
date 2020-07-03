@@ -41,19 +41,24 @@ class _IntermediateState extends State<Intermediate> {
     return _email != null && _uuid != null ? StreamBuilder(
       stream: Firestore.instance.collection('Status').document(_email).snapshots(),
       builder: (context , snapshot){
+        
         if(snapshot.connectionState == ConnectionState.waiting) return LoadingScreen();
         final docs = snapshot.data;
         if(snapshot.connectionState == ConnectionState.active) {
+
           if(docs['${docs['Current class code']} CR'] == true) Provider.of<Data>(context).crStatus(true);
           else Provider.of<Data>(context).crStatus(false);
+
+          if(docs['Current class code'] == 'NA') return Unjoined();
+          else if(docs['Current class code'] == 'New') return Navigate();
+          else {
+            Provider.of<Data>(context).saveEmailAndCode(docs['Name'],_email, docs['Current class code'],docs['roll number'],_uuid);
+            if(docs['Current class code'].toString().substring(5,6) == '1') Provider.of<Data>(context).addBranch(docs['Branch']);
+          }
+        
         }
-        if(docs['Current class code'] == 'NA') return Unjoined();
-        else if(docs['Current class code'] == 'New') return Navigate();
-        else {
-          Provider.of<Data>(context).saveEmailAndCode(docs['Name'],_email, docs['Current class code'],docs['roll number'],_uuid);
-          if(docs['Current class code'].toString().substring(5,6) == '1') Provider.of<Data>(context).addBranch(docs['Branch']);
-        }
-        return Dashboard(code: docs['Current class code'],roll: docs['roll number']);
+        if(snapshot.connectionState == ConnectionState.done) 
+          return Dashboard(code: docs['Current class code'],roll: docs['roll number']);
       }
     ) : LoadingScreen();
   }
