@@ -106,7 +106,44 @@ class _assignmentsState extends State<Assignments> {
           appBar: AppBar(
             leading: IconButton(
               icon: Icon(Icons.info_outline),
-              onPressed: () {},
+              onPressed: () {
+                //CHECK:@azeez-72
+                showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.all(15.0),
+                  child: Text(
+                    "Assignments",
+                    style: TextStyle(
+                        fontSize: 28.0,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2265B3)),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.all(15.0),
+                  child: Text(
+                    "Having trouble remembering pending assignments? Not any more!!",
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.all(15.0),
+                  child: Text(
+                    "Click on the name of assignment to read description and download PDF.",
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+              },
             ),
             title: Text(
               'Assignments',
@@ -285,7 +322,11 @@ class _assignmentsState extends State<Assignments> {
                                       ),
                                       Flexible(
                                         flex: 3,
-                                        child: Text(""),
+                                        child: Checkbox(
+                                      value: studentDocs[index]['Completions'][data.rollNumber] == null ? false : studentDocs[index]['Completions'][data.rollNumber],
+                                      activeColor: Colors.green[300],
+                                      onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
+                                    ),
                                       ),
                                     ],
                                   ),
@@ -365,29 +406,32 @@ class _assignmentsState extends State<Assignments> {
                                     ),
                                   ),
                                   if (data.isCr)
-                                    PopupMenuButton(
-                                        icon: Icon(
-                                          Icons.more_vert,
-                                          color: Colors.grey[700],
-                                        ),
-                                        onSelected: (String val) =>
-                                            _showAssignmentAction(
-                                                val,
-                                                data.currentClassCode,
-                                                studentDocs[index]['Title']),
-                                        itemBuilder: (context) =>
-                                            <PopupMenuEntry<String>>[
-                                              PopupMenuItem<String>(
-                                                value: 'Edit',
-                                                child: Text(
-                                                    'Change submission date'),
-                                              ),
-                                              PopupMenuItem<String>(
-                                                value: 'Delete',
-                                                child:
-                                                    Text('Delete assignment'),
-                                              )
-                                            ]),
+                                    Container(
+                                          margin: EdgeInsets.only(left:17.0),
+                                          child: PopupMenuButton(
+                                          icon: Icon(
+                                            Icons.more_vert,
+                                            color: Colors.grey[700],
+                                          ),
+                                          onSelected: (String val) =>
+                                              _showAssignmentAction(
+                                                  val,
+                                                  data.currentClassCode,
+                                                  studentDocs[index]['Title']),
+                                          itemBuilder: (context) =>
+                                              <PopupMenuEntry<String>>[
+                                                PopupMenuItem<String>(
+                                                  value: 'Edit',
+                                                  child: Text(
+                                                      'Change submission date'),
+                                                ),
+                                                PopupMenuItem<String>(
+                                                  value: 'Delete',
+                                                  child:
+                                                      Text('Delete assignment'),
+                                                )
+                                              ]),
+                                    ),
                                 ],
                               ),
                             ],
