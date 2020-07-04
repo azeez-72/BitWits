@@ -50,7 +50,7 @@
 5. Using Flask to create API
 
 
-###PROJECT SETUP
+### PROJECT SETUP
 
 > Make sure you have flutter installed on your **machine**.
 > 
@@ -58,7 +58,7 @@
 
 
 
-#####1. Using GitHub:
+##### 1. Using GitHub:
 
 Clone the app using :
 
@@ -81,7 +81,9 @@ Then run the following command in terminal:
 flutter packages get && flutter run
 ```
 
->After running this command, you would have **clarsi** app open on your emulator or Real device
+>After running this command, you would have **clarsi** app open on your emulator or Real device.
+
+#### 2. You will be provided with .Apk file.
 
 ### Usage:
 
