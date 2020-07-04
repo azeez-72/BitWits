@@ -31,7 +31,12 @@
 	- Roll number of a classmate can be viewed by tapping on his or her name.
 
 - **The interactive UI** and **Ease of navigation** in CLARSI never gets old!!
- 
+
+--------------
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/clarsi-heroku.JPG?raw=true)
+-----------------
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/heroku-web.JPG?raw=true)
+----------------- 
 
 
 ### TECHNOLOGY STACK:
