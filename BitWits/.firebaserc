@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "bitwits-f0997"
+    "staging": "bitwits-361ed",
+    "default": "bitwits-361ed"
   }
 }

@@ -24,7 +24,6 @@ dependencies:
   cloud_firestore: ^0.13.6
   clipboard_manager: ^0.0.4
   intl: ^0.16.1
-  circular_check_box: ^1.0.2
   date_format: ^1.0.8
   flushbar: ^1.10.4
   flutter_icons: ^1.1.0

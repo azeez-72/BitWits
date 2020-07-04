@@ -33,31 +33,33 @@ class _AnnouncementsState extends State<Announcements> {
       });
     }
   }
+
   _configureFirebaseListeners() {
     _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('onMessage: $message');
-        _setMessage(message);
+      onMessage: (Map<String, dynamic> title) async {
+        print('onMessage: $title');
+        _setMessage(title);
       },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('onLaunch: $message');
-        _setMessage(message);
+      onLaunch: (Map<String, dynamic> title) async {
+        print('onLaunch: $title');
+        _setMessage(title);
       },
-      onResume: (Map<String, dynamic> message) async {
-        print('onResume: $message');
-        _setMessage(message);
+      onResume: (Map<String, dynamic> title) async {
+        print('onResume: $title');
+        _setMessage(title);
       },
     );
   }
-  _setMessage(Map<String, dynamic> message) {
-    final notification = message['notification'];
-    final data = message['data'];
-    final String title = notification['title'];
-//    final String body = notification['body'];
-    final String mMessage = data['message'];
-    print("Title: $title,  message: $mMessage");
+
+  _setMessage(Map<String, dynamic> title) {
+    final notification = title['notification'];
+    final data = title['data'];
+    final String heading = notification['heading'];
+    final String body = notification['body'];
+    final String mMessage = data['title'];
+    print("Heading: $heading, body: $body, title: $mMessage");
     setState(() {
-      Message m = Message(title, mMessage);
+      Message m = Message(heading, body, mMessage);
       _messages.add(m);
     });
   }
@@ -75,6 +77,7 @@ class _AnnouncementsState extends State<Announcements> {
       _visible[a] = !_visible[a];
     });
   }
+
   int _itemCount = 0;
   var jsonResponse;
 
@@ -101,7 +104,9 @@ class _AnnouncementsState extends State<Announcements> {
   }
 
   void _settingModalBottomSheet(context) {
-    showModalBottomSheet(context: context, builder: (BuildContext bc) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
           return Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -155,7 +160,6 @@ class _AnnouncementsState extends State<Announcements> {
     });
     //work area
   }
-
   // Future<void> _saveHistory(String url,String email) async {
   //   try{await Firestore.instance.collection('Announcement taps').document(url).setData({email: DateTime.now()},merge: true);}
   //   catch(e){print(e);}
@@ -164,7 +168,7 @@ class _AnnouncementsState extends State<Announcements> {
   @override
   Widget build(BuildContext context) {
     return Consumer<Data>(
-      builder: (context,data,child) => Scaffold(
+      builder: (context, data, child) => Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
         resizeToAvoidBottomPadding: false,
@@ -192,7 +196,11 @@ class _AnnouncementsState extends State<Announcements> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  AnnouncementSection(title: 'COVID-19',visible: _visible["COVID-19"],onTap: () => {toggleVisibility("COVID-19")},),
+                  AnnouncementSection(
+                    title: 'COVID-19',
+                    visible: _visible["COVID-19"],
+                    onTap: () => {toggleVisibility("COVID-19")},
+                  ),
                   Visibility(
                     visible: _visible["COVID-19"],
                     child: Container(
@@ -201,14 +209,16 @@ class _AnnouncementsState extends State<Announcements> {
                           ? Text("Loading...")
                           : ListView.builder(
                               itemBuilder: (context, index) {
-                                return AnnouncementList(subtitle: jsonResponse['COVID-19'][index],
-                                onTap: () async => {
-                                  print(
-                                      "Clicked on ${jsonResponse['COVID-19'][index]}"),
-                                  // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
-                                  _launchURL(jsonResponse['COVID-19'][index]
-                                      .toString())
-                                },);
+                                return AnnouncementList(
+                                  subtitle: jsonResponse['COVID-19'][index],
+                                  onTap: () async => {
+                                    print(
+                                        "Clicked on ${jsonResponse['COVID-19'][index]}"),
+                                    // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
+                                    _launchURL(jsonResponse['COVID-19'][index]
+                                        .toString())
+                                  },
+                                );
                               },
                               itemCount: jsonResponse['COVID-19'].length,
                             ),
@@ -217,7 +227,11 @@ class _AnnouncementsState extends State<Announcements> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  AnnouncementSection(title: 'DEGREE',visible: _visible['DEGREE'],onTap: () => {toggleVisibility('DEGREE')},),
+                  AnnouncementSection(
+                    title: 'DEGREE',
+                    visible: _visible['DEGREE'],
+                    onTap: () => {toggleVisibility('DEGREE')},
+                  ),
                   Visibility(
                     visible: _visible["DEGREE"],
                     child: Container(
@@ -226,14 +240,16 @@ class _AnnouncementsState extends State<Announcements> {
                           ? Text("Loading...")
                           : ListView.builder(
                               itemBuilder: (context, index) {
-                                return AnnouncementList(subtitle: jsonResponse['DEGREE'][index],
-                                onTap: () async => {
-                                  print(
-                                      "Clicked on ${jsonResponse['DEGREE'][index]}"),
-                                  // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
-                                  _launchURL(jsonResponse['DEGREE'][index]
-                                      .toString())
-                                },);
+                                return AnnouncementList(
+                                  subtitle: jsonResponse['DEGREE'][index],
+                                  onTap: () async => {
+                                    print(
+                                        "Clicked on ${jsonResponse['DEGREE'][index]}"),
+                                    // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
+                                    _launchURL(jsonResponse['DEGREE'][index]
+                                        .toString())
+                                  },
+                                );
                               },
                               itemCount: jsonResponse['DEGREE'].length,
                             ),
@@ -242,7 +258,11 @@ class _AnnouncementsState extends State<Announcements> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  AnnouncementSection(title: 'Exam Section',visible: _visible['EXAM_SECTION'],onTap: () => {toggleVisibility('EXAM_SECTION')},),
+                  AnnouncementSection(
+                    title: 'Exam Section',
+                    visible: _visible['EXAM_SECTION'],
+                    onTap: () => {toggleVisibility('EXAM_SECTION')},
+                  ),
                   Visibility(
                     visible: _visible["EXAM_SECTION"],
                     child: Container(
@@ -251,14 +271,17 @@ class _AnnouncementsState extends State<Announcements> {
                           ? Text("Loading...")
                           : ListView.builder(
                               itemBuilder: (context, index) {
-                                return AnnouncementList(subtitle: jsonResponse['Exam_Section'][index],
-                                onTap: () async => {
-                                  print(
-                                      "Clicked on ${jsonResponse['Exam_Section'][index]}"),
-                                  // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
-                                  _launchURL(jsonResponse['Exam_Section'][index]
-                                      .toString())
-                                },);
+                                return AnnouncementList(
+                                  subtitle: jsonResponse['Exam_Section'][index],
+                                  onTap: () async => {
+                                    print(
+                                        "Clicked on ${jsonResponse['Exam_Section'][index]}"),
+                                    // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
+                                    _launchURL(jsonResponse['Exam_Section']
+                                            [index]
+                                        .toString())
+                                  },
+                                );
                               },
                               itemCount: jsonResponse['Exam_Section'].length,
                             ),
@@ -267,7 +290,11 @@ class _AnnouncementsState extends State<Announcements> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  AnnouncementSection(title: 'Notices',visible: _visible['NOTICE'],onTap: () => {toggleVisibility('NOTICE')},),
+                  AnnouncementSection(
+                    title: 'Notices',
+                    visible: _visible['NOTICE'],
+                    onTap: () => {toggleVisibility('NOTICE')},
+                  ),
                   Visibility(
                     visible: _visible["NOTICE"],
                     child: Container(
@@ -276,14 +303,16 @@ class _AnnouncementsState extends State<Announcements> {
                           ? Text("Loading...")
                           : ListView.builder(
                               itemBuilder: (context, index) {
-                                return AnnouncementList(subtitle: jsonResponse['Notice'][index],
-                                onTap: () async => {
-                                  print(
-                                      "Clicked on ${jsonResponse['Notice'][index]}"),
-                                  // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
-                                  _launchURL(jsonResponse['Notice'][index]
-                                      .toString())
-                                },);
+                                return AnnouncementList(
+                                  subtitle: jsonResponse['Notice'][index],
+                                  onTap: () async => {
+                                    print(
+                                        "Clicked on ${jsonResponse['Notice'][index]}"),
+                                    // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
+                                    _launchURL(jsonResponse['Notice'][index]
+                                        .toString())
+                                  },
+                                );
                               },
                               itemCount: jsonResponse['Notice'].length,
                             ),
@@ -293,7 +322,11 @@ class _AnnouncementsState extends State<Announcements> {
                     height: 20.0,
                   ),
                   //Component changed to Miscellaneous
-                  AnnouncementSection(title: 'Miscellaneous',visible: _visible['COMPONENT'],onTap: () => {toggleVisibility('COMPONENT')},),
+                  AnnouncementSection(
+                    title: 'Miscellaneous',
+                    visible: _visible['COMPONENT'],
+                    onTap: () => {toggleVisibility('COMPONENT')},
+                  ),
                   Visibility(
                     visible: _visible["COMPONENT"],
                     child: Container(
@@ -302,14 +335,16 @@ class _AnnouncementsState extends State<Announcements> {
                           ? Text("Loading...")
                           : ListView.builder(
                               itemBuilder: (context, index) {
-                                return AnnouncementList(subtitle: jsonResponse['component'][index],
-                                onTap: () async => {
-                                  print(
-                                      "Clicked on ${jsonResponse['component'][index]}"),
-                                  // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
-                                  _launchURL(jsonResponse['component'][index]
-                                      .toString())
-                                },);
+                                return AnnouncementList(
+                                  subtitle: jsonResponse['component'][index],
+                                  onTap: () async => {
+                                    print(
+                                        "Clicked on ${jsonResponse['component'][index]}"),
+                                    // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
+                                    _launchURL(jsonResponse['component'][index]
+                                        .toString())
+                                  },
+                                );
                               },
                               itemCount: jsonResponse['component'].length,
                             ),
@@ -329,11 +364,10 @@ class _AnnouncementsState extends State<Announcements> {
 }
 
 class AnnouncementList extends StatelessWidget {
-
   final Function onTap;
   final String subtitle;
 
-  AnnouncementList({this.subtitle,this.onTap});
+  AnnouncementList({this.subtitle, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -345,8 +379,7 @@ class AnnouncementList extends StatelessWidget {
               bottom: BorderSide(
             color: Colors.black54,
           ))),
-      padding: EdgeInsets.only(
-          left: 20, right: 20, top: 10, bottom: 10.0),
+      padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -355,7 +388,8 @@ class AnnouncementList extends StatelessWidget {
               subtitle,
               style: TextStyle(
                   decoration: TextDecoration.underline,
-                  color: Color(0xFF2265B3), fontSize: 18.0),
+                  color: Color(0xFF2265B3),
+                  fontSize: 18.0),
             ),
             onTap: onTap,
           ),
@@ -366,39 +400,39 @@ class AnnouncementList extends StatelessWidget {
 }
 
 class AnnouncementSection extends StatelessWidget {
-
   final Function onTap;
   final String title;
   final bool visible;
 
-  AnnouncementSection({this.title,this.visible,this.onTap});
+  AnnouncementSection({this.title, this.visible, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(
-                title,
-                style: TextStyle(fontSize: 24.0),
-              ),
+        title,
+        style: TextStyle(fontSize: 24.0),
+      ),
       trailing: IconButton(
-            icon: Icon(visible == false
-                ? Icons.arrow_drop_down
-                : Icons.arrow_drop_up,color: Colors.black,),
-            onPressed: onTap,
-          ),
+        icon: Icon(
+          visible == false ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+          color: Colors.black,
+        ),
+        onPressed: onTap,
+      ),
       onTap: onTap,
     );
   }
 }
 
 class Message {
+  String heading;
+  String body;
   String title;
-//  String body;
-  String message;
-  Message(title, message) {
+  Message(heading, body, title) {
+    this.heading = heading;
+    this.body = body;
     this.title = title;
-//    this.body = body;
-    this.message = message;
   }
 }
 //body: $body,
