@@ -96,7 +96,7 @@ flutter packages get && flutter run
 
 - Once the app is opened, You will see registration screen. Follow the instructions to create your account.  
 - You are free to create a class or Join pre-existing class.
-- If you want to join a class, go ahead and click on **Create Class** button. It will redirect you to new page, where you will be asked to Enter your roll number, your year and branch. Then click on Create and ¡estupendo! you just created a new classroom!
+- If you are the CR of your class, go ahead and click on **Create Class** button. It will redirect you to new page, where you will be asked to Enter your roll number, your year and branch. Then click on Create and ¡estupendo! you just created a new classroom!
 
 - To join a class, click on **Join class** button. THen enter your roll number and classroom code that you must have received from CR. Click on Join.
 
