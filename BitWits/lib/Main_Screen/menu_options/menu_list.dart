@@ -7,7 +7,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:bitwitsapp/Main_Screen/menu_options/options.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Utilities/UIStyles.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 
 class MenuList extends StatelessWidget {
   static final String id = 'menu_list';
@@ -70,6 +69,14 @@ class MenuList extends StatelessWidget {
               icon: Icon(Icons.exit_to_app,color: Colors.red[700],), 
               label: Text('Sign out',textAlign: TextAlign.start,style: TextStyle(color: Colors.red[700]),),
             ),
+            SizedBox(height: 15),
+            Text(
+              '© 2020 BitWits, All rights reserved',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+            )
           ],
         ),
       )

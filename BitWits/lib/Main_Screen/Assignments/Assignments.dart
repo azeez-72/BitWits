@@ -1,4 +1,5 @@
 import 'package:bitwitsapp/Classroom/Data.dart';
+import 'package:bitwitsapp/Utilities/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -119,19 +120,21 @@ class _assignmentsState extends State<Assignments> {
             child: StreamBuilder(
               stream: Firestore.instance.collection('Classrooms/${data.currentClassCode}/Assignments').orderBy('Deadline').snapshots(),
               builder: (context,dataSnapShot) {
+                if(dataSnapShot.hasError) return LoadingScreen();
                 if(dataSnapShot.connectionState == ConnectionState.waiting) return Center(child: Text("Loading...", style: TextStyle(color: Colors.grey[600]),));
                 final studentDocs = dataSnapShot.data.documents;
                 return ListView.separated(
                 // padding: const EdgeInsets.all(8),
                   separatorBuilder: (BuildContext context,int index) => Divider(thickness: 0.5,color: Colors.grey[400]),
                   itemBuilder: (context,index) {
+                    print(index);
                     Color textColor = Colors.black;
                     var textdecoration = TextDecoration.none;
                     if (studentDocs[index]['Completions'][data.rollNumber] == null ? false : studentDocs[index]['Completions'][data.rollNumber] == true) {
                       textColor = Colors.blueGrey[300];
                       textdecoration = TextDecoration.lineThrough;
                     }
-                    return ListTile(
+                    return studentDocs[index]['Completions'][data.rollNumber] == null ? LoadingScreen() : ListTile(
                       onTap: () => showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -183,7 +186,7 @@ class _assignmentsState extends State<Assignments> {
                         }
                       ),
                       title: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           ConstrainedBox(
                           constraints: BoxConstraints(minWidth: data.isCr? mobile.size.width*0.5665 : mobile.size.width*2/3,maxWidth: data.isCr? mobile.size.width*0.5665 : mobile.size.width*2/3 ),
@@ -214,6 +217,7 @@ class _assignmentsState extends State<Assignments> {
                               ),
                             ),
                           ),
+                          studentDocs[index]['Completions'][data.rollNumber] == null? LoadingScreen() :
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [

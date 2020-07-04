@@ -105,7 +105,8 @@ class _SignInState extends State<SignIn> {
                             ),
                             Builder(
                               builder: (context) =>
-                                  button('Login', 18, () async {
+                                button('Login', 18, () async {
+                                  FocusScope.of(context).unfocus();
                                 if (_formKey.currentState.validate()) {
                                   _formKey.currentState.save();
                                 }

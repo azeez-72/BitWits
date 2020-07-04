@@ -4,6 +4,7 @@ import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:bitwitsapp/Utilities/info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
 
@@ -19,6 +20,7 @@ class _DetailsState extends State<Details> {
 
   String branch;
   bool _isEditableName = false;
+  bool showSpinner = false;
   // bool _isEditableRoll = false;
   TextEditingController nameCon = TextEditingController();
   // TextEditingController rollCon = TextEditingController();
@@ -63,8 +65,10 @@ class _DetailsState extends State<Details> {
               if(_isEditableName)  IconButton(icon: Icon(Icons.done,),onPressed: () async{ 
                 if(nameCon.text == '') print('error');
                   else{
+                    setState(() => showSpinner = true);
                     await _editName(studentData.name,studentData.currentEmail, studentData.uid, studentData.currentClassCode);
                     studentData.updateName(nameCon.text);
+                    setState(() => showSpinner = false);
                   }
                   // if(_isEditableRoll){
                   //   if(rollCon.text == '') print('error');
@@ -79,82 +83,85 @@ class _DetailsState extends State<Details> {
                })],
           ),
           backgroundColor: Colors.white,
-          body: SafeArea(
-            child: Center(
-              child: Container(
-                width: mobile.size.width*0.9,
-                height: mobile.size.height*0.8,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 7,
-                      offset: Offset(0.0,1.0),
-                      color: Colors.grey[300],
-                    )
-                  ]
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(left: 24,right: 24),
-                  child: ListView(
-                    children: [
-                      SizedBox(height: 20),
-                      Center(child: Image.asset('images/vjti.png',height: 100)),
-                      SizedBox(height: mobile.size.height*0.1),
+          body: ModalProgressHUD(
+            inAsyncCall: showSpinner,
+            child: SafeArea(
+              child: Center(
+                child: Container(
+                  width: mobile.size.width*0.9,
+                  height: mobile.size.height*0.8,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 7,
+                        offset: Offset(0.0,1.0),
+                        color: Colors.grey[300],
+                      )
+                    ]
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 24,right: 24),
+                    child: ListView(
+                      children: [
+                        SizedBox(height: 20),
+                        Center(child: Image.asset('images/vjti.png',height: 100)),
+                        SizedBox(height: mobile.size.height*0.1),
 
-                      Row(children: [
-                        Text('Name:',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
-                        SizedBox(width: 10),
-                        !_isEditableName ?
-                        Flexible(child: Row(children: [
-                            Text(studentData.name,style: TextStyle(fontSize: 16),softWrap: false,overflow: TextOverflow.fade,),
-                            IconButton(key: ValueKey('Edit name'),icon: Icon(Icons.edit), onPressed:() => setState(() => _isEditableName = true)),
-                          ],))
-                        : Container(
-                            width: 100,
-                            child: TextField(
-                              maxLength: null,
-                              autofocus: true,
-                              controller: nameCon,
-                              decoration: InputDecoration(hintText: 'Edit name',border: InputBorder.none),
-                          )),
-                      ],),
+                        Row(children: [
+                          Text('Name:',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
+                          SizedBox(width: 10),
+                          !_isEditableName ?
+                          Flexible(child: Row(children: [
+                              Text(studentData.name,style: TextStyle(fontSize: 16),softWrap: false,overflow: TextOverflow.fade,),
+                              IconButton(key: ValueKey('Edit name'),icon: Icon(Icons.edit), onPressed:() => setState(() => _isEditableName = true)),
+                            ],))
+                          : Container(
+                              width: 100,
+                              child: TextField(
+                                maxLength: null,
+                                autofocus: true,
+                                controller: nameCon,
+                                decoration: InputDecoration(hintText: 'Edit name',border: InputBorder.none),
+                            )),
+                        ],),
 
-                      // Row(children: [
-                      //   Text('Roll number:',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
-                      //   SizedBox(width: 10),
-                      //   !_isEditableRoll ?
-                      //   Flexible(child: Row(children: [
-                      //       Text(studentData.rollNumber,style: TextStyle(fontSize: 16),softWrap: false,overflow: TextOverflow.fade,),
-                      //       IconButton(icon: Icon(Icons.edit), onPressed:() => setState(() => _isEditableRoll = true)),
-                      //     ],))
-                      //   : Container(
-                      //       width: 100,
-                      //       child: TextField(
-                      //         maxLength: null,
-                      //         autofocus: true,
-                      //         controller: rollCon,
-                      //         decoration: InputDecoration(hintText: 'Edit roll number'),
-                      //     )),
-                      // ],),
-                      DetailRow(field: 'Roll number',value: studentData.rollNumber),
-                      SizedBox(height: 15),
-                      DetailRow(field: 'Year',value: studentData.currentClassCode.substring(5,6)),
-                      SizedBox(height: 15), 
-                      DetailRow(field: 'Batch',
-                        value: studentData.currentClassCode.substring(0,1) == 'b' ?
-                          studentData.currentClassCode.substring(1,2) : 'Not available'
-                      ),
-                      SizedBox(height: 15),
-                      DetailRow(field: 'Branch',
-                        value: studentData.currentClassCode.substring(5,6) == '1' ? studentData.branch
-                                : reversed[studentData.currentClassCode.substring(0,2)]
-                      ),
-                      SizedBox(height: 15),
-                      DetailRow(field: 'Email',value: studentData.currentEmail,),
-                      SizedBox(height: 15),
-                    ],
+                        // Row(children: [
+                        //   Text('Roll number:',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
+                        //   SizedBox(width: 10),
+                        //   !_isEditableRoll ?
+                        //   Flexible(child: Row(children: [
+                        //       Text(studentData.rollNumber,style: TextStyle(fontSize: 16),softWrap: false,overflow: TextOverflow.fade,),
+                        //       IconButton(icon: Icon(Icons.edit), onPressed:() => setState(() => _isEditableRoll = true)),
+                        //     ],))
+                        //   : Container(
+                        //       width: 100,
+                        //       child: TextField(
+                        //         maxLength: null,
+                        //         autofocus: true,
+                        //         controller: rollCon,
+                        //         decoration: InputDecoration(hintText: 'Edit roll number'),
+                        //     )),
+                        // ],),
+                        DetailRow(field: 'Roll number',value: studentData.rollNumber),
+                        SizedBox(height: 15),
+                        DetailRow(field: 'Year',value: studentData.currentClassCode.substring(5,6)),
+                        SizedBox(height: 15), 
+                        DetailRow(field: 'Batch',
+                          value: studentData.currentClassCode.substring(0,1) == 'b' ?
+                            studentData.currentClassCode.substring(1,2) : 'Not available'
+                        ),
+                        SizedBox(height: 15),
+                        DetailRow(field: 'Branch',
+                          value: studentData.currentClassCode.substring(5,6) == '1' ? studentData.branch
+                                  : reversed[studentData.currentClassCode.substring(0,2)]
+                        ),
+                        SizedBox(height: 15),
+                        DetailRow(field: 'Email',value: studentData.currentEmail,),
+                        SizedBox(height: 15),
+                      ],
+                    ),
                   ),
                 ),
               ),

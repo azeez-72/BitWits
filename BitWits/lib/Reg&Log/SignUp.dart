@@ -116,6 +116,7 @@ class SignUpState extends State<SignUp> {
                         Builder(
                           builder: (context) =>
                           button('Register',18, () async {
+                            FocusScope.of(context).unfocus();
                             if(_formKey.currentState.validate()) {
                               _formKey.currentState.save();
                             } 

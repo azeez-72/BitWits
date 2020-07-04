@@ -24,11 +24,16 @@ class Navigate extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    color: Colors.grey[300],
+                    color: Colors.white,
                     child: Center(
                         child: Text(
-                      "GRAPHICS TBD",
-                      style: TextStyle(color: Colors.blueGrey, fontSize: 32),
+                      "College work made easy",
+                      style: TextStyle(
+                        color: Colors.blueGrey,
+                        fontSize: 28,
+                        fontFamily: 'Pacifico',
+                        fontWeight: FontWeight.bold,
+                      ),
                     )),
                   ),
                 ),
