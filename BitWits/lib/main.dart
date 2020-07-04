@@ -20,12 +20,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-          create: (context) => Data(),
-          child: MaterialApp(
+      create: (context) => Data(),
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
         // initialRoute: Test.id,
         home: StreamBuilder(
