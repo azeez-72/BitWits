@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'add_assignment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
 class Assignments extends StatefulWidget {
   @override
   _assignmentsState createState() => _assignmentsState();
@@ -16,6 +17,7 @@ class Assignments extends StatefulWidget {
 
 // ignore: camel_case_types
 class _assignmentsState extends State<Assignments> {
+  final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   DateTime _newValue = DateTime.now();
   bool check = false, delSpinner = false;
   DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
@@ -40,6 +42,7 @@ class _assignmentsState extends State<Assignments> {
   }
 
   Widget _deleteDialog(String code, String title) {
+    
     return StatefulBuilder(
       builder: (context, setState) => ModalProgressHUD(
         inAsyncCall: delSpinner,
@@ -52,6 +55,22 @@ class _assignmentsState extends State<Assignments> {
                 onPressed: () async {
                   setState(() => delSpinner = true);
                   try {
+                    Navigator.pop(context);
+                    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            child: Container(
+              margin: EdgeInsets.all(15.0),
+              child: Text(
+                "Assignment deleted!",
+                style: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.blue),
+              ),
+            ),
+          );
+        });
                     await Firestore.instance
                         .collection('Classrooms/$code/Assignments')
                         .document(title)
@@ -61,10 +80,25 @@ class _assignmentsState extends State<Assignments> {
                         .document(title)
                         .delete();
                     setState(() => delSpinner = false);
-                    Navigator.pop(context);
+                    
                   } catch (e) {
                     setState(() => delSpinner = false);
-                    //TODO: display error
+                    //TODO: display error  
+                    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            child: Container(
+              margin: EdgeInsets.all(15.0),
+              child: Text(
+                "Could not delete assignment!",
+                style: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.red),
+              ),
+            ),
+          );
+        });        
                     Navigator.pop(context);
                   }
                 },
@@ -74,8 +108,9 @@ class _assignmentsState extends State<Assignments> {
       ),
     );
   }
+  
 
-  _showAssignmentAction(String value, String code, String title) async {
+  _showAssignmentAction(String value, String code, String title, String desc) async {
     switch (value) {
       case 'Edit':
         //add date picker
@@ -84,7 +119,11 @@ class _assignmentsState extends State<Assignments> {
             .collection('Classrooms/$code/Assignments')
             .document(title)
             .updateData({'Deadline': _dateFormat.format(_newValue)});
-        //TODO: notify users
+        await Firestore.instance
+            .collection('Classrooms/$code/Assignments')
+            .document(title)
+            .updateData({'Description' : "$desc\n\n(Due Date changed to ${_dateFormat.format(_newValue)})"});
+        //TODO: notify users @sahilkedare
         break;
       case 'Delete':
         showDialog(
@@ -417,7 +456,8 @@ class _assignmentsState extends State<Assignments> {
                                               _showAssignmentAction(
                                                   val,
                                                   data.currentClassCode,
-                                                  studentDocs[index]['Title']),
+                                                  studentDocs[index]['Title'],
+                                                  studentDocs[index]['Description']),
                                           itemBuilder: (context) =>
                                               <PopupMenuEntry<String>>[
                                                 PopupMenuItem<String>(

@@ -216,7 +216,6 @@ class _AnnouncementsState extends State<Announcements> {
                                   labelVisible: index==0?true:false,
                                   subtitle: jsonResponse['COVID-19'][index],
                                   onTap: () async => {
-
                                     print(
                                         "Clicked on ${jsonResponse['COVID-19'][index]}"),
                                     // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
