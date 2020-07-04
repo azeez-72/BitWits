@@ -165,6 +165,9 @@ class _AnnouncementsState extends State<Announcements> {
   //   catch(e){print(e);}
   // }
 
+  final bool _labelVisible = false;
+  
+
   @override
   Widget build(BuildContext context) {
     return Consumer<Data>(
@@ -210,8 +213,10 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
+                                  labelVisible: index==0?true:false,
                                   subtitle: jsonResponse['COVID-19'][index],
                                   onTap: () async => {
+
                                     print(
                                         "Clicked on ${jsonResponse['COVID-19'][index]}"),
                                     // await _saveHistory(jsonResponse['Notice'][index], data.currentEmail),
@@ -241,6 +246,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
+                                  labelVisible: index==0?true:false,
                                   subtitle: jsonResponse['DEGREE'][index],
                                   onTap: () async => {
                                     print(
@@ -272,6 +278,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
+                                  labelVisible: index==0?true:false,
                                   subtitle: jsonResponse['Exam_Section'][index],
                                   onTap: () async => {
                                     print(
@@ -304,6 +311,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
+                                  labelVisible: index==0?true:false,
                                   subtitle: jsonResponse['Notice'][index],
                                   onTap: () async => {
                                     print(
@@ -336,6 +344,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
+                                  labelVisible: index==0?true:false,
                                   subtitle: jsonResponse['component'][index],
                                   onTap: () async => {
                                     print(
@@ -366,8 +375,10 @@ class _AnnouncementsState extends State<Announcements> {
 class AnnouncementList extends StatelessWidget {
   final Function onTap;
   final String subtitle;
+  final bool labelVisible;
 
-  AnnouncementList({this.subtitle, this.onTap});
+  AnnouncementList({this.subtitle, this.onTap, this.labelVisible});
+
 
   @override
   Widget build(BuildContext context) {
@@ -384,6 +395,8 @@ class AnnouncementList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ListTile(
+
+            leading: Visibility(visible: labelVisible,child: Container(margin: EdgeInsets.only(bottom:20.0),child: Text("latest", style: TextStyle(color: Colors.green),))),
             subtitle: Text(
               subtitle,
               style: TextStyle(
