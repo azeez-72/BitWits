@@ -111,9 +111,13 @@ On this note, you have completed the setup and basic authentication formalities 
 
 
 
-![login](Screenshots/login.png)
-![announcements](Screenshots/Announcements.jpg)
-![assignments](Screenshots/assignment.jpg)
-![assignments](Screenshots/assignment1.jpg)
-![list](Screenshots/slist.jpg)
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Login.PNG?raw=true)
+-----------------------------
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Announcements.JPG?raw=true)
+--------------------------------
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Assignment.JPG?raw=true)
+----------------------------------
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Assignment1.JPG?raw=true)
+-----------------------------------
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/More%20options.JPG?raw=true)
 
