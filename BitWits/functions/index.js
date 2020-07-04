@@ -19,7 +19,7 @@ for (var token of deviceTokens.docs) {
 }
 
 var payload = {
-notification: {heading : 'New Announcement',body: newData.title ,sound: 'default'},
+notification: {heading : 'New Announcement',body: "New Announcement : " + newData.title ,sound: 'default'},
 data: {click_action: 'FLUTTER_NOTIFICATION_CLICK',title: newData.title,},
 };
 
