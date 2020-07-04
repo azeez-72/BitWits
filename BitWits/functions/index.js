@@ -12,7 +12,7 @@ if (snapshot.empty) {
 }
 var tokens = [];
 newData = snapshot.data();
-const deviceIdTokens = await admin.firestore().collection('DeviceTokens').get();
+const deviceTokens = await admin.firestore().collection('DeviceTokens').get();
 
 for (var token of deviceTokens.docs) {
     tokens.push(token.data().device_token);
