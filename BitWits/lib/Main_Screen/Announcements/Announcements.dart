@@ -131,7 +131,7 @@ class _AnnouncementsState extends State<Announcements> {
                 Container(
                   margin: EdgeInsets.all(15.0),
                   child: Text(
-                    "Click on the links provided to view corresponding PDF.",
+                    "Click on the links provided under each respective sections to view corresponding PDF.",
                     style: TextStyle(fontSize: 18.0),
                   ),
                 ),
@@ -164,6 +164,9 @@ class _AnnouncementsState extends State<Announcements> {
   //   try{await Firestore.instance.collection('Announcement taps').document(url).setData({email: DateTime.now()},merge: true);}
   //   catch(e){print(e);}
   // }
+
+  final bool _labelVisible = false;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -210,6 +213,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
+                                  labelVisible: index==0?true:false,
                                   subtitle: jsonResponse['COVID-19'][index],
                                   onTap: () async => {
                                     print(
@@ -241,6 +245,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
+                                  labelVisible: index==0?true:false,
                                   subtitle: jsonResponse['DEGREE'][index],
                                   onTap: () async => {
                                     print(
@@ -272,6 +277,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
+                                  labelVisible: index==0?true:false,
                                   subtitle: jsonResponse['Exam_Section'][index],
                                   onTap: () async => {
                                     print(
@@ -304,6 +310,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
+                                  labelVisible: index==0?true:false,
                                   subtitle: jsonResponse['Notice'][index],
                                   onTap: () async => {
                                     print(
@@ -336,6 +343,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
+                                  labelVisible: index==0?true:false,
                                   subtitle: jsonResponse['component'][index],
                                   onTap: () async => {
                                     print(
@@ -366,8 +374,10 @@ class _AnnouncementsState extends State<Announcements> {
 class AnnouncementList extends StatelessWidget {
   final Function onTap;
   final String subtitle;
+  final bool labelVisible;
 
-  AnnouncementList({this.subtitle, this.onTap});
+  AnnouncementList({this.subtitle, this.onTap, this.labelVisible});
+
 
   @override
   Widget build(BuildContext context) {
@@ -379,11 +389,25 @@ class AnnouncementList extends StatelessWidget {
               bottom: BorderSide(
             color: Colors.black54,
           ))),
-      padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10.0),
+      padding: EdgeInsets.only(left: 8,right: 8, top: 10, bottom: 10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ListTile(
+          ListTile( 
+            trailing: labelVisible ? Container(
+              padding: EdgeInsets.only(left: 5,right: 5,top: 3,bottom: 3),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 3.0,
+                  )
+                ],
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(15)
+              ),
+              margin: EdgeInsets.only(bottom:20.0),
+              child: Text("Latest", style: TextStyle(color: Colors.white,fontSize: 12),)) : null,
             subtitle: Text(
               subtitle,
               style: TextStyle(

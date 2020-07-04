@@ -2,6 +2,7 @@ import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Classroom/create_class.dart';
 import 'package:bitwitsapp/Classroom/join_class.dart';
 import 'package:bitwitsapp/Utilities/UIStyles.dart';
+import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -24,11 +25,12 @@ class Navigate extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    color: Colors.grey[300],
+                    color: Colors.white,
                     child: Center(
                         child: Text(
-                      "GRAPHICS TBD",
-                      style: TextStyle(color: Colors.blueGrey, fontSize: 32),
+                      "Making the college spree easy -Clarsi!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Color(0xFF2265B3), fontSize: 32,fontWeight: FontWeight.bold,fontFamily: 'Pacifico'),
                     )),
                   ),
                 ),
