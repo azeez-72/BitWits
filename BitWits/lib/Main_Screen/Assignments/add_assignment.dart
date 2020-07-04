@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:bitwitsapp/Classroom/Data.dart';
 import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
@@ -24,14 +23,8 @@ class _AddAssignmentState extends State<AddAssignment> {
   DateTime _value = DateTime.now();
   DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
   bool showSpinner = false;
-  String title;
-  // ignore: non_constant_identifier_names
-  HashMap<String,bool> Completions = HashMap<String,bool>();
 
   Future<void> _saveToCF(String code) async {
-
-    setState(() => title = titleController.text);
-
     await Firestore.instance.collection('Classrooms/$code/Assignments').document(titleController.text).setData({
       'Title': titleController.text.trim(),
       'Description': descriptionController.text == '' ? 'Not provided' : descriptionController.text,
@@ -41,22 +34,15 @@ class _AddAssignmentState extends State<AddAssignment> {
     });
   }
 
-  Future<void> _getRollNumbers(String code) async {
-    try{
-      await Firestore.instance.collection('Classrooms/$code/Students').getDocuments()
-      .then((snap) {
-        snap.documents.forEach((document) {
-          print(document.data['roll number']);
-          setState(() => Completions[document.data['roll number']] = false);
-        });
-      });
-    }catch(e){print(e);}
-  }
-
   Future<void> _initialize(String code) async {
     try{
-      await Firestore.instance.collection('Classrooms/$code/Assignments').document(title)
-      .setData({'Completions' : Completions},merge: true);
+      await Firestore.instance.collection('Classrooms/$code/Students').getDocuments()
+      .then((snapshot){
+        snapshot.documents.forEach((doc) async {
+          await Firestore.instance.collection('Classrooms/$code/Assignments')
+          .document(titleController.text.trim()).setData({'Completions' : {doc.data['roll number']: false}},merge: true);
+        });
+      });
     } catch(e){print(e);}
   }
 
@@ -133,12 +119,10 @@ class _AddAssignmentState extends State<AddAssignment> {
                               setState(() => showSpinner = true);
                               try{
                                 await _saveToCF(data.currentClassCode);
-                                await _getRollNumbers(data.currentClassCode);
-                                if(title != null) await _initialize(data.currentClassCode);
+                                await _initialize(data.currentClassCode);
                                 setState(() => showSpinner = false);
                                 Navigator.pop(context);
                               } catch(e){
-                                print(e);
                                   Flushbar(
                                     messageText: Text(
                                       "'An error occured...Pls try again later!",

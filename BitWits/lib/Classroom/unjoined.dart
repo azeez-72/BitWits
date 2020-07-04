@@ -30,7 +30,7 @@ class Unjoined extends StatelessWidget {
                     SizedBox(height: 20),
                     Container(
                       child: Text(
-                        "Either you have left or have been removed from your previous class",
+                        "Select one of the following options",
                         style: TextStyle(color: Colors.grey[600], fontSize: 16),
                       ),
                     ),
