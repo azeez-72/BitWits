@@ -3,16 +3,18 @@
 ## Team Name : BitWits
 
 ### TEAM MEMBERS:
-1. Azeez Dandawala 
+1. Azeez Dandawala - officialazeezamd@gmail.com
 2. Sahil Kedare - sahilkedare4444@gmail.com
 3. Pankaj Khushalani - pkkhushalani_b19@it.vjti.ac.in
 4. Tanish Sawant - tanishsawant@rediffmail.com
 
 ### MENTORS:
-1. 
+1. Palak Mantry
+2. Shubhankar Gupta
+3. Bhavya Sheth
 
 ### DESCRIPTION OF OUR PROJECT:
->Project Type : Android and IOS application
+>Project Type : Android and iOS application
 
 - Core idea behind **CLARSI** is to make an application that will scan the **NEWS AND NOTIFICATION** column of VJTI website for you **every 4 hours!**
 - To make users satisfied, we decided to add other features as well, such as assignments and classrooms.**CLARSI** is a confluence of all these branches.
