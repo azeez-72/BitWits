@@ -111,8 +111,9 @@ On this note, you have completed the setup and basic authentication formalities 
 
 
 
-
-
-
-
+![login](Screenshots/login.png)
+![announcements](Screenshots/Announcements.jpg)
+![assignments](Screenshots/assignment.jpg)
+![assignments](Screenshots/assignment1.jpg)
+![list](Screenshots/slist.jpg)
 
