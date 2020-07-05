@@ -52,9 +52,10 @@
 
 1. Firebase
 2. Flutter
-3. Adobe XD
-4. Web Scraping
-5. Using Flask to create API
+3. Adobe Illustrator
+4. Adobe XD
+5. Web Scraping
+6. Using Flask to create API
 
 
 ### PROJECT SETUP
