@@ -1,6 +1,7 @@
 # CLARSI 
 
-### Team Name: BitWits
+#### Team Name: BitWits
+</br>
 
 ### Team Members
 ----------
@@ -31,6 +32,7 @@
 - With the **interactive UI** and **Ease of navigation**, Clarsi is a utilitarian tool for students in managing college work. <br/>
 
 - [Here's](https://github.com/azeez-72/BitWits) the GitHub repository of our project.
+- Check out the [demo video](https://drive.google.com/file/d/16V50xbdi8F28sIJupCwdtIq6v70L8TvN/view) of our app.
 - You can find the apk [here](https://drive.google.com/drive/folders/1H52JErSo3x_lSb0c8bC38rW83bBeEGnR?usp=sharing).
 - You can find the Heroku app used to scrape links [here](https://new-college-scrapper.herokuapp.com/) and the GitHub repository [here](https://github.com/pk-218/CollegeScrapper)
 
