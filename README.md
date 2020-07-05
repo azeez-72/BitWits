@@ -117,9 +117,7 @@ flutter packages get && flutter run
 --------------
 
 
-![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Login.PNG?raw=true) ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Announcements.JPG?raw=true)
---------------------------------
-![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Assignment.JPG?raw=true)![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Assignment1.JPG?raw=true)
---------------------------------
-![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/More%20options.JPG?raw=true)
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/login_page.PNG?raw=true) ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/announcements_page.JPG?raw=true) ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/assignment_page.JPG?raw=true)
+
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/assignment_description.JPG?raw=true)![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/more_options_page.JPG?raw=true)
 
