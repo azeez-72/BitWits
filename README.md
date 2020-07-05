@@ -1,17 +1,19 @@
 # CLARSI 
 
-## Team Name: BitWits
+### Team Name: BitWits
 
 ### Team Members
->1. Azeez Dandawala - officialazeezamd@gmail.com
->2. Sahil Kedare - sahilkedare4444@gmail.com
->3. Pankaj Khushalani - pkkhushalani_b19@it.vjti.ac.in
->4. Tanish Sawant - tanishsawant@rediffmail.com
+----------
+- Azeez Dandawala - officialazeezamd@gmail.com
+- Sahil Kedare - sahilkedare4444@gmail.com
+- Pankaj Khushalani - pkkhushalani_b19@it.vjti.ac.in
+- Tanish Sawant - tanishsawant@rediffmail.com
 
 ### Mentors
->1. Palak Mantry
->2. Shubhankar Gupta
->3. Bhavya Sheth
+-----------
+- Palak Mantry
+- Shubhankar Gupta
+- Bhavya Sheth
 
 ### Description
 >Project Type: Flutter application
@@ -113,13 +115,9 @@ flutter packages get && flutter run
 --------------
 
 
-![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Login.PNG?raw=true)
------------------------------
-![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Announcements.JPG?raw=true)
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Login.PNG?raw=true) ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Announcements.JPG?raw=true)
 --------------------------------
-![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Assignment.JPG?raw=true)
-----------------------------------
-![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Assignment1.JPG?raw=true)
------------------------------------
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Assignment.JPG?raw=true)![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/Assignment1.JPG?raw=true)
+--------------------------------
 ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/More%20options.JPG?raw=true)
 
