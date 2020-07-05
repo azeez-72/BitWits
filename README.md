@@ -28,7 +28,7 @@
 	- You can view the list of students in your classroom.
 	- Roll number of a classmate can be viewed by tapping on his or her name.
 
-- With the **interactive UI** and **Ease of navigation**,Clarsi is a utilitarian tool for managing college work!!
+- With the **interactive UI** and **Ease of navigation**, Clarsi is a utilitarian tool for managing college work.
 
 --------------
 ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/clarsi-heroku.JPG?raw=true)
