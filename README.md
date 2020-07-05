@@ -1,6 +1,6 @@
 # CLARSI 
 
-#### Team Name: BitWits
+### Team Name: BitWits
 </br>
 
 ### Team Members
