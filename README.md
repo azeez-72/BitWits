@@ -16,13 +16,11 @@
 ### DESCRIPTION OF OUR PROJECT:
 >Project Type : Android and iOS application
 
-- Core idea behind **CLARSI** is to make an application that will scan the **NEWS AND NOTIFICATION** column of VJTI website for you **every 4 hours!**
-- To make users satisfied, we decided to add other features as well, such as assignments and classrooms.**CLARSI** is a confluence of all these branches.
-- **CLARSI** is programmed in the most pragmatic way possible, constantly improving the virtues.
-- Ingenuous logic design and aesthetic virtues make **CLARSI** an utilitarian tool for VJTI students.
+- Core idea behind **CLARSI** is to make an application that will scan the **NEWS AND NOTIFICATION** column of VJTI website and provide push notifications of new announcements.
+- **CLARSI ensures data integrity and security** of the information that you have provided to us.
 - **CLARSI** contains two main pages namely, **Announcement Page** and **Assignment Page**.
 	- **Announcement Page** Contains all the announcements made by college on website. All the links are clickable and by single touch the **CLARSI** makes the corresponding PDF available to you.
-	- **Assignment Page** consists of list of assignments assigned to the class you joined. CR can add assignments time to time. CR also has authority to make changes in the date of submission.
+	- **Assignment Page** consists of list of assignments assigned to the class you joined that behaves as a TODO list for each user.Additionally,assignment file and description can be viewed on tapping the list.CR can add assignments time to time. Assignment submission dates can be changed by the CR.
 
 - **Classes** are important features of **CLARSI**
 	- Classes are similar to **Google classroom**.
@@ -30,7 +28,7 @@
 	- You can view the list of students in your classroom.
 	- Roll number of a classmate can be viewed by tapping on his or her name.
 
-- **The interactive UI** and **Ease of navigation** in CLARSI never gets old!!
+- With the **interactive UI** and **Ease of navigation**,Clarsi is a utilitarian tool for managing college work!!
 
 --------------
 ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/clarsi-heroku.JPG?raw=true)
