@@ -17,7 +17,7 @@
 >Project Type : Android and iOS application
 
 - Core idea behind **CLARSI** is to make an application that will scan the **NEWS AND NOTIFICATION** column of VJTI website and provide push notifications of new announcements under respective sections.
-- **CLARSI ensures data integrity and security** of the information that you have provided to us.
+- CLARSI ensures **integrity** and **security** of the information that you have provided to us.
 - **CLARSI** contains two main pages namely, **Announcement Page** and **Assignment Page**.
 	- **Announcement Page** Contains all the announcements made by college on website. All the links are clickable and by single touch the **CLARSI** makes the corresponding PDF available to you.
 	- **Assignment Page** consists of list of assignments assigned to the class you joined that behaves as a TODO list for each user.Additionally,assignment file and description can be viewed on tapping the list.CR can add assignments time to time. Assignment submission dates can be changed by the CR.
