@@ -111,13 +111,13 @@ flutter packages get && flutter run
 --------------
 
 - We are planning to add a feature that allows CR to add announcements in their classroom.
-- Notifications for new assignments and assignment submission date changes will be added in future.
+- Notifications for new assignments will be added in future.
 
 ### Screenshots 
 --------------
 
 
-![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/login_page.PNG?raw=true) ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/announcements_page.JPG?raw=true) ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/assignment_page.JPG?raw=true)
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/login_page.png) ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/announcements_page.jpg) ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/assignment_page.jpg)
 
-![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/assignment_description.JPG?raw=true)![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/more_options_page.JPG?raw=true)
+![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/assignment_description.jpg) ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/classmates_page.jpg)![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/more_options_page.jpg)
 
