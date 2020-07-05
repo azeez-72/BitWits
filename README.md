@@ -111,7 +111,7 @@ flutter packages get && flutter run
 --------------
 
 - We are planning to add a feature that allows CR to add announcements in their classroom.
-- Notifications for new assignments will be added in future.
+- Notifications for new assignments and assignment submission dates will be added in future.
 
 ### Screenshots 
 --------------
