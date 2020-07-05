@@ -16,7 +16,7 @@
 ### DESCRIPTION OF OUR PROJECT:
 >Project Type : Android and iOS application
 
-- Core idea behind **CLARSI** is to make an application that will scan the **NEWS AND NOTIFICATION** column of VJTI website and provide push notifications of new announcements.
+- Core idea behind **CLARSI** is to make an application that will scan the **NEWS AND NOTIFICATION** column of VJTI website and provide push notifications of new announcements under respective sections.
 - **CLARSI ensures data integrity and security** of the information that you have provided to us.
 - **CLARSI** contains two main pages namely, **Announcement Page** and **Assignment Page**.
 	- **Announcement Page** Contains all the announcements made by college on website. All the links are clickable and by single touch the **CLARSI** makes the corresponding PDF available to you.
@@ -28,7 +28,7 @@
 	- You can view the list of students in your classroom.
 	- Roll number of a classmate can be viewed by tapping on his or her name.
 
-- With the **interactive UI** and **Ease of navigation**, Clarsi is a utilitarian tool for managing college work.
+- With the **interactive UI** and **Ease of navigation**, Clarsi is a utilitarian tool for students in managing college work.
 
 --------------
 ![](https://github.com/azeez-72/BitWits/blob/master/Screenshots/clarsi-heroku.JPG?raw=true)
