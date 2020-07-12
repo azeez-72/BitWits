@@ -23,6 +23,33 @@ class _AnnouncementsState extends State<Announcements> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   List<Message> _messages;
 
+  createAlertDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "New Announcement",
+              style: TextStyle(
+                color: mainColor,
+              ),
+            ),
+
+            actions: <Widget>[
+              MaterialButton(
+                elevation: 5.0,
+                child: Text(
+                  "Okay",
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
   _saveDeviceToken() async {
     String fcmToken = await _firebaseMessaging.getToken();
     if (fcmToken != null) {
@@ -39,6 +66,7 @@ class _AnnouncementsState extends State<Announcements> {
       onMessage: (Map<String, dynamic> title) async {
         print('onMessage: $title');
         _setMessage(title);
+        createAlertDialog(context);
       },
       onLaunch: (Map<String, dynamic> title) async {
         print('onLaunch: $title');
@@ -166,7 +194,6 @@ class _AnnouncementsState extends State<Announcements> {
   // }
 
   final bool _labelVisible = false;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -213,7 +240,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
-                                  labelVisible: index==0?true:false,
+                                  labelVisible: index == 0 ? true : false,
                                   subtitle: jsonResponse['COVID-19'][index],
                                   onTap: () async => {
                                     print(
@@ -245,7 +272,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
-                                  labelVisible: index==0?true:false,
+                                  labelVisible: index == 0 ? true : false,
                                   subtitle: jsonResponse['DEGREE'][index],
                                   onTap: () async => {
                                     print(
@@ -277,7 +304,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
-                                  labelVisible: index==0?true:false,
+                                  labelVisible: index == 0 ? true : false,
                                   subtitle: jsonResponse['Exam_Section'][index],
                                   onTap: () async => {
                                     print(
@@ -310,7 +337,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
-                                  labelVisible: index==0?true:false,
+                                  labelVisible: index == 0 ? true : false,
                                   subtitle: jsonResponse['Notice'][index],
                                   onTap: () async => {
                                     print(
@@ -343,7 +370,7 @@ class _AnnouncementsState extends State<Announcements> {
                           : ListView.builder(
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
-                                  labelVisible: index==0?true:false,
+                                  labelVisible: index == 0 ? true : false,
                                   subtitle: jsonResponse['component'][index],
                                   onTap: () async => {
                                     print(
@@ -378,7 +405,6 @@ class AnnouncementList extends StatelessWidget {
 
   AnnouncementList({this.subtitle, this.onTap, this.labelVisible});
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -389,25 +415,30 @@ class AnnouncementList extends StatelessWidget {
               bottom: BorderSide(
             color: Colors.black54,
           ))),
-      padding: EdgeInsets.only(left: 8,right: 8, top: 10, bottom: 10.0),
+      padding: EdgeInsets.only(left: 8, right: 8, top: 10, bottom: 10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ListTile( 
-            trailing: labelVisible ? Container(
-              padding: EdgeInsets.only(left: 5,right: 5,top: 3,bottom: 3),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 3.0,
-                  )
-                ],
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(15)
-              ),
-              margin: EdgeInsets.only(bottom:20.0),
-              child: Text("Latest", style: TextStyle(color: Colors.white,fontSize: 12),)) : null,
+          ListTile(
+            trailing: labelVisible
+                ? Container(
+                    padding:
+                        EdgeInsets.only(left: 5, right: 5, top: 3, bottom: 3),
+                    decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 3.0,
+                          )
+                        ],
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(15)),
+                    margin: EdgeInsets.only(bottom: 20.0),
+                    child: Text(
+                      "Latest",
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ))
+                : null,
             subtitle: Text(
               subtitle,
               style: TextStyle(
