@@ -34,7 +34,6 @@ class _AnnouncementsState extends State<Announcements> {
                 color: mainColor,
               ),
             ),
-
             actions: <Widget>[
               MaterialButton(
                 elevation: 5.0,
