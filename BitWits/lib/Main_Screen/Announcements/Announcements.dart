@@ -130,6 +130,18 @@ class _AnnouncementsState extends State<Announcements> {
     }
   }
 
+  String refineUrl(String u) {
+    var _newString = u.replaceAll('%', ' ');
+    _newString = _newString.replaceAll('https://www.vjti.ac.in/images/', '');
+    _newString = _newString.replaceAll('/', ' : ');
+    List<int> i = [0, 1, 2, 3, 4 , 5, 6, 7 ,8 ,9];
+    for (var a in i) {
+      _newString = _newString.replaceAll(a.toString(), '');
+    }
+    _newString = _newString.replaceAll('_', ' ');
+    return _newString;
+  }
+
   void _settingModalBottomSheet(context) {
     showModalBottomSheet(
         context: context,
@@ -240,7 +252,7 @@ class _AnnouncementsState extends State<Announcements> {
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
                                   labelVisible: index == 0 ? true : false,
-                                  subtitle: jsonResponse['COVID-19'][index],
+                                  subtitle: refineUrl(jsonResponse['COVID-19'][index]),
                                   onTap: () async => {
                                     print(
                                         "Clicked on ${jsonResponse['COVID-19'][index]}"),
@@ -272,7 +284,7 @@ class _AnnouncementsState extends State<Announcements> {
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
                                   labelVisible: index == 0 ? true : false,
-                                  subtitle: jsonResponse['DEGREE'][index],
+                                  subtitle: refineUrl(jsonResponse['DEGREE'][index]),
                                   onTap: () async => {
                                     print(
                                         "Clicked on ${jsonResponse['DEGREE'][index]}"),
@@ -304,7 +316,7 @@ class _AnnouncementsState extends State<Announcements> {
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
                                   labelVisible: index == 0 ? true : false,
-                                  subtitle: jsonResponse['Exam_Section'][index],
+                                  subtitle: refineUrl(jsonResponse['Exam_Section'][index]),
                                   onTap: () async => {
                                     print(
                                         "Clicked on ${jsonResponse['Exam_Section'][index]}"),
@@ -337,7 +349,7 @@ class _AnnouncementsState extends State<Announcements> {
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
                                   labelVisible: index == 0 ? true : false,
-                                  subtitle: jsonResponse['Notice'][index],
+                                  subtitle: refineUrl(jsonResponse['Notice'][index]),
                                   onTap: () async => {
                                     print(
                                         "Clicked on ${jsonResponse['Notice'][index]}"),
@@ -370,7 +382,7 @@ class _AnnouncementsState extends State<Announcements> {
                               itemBuilder: (context, index) {
                                 return AnnouncementList(
                                   labelVisible: index == 0 ? true : false,
-                                  subtitle: jsonResponse['component'][index],
+                                  subtitle: refineUrl(jsonResponse['component'][index]),
                                   onTap: () async => {
                                     print(
                                         "Clicked on ${jsonResponse['component'][index]}"),
