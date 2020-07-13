@@ -138,6 +138,7 @@ class _AnnouncementsState extends State<Announcements> {
     for (var a in i) {
       _newString = _newString.replaceAll(a.toString(), '');
     }
+    _newString = _newString.replaceAll('.pdf', '');
     _newString = _newString.replaceAll('_', ' ');
     return _newString;
   }

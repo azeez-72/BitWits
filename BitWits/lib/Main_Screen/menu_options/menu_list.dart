@@ -8,10 +8,21 @@ import 'package:bitwitsapp/Main_Screen/menu_options/options.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Utilities/UIStyles.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
+import './menu_items/Resources.dart';
+
 
 class MenuList extends StatelessWidget {
   static final String id = 'menu_list';
   final _auth = FirebaseAuth.instance;
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +47,15 @@ class MenuList extends StatelessWidget {
               subtitle: 'Classmates',
               onTap: () => Navigator.pushNamed(context, Students_list.id),
             ),
+
+            
+            /* OptionListTile(
+              icon: Icon(Icons.assignment,color: mainColor,size: 32,),
+              title: 'Previous Years Papers',
+              subtitle: 'Question Papers',
+              onTap: () => {_launchURL("https://drive.google.com/open?id=0Bx7IrwIRxV6xOHNqR3Rlc1EwR2M")},
+            ), */
+
             // OptionListTile(
             //   icon: SvgPicture.asset('svgs/stack_of_books.svg',color: Colors.grey),
             //   title: 'Books',
@@ -48,7 +68,16 @@ class MenuList extends StatelessWidget {
               icon: Icon(Icons.phone,color: mainColor,size: 32,),
               title: 'Contact us',
               subtitle: 'Email us at appbitwits@gmail.com',
+              onTap: () => {_launchURL('mailto: appbitwits@gmail.com')}
             ),
+
+            OptionListTile(
+              icon: Icon(Icons.library_books,color: mainColor,size: 32,),
+              title: 'Resources',
+              subtitle: 'Question Papers And Reference Books',
+              onTap: () => Navigator.pushNamed(context, Resources_res.id),
+            ),
+
             SizedBox(height: 10),
             FlatButton.icon(
               onPressed: (){
@@ -76,4 +105,3 @@ class MenuList extends StatelessWidget {
     );
   }
 }
-
