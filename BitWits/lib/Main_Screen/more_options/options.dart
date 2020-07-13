@@ -28,7 +28,7 @@ class OptionListTile extends StatelessWidget {
         child: ListTile(
           leading: icon,
           trailing: title == 'Contact us' ? null : Icon(Icons.arrow_forward_ios,size: 18,),
-          title: Text(title,style: TextStyle(color: title == 'Books' ? Colors.grey : Colors.black87,fontWeight: FontWeight.w600),),
+          title: Text(title,style: TextStyle(color: Colors.black87,fontWeight: FontWeight.w600),),
           subtitle: Text(subtitle,),
         ),
       ),

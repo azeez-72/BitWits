@@ -1,13 +1,14 @@
-import 'package:bitwitsapp/Main_Screen/menu_options/menu_items/Student_details.dart';
-import 'package:bitwitsapp/Main_Screen/menu_options/menu_items/Students_list.dart';
+import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Student_details.dart';
+import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Students_list.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:bitwitsapp/Main_Screen/menu_options/options.dart';
+import 'package:bitwitsapp/Main_Screen/more_options/options.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Utilities/UIStyles.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+
+import 'menu_items/Books/buffer.dart';
 
 class MenuList extends StatelessWidget {
   static final String id = 'menu_list';
@@ -36,14 +37,12 @@ class MenuList extends StatelessWidget {
               subtitle: 'Classmates',
               onTap: () => Navigator.pushNamed(context, Students_list.id),
             ),
-            // OptionListTile(
-            //   icon: SvgPicture.asset('svgs/stack_of_books.svg',color: Colors.grey),
-            //   title: 'Books',
-            //   subtitle: 'Buy or sell books',
-            //   onTap: () => (){
-                
-            //   },
-            // ),
+            OptionListTile(
+              icon: SvgPicture.asset('svgs/stack_of_books.svg',color: mainColor),
+              title: 'Books',
+              subtitle: 'Buy or sell books',
+              onTap: () => Navigator.pushNamed(context,Buffer.id),
+            ),
             OptionListTile(
               icon: Icon(Icons.phone,color: mainColor,size: 32,),
               title: 'Contact us',

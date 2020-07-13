@@ -1,6 +1,5 @@
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
-import 'package:bitwitsapp/Utilities/UIStyles.dart';
-import 'package:flutter/material.dart';
+import 'package:bitwitsapp/exports.dart';
 import 'package:bitwitsapp/Classroom/join_class.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bitwitsapp/Classroom/create_class.dart';

@@ -1,8 +1,6 @@
+import 'package:bitwitsapp/exports.dart';
 import 'package:bitwitsapp/Intermediate.dart';
-import 'package:bitwitsapp/Utilities/UIStyles.dart';
-import 'package:flutter/material.dart';
 import 'package:bitwitsapp/Utilities/info.dart';
-import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -272,7 +270,7 @@ Future<void> _saveToCF() async {
                               await _saveToCF();
                               await Firestore.instance.collection('History').document(currentUser.email)
                               .setData({'class joined on ${DateTime.now()} with roll number and branch': '${codecon.text} , ${rollcon.text} and $branch'},merge: true);
-                              Navigator.pushNamed(context, Intermediate.id);
+                              Navigator.pushReplacementNamed(context, Intermediate.id);
                             }catch(e){
                               setState(() => showSpinner = false);
                               Flushbar(

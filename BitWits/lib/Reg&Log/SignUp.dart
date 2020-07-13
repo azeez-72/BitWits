@@ -1,12 +1,9 @@
-import 'package:bitwitsapp/Classroom/Choose.dart';
+import 'package:bitwitsapp/exports.dart';
 import 'package:bitwitsapp/Intermediate.dart';
-import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'SignIn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:bitwitsapp/Utilities/UIStyles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:bitwitsapp/Headings/RegsiterHeading.dart';

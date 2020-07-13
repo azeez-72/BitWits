@@ -1,6 +1,5 @@
-import 'package:bitwitsapp/Main_Screen/menu_options/menu_list.dart';
-import 'package:bitwitsapp/Utilities/constants.dart';
-import 'package:flutter/material.dart';
+import 'package:bitwitsapp/Main_Screen/more_options/menu_list.dart';
+import 'package:bitwitsapp/exports.dart';
 import 'Announcements/Announcements.dart';
 import 'Assignments/Assignments.dart';
 
@@ -14,6 +13,49 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  List<Widget> pages = [
+    Announcements(),
+    Assignments(),
+    MenuList(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      // bottomNavigationBar: Container(
+      //   color: Color(0xFFF8F8F8),
+      //   child: TabBar(
+      //     labelColor: mainColor,
+      //     unselectedLabelColor: Color(0xFF828282),
+      //     indicatorColor: Colors.transparent,
+      //     indicatorWeight: 0.1,
+      //     tabs: [
+      //       Tab(
+      //         text: 'Announcements',
+      //         icon: Icon(Icons.announcement,size: 28,),
+      //       ),
+      //       Tab(
+      //         text:'Assignments',
+      //         icon: Icon(Icons.assignment,size: 28,),
+      //       ),
+      //       Tab(
+      //         text: 'More',
+      //         icon: Icon(Icons.more_horiz,size: 28,),
+      //       )
+      //     ]
+      //   ),
+      // ),
+      bottomNavigationBar: bottomnavbar(
+        onTap: (int index) => setState(() => _selectedIndex = index)),
+      // body: TabBarView(children: pages),
+      body: IndexedStack(
+        children: pages,
+        index: _selectedIndex,
+      ),
+    );
+  }
+}
   // final _auth = FirebaseAuth.instance;
   // FirebaseUser currentUser;
   
@@ -30,24 +72,6 @@ class _DashboardState extends State<Dashboard> {
   //         currentUser.email + "@", snapshot.data["Current class code"]);
   //   });
   // }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      bottomNavigationBar: bottomnavbar(
-        onTap: (int index) => setState(() => _selectedIndex = index)),
-      body: IndexedStack(
-        children: <Widget>[
-          Announcements(),
-          Assignments(),
-          MenuList(),
-        ],
-        index: _selectedIndex,
-      ),
-    );
-  }
-}
 
 class bottomnavbar extends StatelessWidget {
   final Function onTap;

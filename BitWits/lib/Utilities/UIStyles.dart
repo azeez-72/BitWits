@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'constants.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 class TextFields extends StatefulWidget {
   final String labelTag;
@@ -31,10 +32,12 @@ class _TextFieldsState extends State<TextFields> {
 
   @override
   Widget build(BuildContext context) {
+    var mobile= MediaQuery.of(context).size;
     return Container(
         width: double.infinity,
         alignment: Alignment.center,
         child: TextFormField(
+          initialValue: labelTag == 'Phone Number' ? '+91' : '',
           validator: validator,
           onSaved: onSaved,
           obscureText: labelTag == "Password" ? hidden : false,
@@ -300,5 +303,41 @@ class errorMessage extends StatelessWidget {
         ),
       ),
     ]);
+  }
+}
+
+class PinField extends StatelessWidget {
+  final Function onChanged;
+
+  PinField({this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return PinCodeTextField(
+      length: 6,
+      autoFocus: true,
+      textInputType: TextInputType.number,
+      obsecureText: false,
+      animationType: AnimationType.fade,
+      pinTheme: PinTheme(
+        shape: PinCodeFieldShape.underline,
+        fieldWidth: 30,
+        fieldHeight: 50,
+      ),
+      animationDuration: Duration(milliseconds: 300),
+      backgroundColor: Colors.white,
+      // errorAnimationController: errorController,
+      // controller: _otpController,
+      onCompleted: (v) {
+        print("Completed");
+      },
+      onChanged: onChanged,
+      beforeTextPaste: (text) {
+        print("Allowing to paste $text");
+        //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+        //but you can show anything you want here, like your pop up saying wrong paste format or etc
+        return true;
+      },
+    );
   }
 }

@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:clipboard_manager/clipboard_manager.dart';
+// import 'package:clipboard_manager/clipboard_manager.dart';
 
 class Students_list extends StatefulWidget {
   static final String id = 'students_list';
@@ -128,14 +128,14 @@ class _Students_listState extends State<Students_list> {
       children: [
         Text(code,style: TextStyle(color: mainColor,fontSize: 20,fontStyle: FontStyle.italic),),
         SizedBox(width: 10),
-        IconButton(icon: Icon(Icons.content_copy,color: Colors.grey),
-          onPressed: () {
-            ClipboardManager.copyToClipBoard(code).then((value){
-              final snackBar = SnackBar(content: Text('Copied to clipboard'),duration: Duration(seconds: 2),);
-              _scaffoldKey.currentState.showSnackBar(snackBar);
-            });
-          }
-        )
+        // IconButton(icon: Icon(Icons.content_copy,color: Colors.grey),
+        //   onPressed: () {
+        //     ClipboardManager.copyToClipBoard(code).then((value){
+        //       final snackBar = SnackBar(content: Text('Copied to clipboard'),duration: Duration(seconds: 2),);
+        //       _scaffoldKey.currentState.showSnackBar(snackBar);
+        //     });
+        //   }
+        // )
       ],
     ),
   );

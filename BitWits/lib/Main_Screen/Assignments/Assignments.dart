@@ -1,12 +1,9 @@
 import 'package:bitwitsapp/Classroom/Data.dart';
-import 'package:bitwitsapp/Utilities/UIStyles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flushbar/flushbar.dart';
+import 'package:bitwitsapp/exports.dart';
 import 'desc_sheet.dart';
 import 'Assignment_info.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';

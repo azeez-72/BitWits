@@ -1,7 +1,5 @@
 import 'package:bitwitsapp/Classroom/Data.dart';
-import 'package:flutter/material.dart';
-import 'package:bitwitsapp/Utilities/constants.dart';
-import 'package:bitwitsapp/Utilities/UIStyles.dart';
+import 'package:bitwitsapp/exports.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
@@ -83,7 +81,7 @@ class _AddAssignmentState extends State<AddAssignment> {
                       CodeFields('G-drive file link(optional)',TextInputType.text,linkController),
                       Container(
                       child: FlatButton.icon(
-                        label: Text("SELECT DATE OF SUBMISSION",style: TextStyle(color: mainColor),),
+                        label: Text("SELECT DATE OF SUBMISSION",textAlign: TextAlign.center,style: TextStyle(color: mainColor),),
                         icon: Icon(
                           Icons.date_range,
                           color: mainColor,
@@ -97,6 +95,7 @@ class _AddAssignmentState extends State<AddAssignment> {
                       Container(
                         child: Text(
                           _dateFormat.format(_value).toString().split('-').reversed.join('-'),
+                          textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.w500),
                         ),
                       ),

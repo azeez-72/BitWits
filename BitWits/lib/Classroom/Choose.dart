@@ -1,10 +1,9 @@
+import 'package:bitwitsapp/exports.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Classroom/create_class.dart';
 import 'package:bitwitsapp/Classroom/join_class.dart';
-import 'package:bitwitsapp/Utilities/UIStyles.dart';
-import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Navigate extends StatelessWidget {
   static final String id = "navigate";
@@ -22,18 +21,19 @@ class Navigate extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    color: Colors.white,
-                    child: Center(
-                        child: Text(
-                      "Making the college spree easy -Clarsi!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xFF2265B3), fontSize: 32,fontWeight: FontWeight.bold,fontFamily: 'Pacifico'),
-                    )),
-                  ),
-                ),
+                SvgPicture.asset('svgs/features_clarsi.svg',height: 400,),
+                // Expanded(
+                //   child: Container(
+                //     width: double.infinity,
+                //     color: Colors.white,
+                //     child: Center(
+                //         child: Text(
+                //       "Making the college spree easy -Clarsi!",
+                //       textAlign: TextAlign.center,
+                //       style: TextStyle(color: Color(0xFF2265B3), fontSize: 32,fontWeight: FontWeight.bold,fontFamily: 'Pacifico'),
+                //     )),
+                //   ),
+                // ),
                 Container(
                   color: Colors.white,
                   padding: EdgeInsets.only(top: 20),
