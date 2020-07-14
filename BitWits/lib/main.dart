@@ -18,7 +18,9 @@ import 'test_queries.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import './Main_Screen/menu_options/menu_items/Resources.dart';
 
-void main() => runApp(MyApp());
+void main() => {
+  runApp(MyApp())
+  };
 
 class MyApp extends StatelessWidget {
   @override

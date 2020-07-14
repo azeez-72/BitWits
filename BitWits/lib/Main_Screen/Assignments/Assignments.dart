@@ -1,12 +1,11 @@
 import 'package:bitwitsapp/Classroom/Data.dart';
-import 'package:bitwitsapp/Utilities/UIStyles.dart';
+import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flushbar/flushbar.dart';
+import 'package:bitwitsapp/exports.dart';
+import 'package:flutter/material.dart';
 import 'desc_sheet.dart';
 import 'Assignment_info.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +21,7 @@ class Assignments extends StatefulWidget {
 
 // ignore: camel_case_types
 class _assignmentsState extends State<Assignments> {
-  //final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   DateTime _newValue = DateTime.now();
   bool check = false, delSpinner = false;
   DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
@@ -190,11 +189,11 @@ class _assignmentsState extends State<Assignments> {
                                     ),
                                     Flexible(
                                       flex: 3,
-                                      child: Checkbox(
-                                        value: studentDocs[index]['Completions'][data.rollNumber] == null ? false : studentDocs[index]['Completions'][data.rollNumber],
-                                        activeColor: Colors.green[300],
-                                        onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
-                                      ),
+                                     child: Checkbox(
+                                       value: studentDocs[index]['Completions'][data.rollNumber] == null ? false : studentDocs[index]['Completions'][data.rollNumber],
+                                       activeColor: Colors.green[300],
+                                       onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),
+                                     ),
                                     ),
                                   ],
                                 ),
