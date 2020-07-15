@@ -19,6 +19,7 @@ import 'Main_Screen/more_options/menu_items/Books/buffer.dart';
 import 'test_queries.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Books/phone_auth.dart';
+import './Main_Screen/more_options/menu_items/ClassSyllabus.dart';
 
 void main() => runApp(MyApp());
 
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
           SignIn.id: (context) => SignIn(),
           Buffer.id: (context) => Buffer(),
           CodeDisplay.id: (context) => CodeDisplay(),
+          Syllabus.id: (context) => Syllabus(),
         },
       ),
     );

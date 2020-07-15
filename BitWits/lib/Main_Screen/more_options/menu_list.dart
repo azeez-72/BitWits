@@ -7,7 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:bitwitsapp/Main_Screen/more_options/options.dart';
 import 'package:bitwitsapp/Reg&Log/SignIn.dart';
 import 'package:bitwitsapp/Utilities/UIStyles.dart';
-
+import './menu_items/ClassSyllabus.dart';
 import 'menu_items/Books/buffer.dart';
 
 class MenuList extends StatelessWidget {
@@ -44,9 +44,16 @@ class MenuList extends StatelessWidget {
               onTap: () => Navigator.pushNamed(context,Buffer.id),
             ),
             OptionListTile(
+              icon: Icon(Icons.bookmark,color: mainColor,size: 32, ),
+              title: 'Syllabus',
+              subtitle: 'Get syllabus for upcoming exam.',
+              onTap: () => Navigator.pushNamed(context,Syllabus.id),
+            ),
+            OptionListTile(
               icon: Icon(Icons.phone,color: mainColor,size: 32,),
               title: 'Contact us',
               subtitle: 'Email us at appbitwits@gmail.com',
+              onTap: () => {},
             ),
             SizedBox(height: 10),
             FlatButton.icon(
