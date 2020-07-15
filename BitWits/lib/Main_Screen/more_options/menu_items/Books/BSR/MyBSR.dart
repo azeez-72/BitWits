@@ -1,5 +1,6 @@
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'AddBSR.dart';
 
 class MyBSR extends StatefulWidget {
   @override
@@ -14,7 +15,7 @@ class _MyBSRState extends State<MyBSR> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: mainColor,
         child: Icon(Icons.add,color: Colors.white,size: 24,),
-        onPressed: (){}
+        onPressed: () => Navigator.pushNamed(context, AddBSR.id)
       ),
     );
   }

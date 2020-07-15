@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'add_assignment.dart';
-import 'package:circular_check_box/circular_check_box.dart';
+// import 'package:circular_check_box/circular_check_box.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -187,7 +187,7 @@ class _assignmentsState extends State<Assignments> {
                                     ),
                                     Flexible(
                                       flex: 3,
-                                     child: CircularCheckBox(
+                                     child: Checkbox(
                                        value: studentDocs[index]['Completions'][data.rollNumber] == null ? false : studentDocs[index]['Completions'][data.rollNumber],
                                        activeColor: Colors.green[300],
                                        onChanged: (value) async => await _updateValue(data.currentClassCode, studentDocs[index]['Title'], data.rollNumber,value),

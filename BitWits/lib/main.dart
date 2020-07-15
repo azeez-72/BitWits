@@ -1,3 +1,4 @@
+import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Books/BSR/AddBSR.dart';
 import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Books/books_tab.dart';
 import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Student_details.dart';
 import 'package:bitwitsapp/Main_Screen/more_options/menu_list.dart';
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
           Test.id: (context) => Test(),
           SignUp.id: (context) => SignUp(),
           BooksTab.id: (context) => BooksTab(),
+          AddBSR.id: (context) => AddBSR(),
           SignIn.id: (context) => SignIn(),
           Buffer.id: (context) => Buffer(),
           CodeDisplay.id: (context) => CodeDisplay(),

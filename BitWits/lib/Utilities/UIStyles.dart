@@ -114,7 +114,7 @@ class _CodeFieldsState extends State<CodeFields> {
         child: TextField(
       style: TextStyle(fontSize: 17),
       maxLines: labelTag == 'Description(optional)' ? null : 1,
-      autofocus: true,
+      autofocus: labelTag == 'Description(optional)' ? false : true,
       controller: ctr,
       keyboardType: textInputType,
       textInputAction: labelTag == "Roll number"
