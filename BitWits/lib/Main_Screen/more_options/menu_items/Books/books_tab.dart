@@ -1,5 +1,7 @@
+import 'package:bitwitsapp/Main_Screen/Dashboard_screen.dart';
 import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Books/BSR/BSR_display_list.dart';
 import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Books/BSR/MyBSR.dart';
+import 'package:bitwitsapp/Main_Screen/more_options/menu_list.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -29,6 +31,7 @@ class _BooksTabState extends State<BooksTab> with TickerProviderStateMixin {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverAppBar(
+                leading: InkWell(child: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.popAndPushNamed(context, Dashboard.id))),
                 backgroundColor: mainColor,
                 actions: [
                   IconButton(icon: Icon(Icons.search), onPressed: (){

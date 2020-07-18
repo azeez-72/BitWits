@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 class Data extends ChangeNotifier{
-  String currentClassCode,currentEmail,rollNumber,name,branch,uid;
+  String currentClassCode,currentEmail,rollNumber,name,branch,uid,yearAbb;
   bool isCr;
   Map<String,bool> completionMap = HashMap<String,bool>();
 
@@ -14,31 +14,6 @@ class Data extends ChangeNotifier{
     this.name = name;
     notifyListeners();
   }
-
-  // Future<void> getCompletionMap(String code,String roll) async {
-  //   await Firestore.instance.collection('Classrooms/$code/Assignments').getDocuments()
-  //   .then((snapshot){
-  //     snapshot.documents.forEach((doc) async { 
-  //       await Firestore.instance
-  //         .collection('Classrooms/$code/Assignment Status')
-  //         .document(doc.documentID)
-  //         .get().then((DocumentSnapshot docSnap){
-  //           completionMap[doc.documentID] = docSnap[roll];
-  //           notifyListeners();
-  //       }); 
-  //     });
-  //   });
-  // }
-
-  // void getCompletionData() async {
-  //   await getCompletionMap(currentClassCode, rollNumber);
-  //   notifyListeners();
-  // }
-
-  // void updateData(String title,bool value){
-  //   completionMap[title] = value;
-  //   notifyListeners();
-  // }
 
   void addBranch(String branch){
     this.branch = branch;
@@ -59,4 +34,26 @@ class Data extends ChangeNotifier{
     rollNumber = roll;
     notifyListeners();
   }
+
+  String getYearAbbreviation(){
+    switch (currentClassCode.substring(5,6)) {
+      case '8':
+        yearAbb = 'FY';
+        break;
+      case '2':
+        yearAbb = 'SY';
+        break;
+      case '3':
+        yearAbb = 'TY';
+        break;
+      case '4':
+        yearAbb = 'Final';
+        break;
+      default:
+        yearAbb = 'loading';
+    }
+    notifyListeners();
+    return yearAbb;
+  }
+
 }

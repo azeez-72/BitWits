@@ -8,6 +8,17 @@ const bottomSheetDecoration = BoxDecoration(
       );
 String label;
 
+BoxDecoration booksListDecoration = BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey[200],
+                      offset: Offset(0, 1.0), //(x,y)
+                      blurRadius: 2.0,
+                    ),],
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5)
+                );
+
 const errorIcon = Icon(
   Icons.error,
   size: 28.0,

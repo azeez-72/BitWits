@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'constants.dart';
@@ -32,7 +34,6 @@ class _TextFieldsState extends State<TextFields> {
 
   @override
   Widget build(BuildContext context) {
-    var mobile= MediaQuery.of(context).size;
     return Container(
         width: double.infinity,
         alignment: Alignment.center,
@@ -338,6 +339,81 @@ class PinField extends StatelessWidget {
         //but you can show anything you want here, like your pop up saying wrong paste format or etc
         return true;
       },
+    );
+  }
+}
+
+class ImageChooseDialog extends StatelessWidget {
+  final Function gallery;
+  final Function camera;
+
+  ImageChooseDialog({this.gallery,this.camera});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Choose an option'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          FlatButton.icon(
+            onPressed: camera,
+            icon: Icon(Icons.camera), label: Text('Camera'),
+          ),
+          SizedBox(height: 10),
+          FlatButton.icon(
+            onPressed: gallery,
+            icon: Icon(Icons.image),
+            label: Text('Gallery'),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class SlideToRemove extends StatelessWidget {
+  final File imageFile;
+  // _imageFiles[index - 1]
+  final Function onRemoved;
+  // (direction) => setState(() => _imageFiles.remove(_imageFiles[index - 1]))
+
+  SlideToRemove({this.imageFile,this.onRemoved});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dismissible(
+      key: ValueKey(imageFile),
+      direction: DismissDirection.vertical,
+      onDismissed: onRemoved,
+      child: Image(
+        image: FileImage(imageFile),
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+}
+
+class PriceField extends StatelessWidget {
+  final TextEditingController priceController;
+
+  PriceField({this.priceController});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      maxLength: 4,
+      controller: priceController,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        prefixIcon: Column(mainAxisAlignment: MainAxisAlignment.center,children: [Text('₹',style: TextStyle(fontSize: 18),)]),
+        labelText: 'Price',
+        labelStyle: TextStyle(fontSize: 18),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.blue[400], width: 1.5),
+        ),
+      ),
     );
   }
 }

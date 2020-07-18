@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'AddBSR.dart';
 
 class MyBSR extends StatefulWidget {
+  static final String id = 'my_books_reqs';
+
   @override
   _MyBSRState createState() => _MyBSRState();
 }
