@@ -1,7 +1,6 @@
 import 'package:bitwitsapp/Main_Screen/Dashboard_screen.dart';
 import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Books/BSR/BSR_display_list.dart';
 import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Books/BSR/MyBSR.dart';
-import 'package:bitwitsapp/Main_Screen/more_options/menu_list.dart';
 import 'package:bitwitsapp/Utilities/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -31,14 +30,14 @@ class _BooksTabState extends State<BooksTab> with TickerProviderStateMixin {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverAppBar(
-                leading: InkWell(child: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.popAndPushNamed(context, Dashboard.id))),
+                leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.popAndPushNamed(context, Dashboard.id)),
                 backgroundColor: mainColor,
                 actions: [
                   IconButton(icon: Icon(Icons.search), onPressed: (){
                     //search for items
                   })
                 ],
-                title: Text('Books',style: TextStyle(color: Colors.white),),
+                title: const Text('Books',style: TextStyle(color: Colors.white),),
                 pinned: true,
                 floating: true,
                 snap: true,
@@ -47,16 +46,14 @@ class _BooksTabState extends State<BooksTab> with TickerProviderStateMixin {
                 bottom: TabBar(
                   indicatorColor: Colors.white,
                   tabs: <Tab>[
-                    Tab(text: "REQUESTS"),
-                    Tab(text: "MY REQUESTS"),
+                    const Tab(text: "REQUESTS"),
+                    const Tab(text: "MY REQUESTS"),
                   ],
                 ),
               ),
             ];
           },
-          body: TabBarView(
-            children: pages,
-          ),
+          body: TabBarView(children: pages),
         ),
       ),
     );

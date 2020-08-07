@@ -66,7 +66,6 @@ class AssignmentTile extends StatelessWidget {
                 height: 40,
                 child: OutlineButton(
                   borderSide: BorderSide(color: mainColor),
-                  //studentDocs[index]['G-drive link'] has the link
                   child: Text(
                     'Open File',
                     style: TextStyle(

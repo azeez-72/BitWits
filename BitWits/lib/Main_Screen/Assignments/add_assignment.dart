@@ -76,7 +76,7 @@ class _AddAssignmentState extends State<AddAssignment> {
                       SizedBox(height: 5,),
                       CodeFields('title', TextInputType.text, titleController),
                       SizedBox(height: 15),
-                      CodeFields('Description(optional)', TextInputType.text, descriptionController),
+                      CodeFields('Description(optional)', TextInputType.multiline, descriptionController),
                       SizedBox(height: 15),
                       CodeFields('G-drive file link(optional)',TextInputType.text,linkController),
                       Container(

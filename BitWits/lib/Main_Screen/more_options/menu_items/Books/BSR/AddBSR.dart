@@ -1,16 +1,14 @@
-import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Books/BSR/MyBSR.dart';
 import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Books/books_tab.dart';
-import 'package:bitwitsapp/Main_Screen/more_options/menu_items/Books/buffer.dart';
 import 'package:bitwitsapp/exports.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flushbar/flushbar.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+List<String> subjects = [];
 
 class AddBSR extends StatefulWidget {
   static final String id = 'add_bsr';
@@ -22,11 +20,12 @@ class AddBSR extends StatefulWidget {
 class _AddBSRState extends State<AddBSR> {
   TextEditingController _descController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
-  String _phoneNo,_currentYear = '...',_previousYear = '...';
+  String _phoneNo,_currentYear = '...',_previousYear = '...',year;
   final _storeRef = FirebaseStorage.instance.ref().child('booksImages');
   final _auth = FirebaseAuth.instance;
   bool _y1 = true,_y2 = false,showSpinner = false;
-  int _categoryGroupValue = 1,imageLimit = 5;
+  int imageLimit = 3,yr = 1;
+  List<String> _books = [];
 
   _getPhoneNo() async {
     await _auth.currentUser().then((user) => setState(() => _phoneNo = user.phoneNumber));
@@ -35,7 +34,13 @@ class _AddBSRState extends State<AddBSR> {
 
   _getSellerYear() async {
     await Firestore.instance.collection('BooksSellIDs').document(_phoneNo).get()
-      .then((value) => setState(() => _currentYear = value.data['Year']));
+      .then((value) => setState(() {
+        _currentYear = value.data['Year'];
+        year = _currentYear;
+        yr = int.parse(year);
+        yr--;
+      })
+    );
 
     switch (_currentYear) {
       case '1':
@@ -61,7 +66,7 @@ class _AddBSRState extends State<AddBSR> {
   }
 
   _getRules() async {
-    await Firestore.instance.collection('Rules').document('Books')
+    await Firestore.instance.collection('Books').document('Limits')
       .get().then((value){
         setState((){
           imageLimit = value.data['img limit'];
@@ -69,11 +74,23 @@ class _AddBSRState extends State<AddBSR> {
       });
   }
 
+  _getSubjects() async {
+    await Firestore.instance.collection('Books').document('Year$yr subjects').get()
+      .then((value){
+        value.data.forEach((key, value) {
+          setState(() => subjects.add(key));
+        });
+      });
+  }
+
+  addBookToList(String subject,String bookName) => setState(() => _books.add('$subject - $bookName'));
+
   @override
   void initState(){
+    super.initState();
     _getPhoneNo();
     _getRules();
-    super.initState();
+    _getSubjects();
   }
 
   List<File> _imageFiles = [];
@@ -114,7 +131,7 @@ class _AddBSRState extends State<AddBSR> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: mainColor,
-          title: Text('Add a request',style: TextStyle(color: Colors.white),),
+          title: const Text('Add a request',style: TextStyle(color: Colors.white),),
           leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
         ),
         backgroundColor: Colors.white,
@@ -122,11 +139,26 @@ class _AddBSRState extends State<AddBSR> {
           child: ListView(
             padding: EdgeInsets.all(16),
             children: <Widget>[
-              Text('Add images:',style: TextStyle(color: mainColor,fontSize: 22,fontWeight: FontWeight.w500)),
-              SizedBox(height: 10),
+              AddBookButton(
+                onPressed: () => showDialog(context: context,builder: (context) => AddBookDialog(
+                  onAdded: addBookToList,
+                )),
+              ),
+              if(_books.length > 0)
+              ListView.separated(
+                itemCount: _books.length,
+                separatorBuilder: (context,index) => SizedBox(height: 3),
+                itemBuilder: (context,index) =>
+                  ListTile(
+                    title: Flexible(child: Text(_books[index],overflow: TextOverflow.ellipsis)),
+                    trailing: IconButton(icon: Icon(Icons.delete,color: Colors.red),
+                      onPressed: () => setState(() => _books.removeAt(index))), 
+                  )
+              ),
+              SizedBox(height: 20),
               Container(
-                width: double.infinity,
                 height: 100,
+                //here edited width from double.infinity to none
                 child: ListView.separated(
                   separatorBuilder: (context,index) => SizedBox(width: 5),
                   itemCount: _imageFiles.length + 1,
@@ -136,7 +168,13 @@ class _AddBSRState extends State<AddBSR> {
                       height: 100,
                       child: FlatButton(
                         color: Colors.grey[200],
-                        child: Icon(Icons.add_a_photo,color: Colors.grey),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children:[
+                            const Icon(Icons.add_a_photo,color: Colors.grey),
+                            const Text('Tap to add an image',style: TextStyle(color: Colors.grey,fontSize: 10))
+                          ]
+                        ),
                         onPressed: () async {
                           if(_imageFiles.length > (imageLimit - 1)){    //set limit
                             Flushbar(
@@ -187,9 +225,9 @@ class _AddBSRState extends State<AddBSR> {
                 ),
               ),
               if(_imageFiles.length != 0) SizedBox(height: 4),
-              if(_imageFiles.length != 0) Text('(Images may take time to appear)',style: TextStyle(color: Colors.blueGrey,fontSize: 12)),
+              if(_imageFiles.length != 0) const Text('(Images may take time to appear)',style: TextStyle(color: Colors.blueGrey,fontSize: 12)),
               SizedBox(height: 20),
-              CodeFields('Description(optional)', TextInputType.text, _descController),
+              CodeFields('Description(optional)', TextInputType.multiline, _descController),
               SizedBox(height: 15),
               Row(
                 children: [
@@ -218,7 +256,7 @@ class _AddBSRState extends State<AddBSR> {
                   SizedBox(width: 10,),
                   Flexible(
                     flex: 1,
-                    child: Text('(We recommend an optimal pricing to allot your book(s) a higher preference in our list).',
+                    child: const Text('(We recommend an optimal pricing to allot your book(s) a higher preference in our list).',
                       style: TextStyle(color: Colors.blueGrey,fontSize: 12,height: 1.3),
                     ),
                   )
@@ -229,9 +267,9 @@ class _AddBSRState extends State<AddBSR> {
                 if(_priceController.text == ''){
                   Flushbar(
                     icon: errorIcon,
-                    duration: Duration(seconds: 2),
+                    duration: const Duration(seconds: 2),
                     backgroundColor: Colors.red,
-                    messageText: Text('Please set the price',style: TextStyle(color: Colors.white)),
+                    messageText: const Text('Price cannot be empty',style: TextStyle(color: Colors.white)),
                   )..show(context);
                   return;
                 }
@@ -242,9 +280,9 @@ class _AddBSRState extends State<AddBSR> {
                 }
                 else Flushbar(
                   icon: errorIcon,
-                  duration: Duration(seconds: 2),
+                  duration: const Duration(seconds: 2),
                   backgroundColor: Colors.red,
-                  messageText: Text('Please select visibility',style: TextStyle(color: Colors.white)),
+                  messageText: const Text('Visibility cannot be empty',style: TextStyle(color: Colors.white)),
                 )..show(context);
               }),
             ],
@@ -254,7 +292,6 @@ class _AddBSRState extends State<AddBSR> {
     );
   }
 }
-
 
 
             // Row(

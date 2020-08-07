@@ -67,7 +67,7 @@ class _PhoneAuthState extends State<PhoneAuth> {
                 textBaseline: TextBaseline.ideographic
               ),
               children: <TextSpan>[
-                TextSpan(text: 'Enter the OTP that has been sent to '),
+                const TextSpan(text: 'Enter the OTP that has been sent to '),
                 TextSpan(text: _phoneNo,style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold))
               ]
             ),
@@ -77,7 +77,7 @@ class _PhoneAuthState extends State<PhoneAuth> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 PinField(onChanged: (value) => setState(() => currentText = value)),
-                SizedBox(height: 15,),
+                const SizedBox(height: 15),
                 button(
                   'Submit',
                   18,
@@ -141,7 +141,7 @@ class _PhoneAuthState extends State<PhoneAuth> {
             child: Column(
               children: [
                 //insert title
-                Text('Setup your books account',style: TextStyle(fontSize: 24,color: mainColor),),
+                const Text('Setup your books account',style: TextStyle(fontSize: 24,color: mainColor),),
                 SizedBox(height: mobile.height*0.1),
                 Form(
                   key: _formKey,
@@ -157,9 +157,9 @@ class _PhoneAuthState extends State<PhoneAuth> {
                     (String value) => _phoneNo = value.trim(),
                   )
                 ),
-                SizedBox(height: 10),
-                codeSent ? Text('OTP sent!',style: TextStyle(color: Colors.green,fontSize: 14)) : Container(width: 0,height: 0),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
+                codeSent ? const Text('OTP sent!',style: TextStyle(color: Colors.green,fontSize: 14)) : Container(width: 0,height: 0),
+                const SizedBox(height: 10),
                 button(
                   'Verify',
                   18,
@@ -176,7 +176,7 @@ class _PhoneAuthState extends State<PhoneAuth> {
                     }
                   }
                 ),
-                SizedBox(height: 40,),
+                const SizedBox(height: 40),
                 GestureDetector(
                   child: Text('Why do we need to verify your number?',style: TextStyle(color: Colors.grey,decoration: TextDecoration.underline)),
                   onTap: (){},

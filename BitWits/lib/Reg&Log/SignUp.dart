@@ -16,14 +16,11 @@ class SignUp extends StatefulWidget {
 
 class SignUpState extends State<SignUp> {
   //shifted rollno from private class to let New_Class access it
-  String _email;
-  String _password;
-  String name;
+  String _email,_password,name,error = " ";
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   FirebaseUser loggedInUser;
   bool showSpinner = false;
-  String error = " ";
 
   Future<void> updateStatus(String email,String name,String cc) async {
     await Firestore.instance.collection("Status").document(email).setData({
@@ -48,13 +45,13 @@ class SignUpState extends State<SignUp> {
         child: SafeArea(
           child: Column(
             children: <Widget>[
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               appName(
                 fontSize: 20,
                 color: Colors.white,
               ),
               RegisterHeading(),
-              SizedBox(height: 7),
+              const SizedBox(height: 7),
               Expanded(
                 child: Container(
                   //main page decoration
@@ -78,44 +75,36 @@ class SignUpState extends State<SignUp> {
                                 //note
                                 name = value;
                               }),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                               TextFields("Email",TextInputType.emailAddress,
-                                Icon(Icons.email),(String value){
-                                  //validate
-                                  if(value.isEmpty) {
-                                  return 'Enter your email';
-                                }
-                                return null;
-                                }, (String value) {
-                                  _email = value;
-                              }),
-                              SizedBox(
+                                Icon(Icons.email),
+                                (String value){
+                                  if(value.isEmpty) return 'Enter your email';
+                                  return null;
+                                }, (String value) => _email = value
+                              ),
+                              const SizedBox(
                                 height: 10,
                               ),
                               TextFields("Password",TextInputType.text,
                                 Icon(Icons.lock_outline),(String value){
                                   //validate
-                                  if(value.isEmpty) {
-                                  return 'Enter your password';
-                                }
-                                return null;
-                                }, (String value) {
-                                  _password = value;
-                              }),
+                                  if(value.isEmpty) return 'Enter your password';
+                                  return null;
+                                }, (String value) => _password = value
+                              ),
                             ],
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 16,
                         ),
                         Builder(
                           builder: (context) =>
                           button('Register',18, () async {
-                            if(_formKey.currentState.validate()) {
-                              _formKey.currentState.save();
-                            } 
+                            if(_formKey.currentState.validate()) _formKey.currentState.save();
                             try {
                               setState(() => showSpinner = true);
                               final newUser =
@@ -132,7 +121,7 @@ class SignUpState extends State<SignUp> {
                                     SnackBar(
                                       content: errorMessage('An error occured...Pls try again later!'),
                                       backgroundColor: Colors.red,
-                                      duration: Duration(seconds: 3,),
+                                      duration: const Duration(seconds: 3),
                                     )
                                   );
                                 }
@@ -146,13 +135,13 @@ class SignUpState extends State<SignUp> {
                                   SnackBar(
                                     content: errorMessage(error),
                                     backgroundColor: Colors.red,
-                                    duration: Duration(seconds: 3,),
+                                    duration: const Duration(seconds: 3,),
                                     ),
                                   );
                             }
                           }),
                         ),
-                        SizedBox(height: 24,),
+                        const SizedBox(height: 24,),
                         Divider(
                           color: Colors.grey[400],
                           thickness: 1,
@@ -176,14 +165,14 @@ class SignUpState extends State<SignUp> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 8,
                               ),
                               GestureDetector(
                                 onTap: () {
                                   Navigator.pushNamed(context, SignIn.id);
                                 },
-                                child: Text(
+                                child: const Text(
                                   'Sign In',
                                   style: TextStyle(
                                     color: Colors.blue,

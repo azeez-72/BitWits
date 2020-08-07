@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import '../BSR/BSRDesc.dart';
 
 class BSRdisplay extends StatefulWidget {
   @override
@@ -32,8 +33,15 @@ class _BSRdisplayState extends State<BSRdisplay> {
                 itemBuilder: (context,index) => Container(
                   decoration: booksListDecoration,
                   child: ListTile(
-                    onTap: (){
-                      print(reqDocs[index]['image links'].length);
+                    onTap: () {
+                      List imageList = [];
+                      for (int i = 0 ; i < reqDocs[index]['image links'].length ; i++)
+                        imageList.add(Image.network(reqDocs[index]['image links'][i]));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => BSRinfo(
+                      sellerId: reqDocs[index]['Seller id'],
+                      imageURLs: imageList,
+                      desc: reqDocs[index]['Description'],
+                      )));
                     },
                     isThreeLine: true,
                     title: Row(

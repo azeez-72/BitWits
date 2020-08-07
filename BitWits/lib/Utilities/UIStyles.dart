@@ -1,7 +1,9 @@
 import 'dart:io';
-
+import '../Main_Screen/more_options/menu_items/Books/BSR/AddBSR.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'constants.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -64,14 +66,14 @@ class _TextFieldsState extends State<TextFields> {
                         : Icon(Icons.visibility_off),
                   )
                 : null,
-            errorBorder: OutlineInputBorder(
+            errorBorder: const OutlineInputBorder(
               borderSide: BorderSide(
                 color: Colors.red,
                 width: 2,
               ),
             ),
             labelText: labelTag,
-            hintStyle: TextStyle(
+            hintStyle: const TextStyle(
               color: Colors.grey,
             ),
             disabledBorder: OutlineInputBorder(
@@ -80,7 +82,7 @@ class _TextFieldsState extends State<TextFields> {
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.blue[400], width: 1.5),
             ),
-            border: OutlineInputBorder(
+            border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(3),
               ),
@@ -113,7 +115,7 @@ class _CodeFieldsState extends State<CodeFields> {
   Widget build(BuildContext context) {
     return Container(
         child: TextField(
-      style: TextStyle(fontSize: 17),
+      style: const TextStyle(fontSize: 17),
       maxLines: labelTag == 'Description(optional)' ? null : 1,
       autofocus: labelTag == 'Description(optional)' ? false : true,
       controller: ctr,
@@ -125,7 +127,7 @@ class _CodeFieldsState extends State<CodeFields> {
           ? () => FocusScope.of(context).nextFocus()
           : () => FocusScope.of(context).unfocus(),
       decoration: InputDecoration(
-        errorBorder: OutlineInputBorder(
+        errorBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.red,
             width: 2,
@@ -138,7 +140,7 @@ class _CodeFieldsState extends State<CodeFields> {
         disabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.grey[200], width: 1),
         ),
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(3),
           ),
@@ -199,6 +201,133 @@ class _buttonState extends State<button> {
   }
 }
 
+
+class ImageSlides extends StatelessWidget {
+  final List<dynamic> images;
+
+  ImageSlides({this.images});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      child: Carousel(
+        autoplay: false,
+        dotColor: Colors.white,
+        dotBgColor: Colors.grey[300].withOpacity(0.5),
+        indicatorBgPadding: 10.0,
+        dotSize: 6.0,
+        dotIncreasedColor: mainColor,
+        images: images
+      ),
+    );
+  }
+}
+
+
+class AddBookDialog extends StatefulWidget {
+  final void Function(String subject,String bookName) onAdded;
+
+  AddBookDialog({this.onAdded});
+
+  @override
+  _AddBookDialogState createState() => _AddBookDialogState();
+}
+
+
+//dialog
+class _AddBookDialogState extends State<AddBookDialog> {
+
+  final _formKey = GlobalKey<FormState>();
+  String subjectChosen;
+  String _bookName;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Add a book',style: const TextStyle(color: mainColor),),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FormField<String>(
+              autovalidate: true,
+              builder: (FormFieldState<String> state) {
+                return InputDecorator(
+                  decoration: textInputDecoration("Subject"),
+                  isEmpty: subjectChosen == '', //
+                  child: DropDown(
+                  value: subjectChosen,
+                    list: subjects.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      FocusScope.of(context).unfocus();
+                      subjectChosen = newValue;
+                      state.didChange(newValue);
+                    });
+                  },
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 10),
+            TextFields(
+              'Name of the book',
+              TextInputType.text,
+              Icon(Icons.book),
+              (String value){
+                if(value.isEmpty) return 'Enter the name of the book';
+                return null;
+              },
+              (String value) => _bookName = value
+            )
+          ],
+        ),
+      ),
+      actions: [
+        FlatButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL',style: const TextStyle(color: Colors.grey))),
+        FlatButton(onPressed: (){
+          if(_formKey.currentState.validate()) _formKey.currentState.save();
+          widget.onAdded(subjectChosen,_bookName);
+          Navigator.pop(context);
+        }, child: const Text('ADD',style: const TextStyle(color: mainColor,fontWeight: FontWeight.bold))),
+      ],
+    );
+  }
+}
+
+class AddBookButton extends StatelessWidget {
+  final Function onPressed;
+
+  AddBookButton({this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      decoration: BoxDecoration(
+        border: Border.all(color: mainColor),
+        borderRadius: BorderRadius.circular(50)
+      ),
+      alignment: Alignment.center,
+      child: FlatButton.icon(
+        onPressed: onPressed,
+        icon: SvgPicture.asset('svgs/stack_of_books.svg',width: 24,color: mainColor),
+        label: const Text('ADD BOOKS',style: const TextStyle(
+          color: mainColor,
+          fontSize: 20
+        ))
+      ),
+    );
+  }
+}
+
 class DropDown extends StatelessWidget {
   final String value;
   final Function onChanged;
@@ -235,7 +364,7 @@ class buttonExp extends StatelessWidget {
           onPressed: onPressed,
           child: Text(
             label,
-            style: TextStyle(color: Colors.white, fontSize: 18),
+            style: const TextStyle(color: Colors.white, fontSize: 18),
           ),
         ),
       ),
@@ -252,9 +381,9 @@ class OK extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: onPressed,
-      child: Text(
+      child: const Text(
         'OK',
-        style: TextStyle(color: Colors.blue),
+        style: const TextStyle(color: Colors.blue),
       ),
     );
   }
@@ -291,13 +420,13 @@ class errorMessage extends StatelessWidget {
       Icon(
         Icons.error,
       ),
-      SizedBox(
+      const SizedBox(
         width: 10,
       ),
       Expanded(
         child: Text(
           errorText,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
             color: Colors.white,
           ),
@@ -325,7 +454,7 @@ class PinField extends StatelessWidget {
         fieldWidth: 30,
         fieldHeight: 50,
       ),
-      animationDuration: Duration(milliseconds: 300),
+      animationDuration: const Duration(milliseconds: 300),
       backgroundColor: Colors.white,
       // errorAnimationController: errorController,
       // controller: _otpController,
@@ -352,7 +481,7 @@ class ImageChooseDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Choose an option'),
+      title: const Text('Choose an option'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -360,7 +489,7 @@ class ImageChooseDialog extends StatelessWidget {
             onPressed: camera,
             icon: Icon(Icons.camera), label: Text('Camera'),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           FlatButton.icon(
             onPressed: gallery,
             icon: Icon(Icons.image),
@@ -406,9 +535,9 @@ class PriceField extends StatelessWidget {
       controller: priceController,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        prefixIcon: Column(mainAxisAlignment: MainAxisAlignment.center,children: [Text('₹',style: TextStyle(fontSize: 18),)]),
+        prefixIcon: Column(mainAxisAlignment: MainAxisAlignment.center,children: [const Text('₹',style: TextStyle(fontSize: 18),)]),
         labelText: 'Price',
-        labelStyle: TextStyle(fontSize: 18),
+        labelStyle: const TextStyle(fontSize: 18),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.blue[400], width: 1.5),
